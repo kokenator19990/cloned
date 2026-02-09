@@ -14,7 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.deadbot.app.viewmodel.ChatViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -22,7 +22,7 @@ import com.deadbot.app.viewmodel.ChatViewModel
 fun ChatScreen(
     profileId: String,
     onBack: () -> Unit,
-    viewModel: ChatViewModel = hiltViewModel()
+    viewModel: ChatViewModel = viewModel()
 ) {
     val messages by viewModel.messages.collectAsState()
     val currentSession by viewModel.currentSession.collectAsState()

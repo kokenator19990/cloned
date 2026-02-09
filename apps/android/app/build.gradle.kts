@@ -15,6 +15,10 @@ android {
         versionName = "0.1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables { useSupportLibrary = true }
+
+        // API base URL - change to your PC's local IP for real device testing
+        // e.g. "http://192.168.1.100:3001/" 
+        buildConfigField("String", "API_BASE_URL", "\"http://192.168.1.113:3001/\"")
     }
 
     buildTypes {
@@ -31,7 +35,10 @@ android {
 
     kotlinOptions { jvmTarget = "1.8" }
 
-    buildFeatures { compose = true }
+    buildFeatures {
+        compose = true
+        buildConfig = true
+    }
     composeOptions { kotlinCompilerExtensionVersion = "1.5.8" }
     packaging { resources { excludes += "/META-INF/{AL2.0,LGPL2.1}" } }
 }

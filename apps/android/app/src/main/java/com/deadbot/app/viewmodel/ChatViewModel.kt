@@ -4,14 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.deadbot.app.data.api.ApiClient
 import com.deadbot.app.data.model.*
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class ChatViewModel @Inject constructor() : ViewModel() {
+class ChatViewModel : ViewModel() {
     private val _messages = MutableStateFlow<List<Message>>(emptyList())
     val messages: StateFlow<List<Message>> = _messages
 
@@ -58,8 +55,9 @@ class ChatViewModel @Inject constructor() : ViewModel() {
                     sessionId,
                     SendMessageRequest(content)
                 )
-                if (response.isSuccessful) {
-                    loadMessages(sessionId)
+                if (response.isSuccessful && response.body() != null) {
+                    val body = response.body()!!
+                    _messages.value = _messages.value + listOf(body.userMessage, body.personaMessage)
                 }
             } catch (e: Exception) {
                 // Handle error

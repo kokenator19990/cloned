@@ -10,14 +10,14 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.deadbot.app.viewmodel.ProfileViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileListScreen(
     onProfileClick: (String) -> Unit,
-    viewModel: ProfileViewModel = hiltViewModel()
+    viewModel: ProfileViewModel = viewModel()
 ) {
     val profiles by viewModel.profiles.collectAsState()
     val loading by viewModel.loading.collectAsState()
@@ -70,7 +70,7 @@ fun ProfileListScreen(
                                 style = MaterialTheme.typography.bodyMedium
                             )
                             Text(
-                                "Interactions: ${profile.interactionCount}",
+                                "Interactions: ${profile.currentInteractions}",
                                 style = MaterialTheme.typography.bodySmall
                             )
                         }

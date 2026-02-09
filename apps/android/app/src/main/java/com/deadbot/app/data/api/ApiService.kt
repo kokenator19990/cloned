@@ -33,7 +33,7 @@ interface ApiService {
 
     // Enrollment
     @POST("enrollment/{id}/start")
-    suspend fun startEnrollment(@Path("id") id: String): Response<EnrollmentProgress>
+    suspend fun startEnrollment(@Path("id") id: String): Response<Question>
 
     @GET("enrollment/{id}/next-question")
     suspend fun getNextQuestion(@Path("id") id: String): Response<Question>
@@ -55,5 +55,5 @@ interface ApiService {
     suspend fun getMessages(@Path("id") id: String): Response<List<Message>>
 
     @POST("chat/sessions/{id}/messages")
-    suspend fun sendMessage(@Path("id") id: String, @Body message: SendMessageRequest): Response<Message>
+    suspend fun sendMessage(@Path("id") id: String, @Body message: SendMessageRequest): Response<SendMessageResponse>
 }

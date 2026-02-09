@@ -7,7 +7,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.deadbot.app.viewmodel.ProfileViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -16,7 +16,7 @@ fun ProfileDetailScreen(
     profileId: String,
     onNavigateToEnrollment: () -> Unit,
     onNavigateToChat: () -> Unit,
-    viewModel: ProfileViewModel = hiltViewModel()
+    viewModel: ProfileViewModel = viewModel()
 ) {
     val profile by viewModel.selectedProfile.collectAsState()
 
@@ -49,20 +49,20 @@ fun ProfileDetailScreen(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    "Interactions: ${p.interactionCount}",
+                    "Interactions: ${p.currentInteractions} / ${p.minInteractions}",
                     style = MaterialTheme.typography.bodyMedium
                 )
                 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                if (p.status == "pending") {
+                if (p.status == "ENROLLING") {
                     Button(
                         onClick = onNavigateToEnrollment,
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text("Start Enrollment")
                     }
-                } else if (p.status == "active") {
+                } else if (p.status == "ACTIVE") {
                     Button(
                         onClick = onNavigateToChat,
                         modifier = Modifier.fillMaxWidth()

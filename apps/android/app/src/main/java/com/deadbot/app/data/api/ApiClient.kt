@@ -1,5 +1,6 @@
 package com.deadbot.app.data.api
 
+import com.deadbot.app.BuildConfig
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -8,7 +9,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 object ApiClient {
-    private const val BASE_URL = "http://10.0.2.2:3001/" // localhost for Android emulator
+    private val BASE_URL = BuildConfig.API_BASE_URL
 
     private var token: String? = null
 

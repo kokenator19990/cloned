@@ -8,7 +8,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.deadbot.app.viewmodel.EnrollmentViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -16,7 +16,7 @@ import com.deadbot.app.viewmodel.EnrollmentViewModel
 fun EnrollmentScreen(
     profileId: String,
     onBack: () -> Unit,
-    viewModel: EnrollmentViewModel = hiltViewModel()
+    viewModel: EnrollmentViewModel = viewModel()
 ) {
     val question by viewModel.currentQuestion.collectAsState()
     val progress by viewModel.progress.collectAsState()
@@ -48,11 +48,11 @@ fun EnrollmentScreen(
         ) {
             progress?.let { p ->
                 LinearProgressIndicator(
-                    progress = p.totalInteractions.toFloat() / p.requiredInteractions.toFloat(),
+                    progress = p.totalInteractions.toFloat() / p.minRequired.toFloat().coerceAtLeast(1f),
                     modifier = Modifier.fillMaxWidth()
                 )
                 Text(
-                    "${p.totalInteractions} / ${p.requiredInteractions} interactions",
+                    "${p.totalInteractions} / ${p.minRequired} interactions (${p.percentComplete}%)",
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.padding(top = 8.dp)
                 )
@@ -73,7 +73,7 @@ fun EnrollmentScreen(
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            q.text,
+                            q.question,
                             style = MaterialTheme.typography.bodyLarge
                         )
                     }
