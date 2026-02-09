@@ -1,0 +1,33 @@
+{
+  "name": "deadbot",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Cognitive identity simulation platform - interact with persistent cognitive profiles",
+  "scripts": {
+    "dev": "turbo run dev",
+    "dev:api": "cd services/api && pnpm exec nest start --watch",
+    "dev:web": "cd apps/web && pnpm exec next dev --port 3000",
+    "dev:all": "turbo run dev --parallel",
+    "build": "turbo run build",
+    "build:api": "cd services/api && pnpm exec nest build",
+    "build:web": "cd apps/web && pnpm exec next build",
+    "start:api": "cd services/api && node dist/main.js",
+    "test": "turbo run test",
+    "typecheck": "turbo run typecheck",
+    "lint": "turbo run lint",
+    "db:migrate": "cd services/api && npx prisma migrate dev",
+    "db:seed": "cd services/api && npx prisma db seed",
+    "db:reset": "cd services/api && npx prisma migrate reset --force",
+    "db:studio": "cd services/api && npx prisma studio",
+    "docker:up": "docker compose -f infra/docker-compose.yml up -d",
+    "docker:down": "docker compose -f infra/docker-compose.yml down",
+    "docker:reset": "docker compose -f infra/docker-compose.yml down -v && docker compose -f infra/docker-compose.yml up -d"
+  },
+  "devDependencies": {
+    "turbo": "^2.1.0"
+  },
+  "packageManager": "pnpm@9.1.0",
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

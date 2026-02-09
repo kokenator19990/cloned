@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Deadbot</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="name">Name</string>
+    <string name="create_account">Create Account</string>
+    <string name="already_have_account">Already have an account?</string>
+    <string name="no_account">Don\'t have an account?</string>
+    <string name="profiles">Profiles</string>
+    <string name="create_profile">Create Profile</string>
+    <string name="enrollment">Enrollment</string>
+    <string name="chat">Chat</string>
+    <string name="voice">Voice</string>
+    <string name="avatar">Avatar</string>
+    <string name="start_enrollment">Start Enrollment</string>
+    <string name="next_question">Next Question</string>
+    <string name="submit_answer">Submit Answer</string>
+    <string name="send_message">Send Message</string>
+    <string name="record_voice">Record Voice</string>
+    <string name="upload_photo">Upload Photo</string>
+    <string name="simulation_banner">⚠️ This is a simulation. Not a real person.</string>
+</resources>

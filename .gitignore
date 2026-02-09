@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.next/
+.env
+.env.local
+*.log
+.turbo/
+coverage/
+.gradle/
+build/
+*.apk
+*.aab

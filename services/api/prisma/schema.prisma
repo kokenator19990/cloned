@@ -1,0 +1,191 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [vector]
+}
+
+enum ProfileStatus {
+  ENROLLING
+  ACTIVE
+  ARCHIVED
+}
+
+enum CognitiveCategory {
+  LINGUISTIC
+  LOGICAL
+  MORAL
+  VALUES
+  ASPIRATIONS
+  PREFERENCES
+  AUTOBIOGRAPHICAL
+  EMOTIONAL
+}
+
+enum MessageRole {
+  USER
+  PERSONA
+  SYSTEM
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  displayName  String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  profiles     PersonaProfile[]
+  chatSessions ChatSession[]
+}
+
+model PersonaProfile {
+  id                  String        @id @default(uuid())
+  userId              String
+  name                String
+  status              ProfileStatus @default(ENROLLING)
+  minInteractions     Int           @default(50)
+  currentInteractions Int           @default(0)
+  voiceConsentGiven   Boolean       @default(false)
+  coverageMap         Json          @default("{}")
+  consistencyScore    Float         @default(0)
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+
+  user                User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  enrollmentQuestions EnrollmentQuestion[]
+  memories            CognitiveMemory[]
+  chatSessions        ChatSession[]
+  voiceSamples        VoiceSample[]
+  avatarConfig        AvatarConfig?
+  timeline            PersonaTimeline[]
+  documents           Document[]
+  documentChunks      DocumentChunk[]
+}
+
+model EnrollmentQuestion {
+  id         String            @id @default(uuid())
+  profileId  String
+  category   CognitiveCategory
+  question   String
+  answer     String?
+  askedAt    DateTime          @default(now())
+  answeredAt DateTime?
+  turnNumber Int
+
+  profile PersonaProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+}
+
+model CognitiveMemory {
+  id         String                         @id @default(uuid())
+  profileId  String
+  content    String
+  category   CognitiveCategory
+  embedding  Unsupported("vector(1536)")?
+  importance Float                          @default(0.5)
+  timestamp  DateTime                       @default(now())
+  metadata   Json?
+
+  profile PersonaProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+}
+
+model DocumentChunk {
+  id         String                         @id @default(uuid())
+  profileId  String
+  documentId String
+  content    String
+  chunkIndex Int
+  embedding  Unsupported("vector(1536)")?
+  metadata   Json?
+  createdAt  DateTime                       @default(now())
+
+  profile  PersonaProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  document Document       @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+  @@index([documentId])
+}
+
+model Document {
+  id          String   @id @default(uuid())
+  profileId   String
+  filename    String
+  mimeType    String
+  s3Key       String
+  chunkCount  Int      @default(0)
+  status      String   @default("processing")
+  createdAt   DateTime @default(now())
+
+  profile PersonaProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  chunks  DocumentChunk[]
+
+  @@index([profileId])
+}
+
+model ChatSession {
+  id           String    @id @default(uuid())
+  profileId    String
+  userId       String
+  startedAt    DateTime  @default(now())
+  endedAt      DateTime?
+  messageCount Int       @default(0)
+
+  profile  PersonaProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  user     User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages ChatMessage[]
+}
+
+model ChatMessage {
+  id        String      @id @default(uuid())
+  sessionId String
+  role      MessageRole
+  content   String
+  voiceUsed Boolean     @default(false)
+  timestamp DateTime    @default(now())
+
+  session ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+}
+
+model VoiceSample {
+  id              String   @id @default(uuid())
+  profileId       String
+  s3Key           String
+  durationSeconds Float
+  consentPhrase   Boolean  @default(false)
+  createdAt       DateTime @default(now())
+
+  profile PersonaProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+}
+
+model AvatarConfig {
+  id           String   @id @default(uuid())
+  profileId    String   @unique
+  baseImageKey String?
+  skin         String   @default("default")
+  mood         String   @default("neutral")
+  accessories  Json     @default("[]")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  profile PersonaProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+}
+
+model PersonaTimeline {
+  id            String   @id @default(uuid())
+  profileId     String
+  event         String
+  category      String
+  previousValue String?
+  newValue      String
+  detectedAt    DateTime @default(now())
+  source        String   @default("conversation")
+
+  profile PersonaProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+}
