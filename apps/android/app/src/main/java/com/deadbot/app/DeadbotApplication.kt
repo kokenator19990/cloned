@@ -2,7 +2,7 @@ package com.deadbot.app
 
 import android.app.Application
 
-class DeadbotApplication : Application() {
+class ClonedApplication : Application() {
     override fun onCreate() {
         super.onCreate()
     }

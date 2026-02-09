@@ -2,9 +2,9 @@
 import { cn } from '@/lib/utils';
 
 const statusColors = {
-  ENROLLING: 'bg-yellow-600/20 text-yellow-400 border-yellow-600/30',
-  ACTIVE: 'bg-green-600/20 text-green-400 border-green-600/30',
-  ARCHIVED: 'bg-gray-600/20 text-gray-400 border-gray-600/30',
+  ENROLLING: 'bg-amber-50 text-amber-700 border-amber-200',
+  ACTIVE: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+  ARCHIVED: 'bg-gray-50 text-gray-500 border-gray-200',
 };
 
 export function Badge({ status }: { status: 'ENROLLING' | 'ACTIVE' | 'ARCHIVED' }) {

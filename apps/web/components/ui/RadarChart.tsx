@@ -61,7 +61,7 @@ export function RadarChart({ data, size = 250 }: RadarChartProps) {
             y={p.y}
             textAnchor="middle"
             dominantBaseline="middle"
-            className="fill-deadbot-muted"
+            className="fill-cloned-muted"
             fontSize="10"
           >
             {label}
@@ -70,7 +70,7 @@ export function RadarChart({ data, size = 250 }: RadarChartProps) {
       })}
 
       {dataPoints.map((p, i) => (
-        <circle key={i} cx={p.x} cy={p.y} r="3" fill={data[CATEGORIES[i]]?.covered ? '#22c55e' : '#7c3aed'} />
+        <circle key={i} cx={p.x} cy={p.y} r="3" fill={data[CATEGORIES[i]]?.covered ? '#5A8A5E' : '#C08552'} />
       ))}
     </svg>
   );

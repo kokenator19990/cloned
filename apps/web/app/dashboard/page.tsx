@@ -38,11 +38,11 @@ export default function DashboardPage() {
     <div>
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold">Your Personas</h1>
-          <p className="text-deadbot-muted mt-1">Manage your cognitive profiles</p>
+          <h1 className="text-2xl font-bold text-cloned-text">Tus Recuerdos</h1>
+          <p className="text-cloned-muted mt-1">Perfiles de memoria que has creado</p>
         </div>
         <Button onClick={() => setShowCreate(true)}>
-          <Plus className="w-4 h-4" /> New Profile
+          <Plus className="w-4 h-4" /> Nuevo Perfil
         </Button>
       </div>
 
@@ -66,9 +66,9 @@ export default function DashboardPage() {
 
       {profiles.length === 0 ? (
         <Card className="text-center py-16">
-          <p className="text-deadbot-muted mb-4">No profiles yet. Create your first cognitive twin.</p>
+          <p className="text-cloned-muted mb-4">Aún no tienes perfiles. Crea tu primer recuerdo.</p>
           <Button onClick={() => setShowCreate(true)}>
-            <Plus className="w-4 h-4" /> Create First Profile
+            <Plus className="w-4 h-4" /> Crear Primer Perfil
           </Button>
         </Card>
       ) : (
@@ -98,15 +98,15 @@ export default function DashboardPage() {
                         deleteProfile(profile.id);
                       }
                     }}
-                    className="text-deadbot-muted hover:text-red-400 transition-colors p-1"
+                    className="text-cloned-muted hover:text-cloned-danger transition-colors p-1"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
 
                 <div className="space-y-2">
-                  <div className="text-sm text-deadbot-muted">
-                    {profile.currentInteractions} / {profile.minInteractions} interactions
+                  <div className="text-sm text-cloned-muted">
+                    {profile.currentInteractions} / {profile.minInteractions} interacciones
                   </div>
                   <ProgressBar value={Math.min(progress, 100)} />
                 </div>

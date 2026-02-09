@@ -61,7 +61,7 @@ export function Avatar({ name, skin = 'default', mood = 'neutral', accessories =
 
       {/* Speaking animation */}
       {speaking && (
-        <div className="absolute inset-0 rounded-full border-2 border-deadbot-accent animate-ping opacity-30" />
+        <div className="absolute inset-0 rounded-full border-2 border-cloned-accent animate-ping opacity-30" />
       )}
     </div>
   );

@@ -68,7 +68,7 @@ describe('API Integration Tests (e2e)', () => {
     it('should login with demo credentials', () => {
       return request(app.getHttpServer())
         .post('/auth/login')
-        .send({ email: 'demo@deadbot.app', password: 'password123' })
+        .send({ email: 'demo@cloned.app', password: 'password123' })
         .expect(201)
         .expect((res) => {
           expect(res.body.accessToken).toBeDefined();
@@ -79,7 +79,7 @@ describe('API Integration Tests (e2e)', () => {
     it('should reject invalid credentials', () => {
       return request(app.getHttpServer())
         .post('/auth/login')
-        .send({ email: 'demo@deadbot.app', password: 'wrong' })
+        .send({ email: 'demo@cloned.app', password: 'wrong' })
         .expect(401);
     });
   });
@@ -88,7 +88,7 @@ describe('API Integration Tests (e2e)', () => {
     it('should return profiles for authenticated user', async () => {
       const loginRes = await request(app.getHttpServer())
         .post('/auth/login')
-        .send({ email: 'demo@deadbot.app', password: 'password123' });
+        .send({ email: 'demo@cloned.app', password: 'password123' });
       accessToken = loginRes.body.accessToken;
 
       return request(app.getHttpServer())
@@ -109,7 +109,7 @@ describe('API Integration Tests (e2e)', () => {
     it('should return voice configuration', async () => {
       const loginRes = await request(app.getHttpServer())
         .post('/auth/login')
-        .send({ email: 'demo@deadbot.app', password: 'password123' });
+        .send({ email: 'demo@cloned.app', password: 'password123' });
 
       return request(app.getHttpServer())
         .get('/voice/config')

@@ -1,32 +1,27 @@
 package com.deadbot.app.ui.theme
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 
-private val DarkColorScheme = darkColorScheme(
-    primary = DeadbotPrimary,
-    secondary = DeadbotSecondary,
-    error = DeadbotError
-)
-
-private val LightColorScheme = lightColorScheme(
-    primary = DeadbotPrimary,
-    secondary = DeadbotSecondary,
-    error = DeadbotError
+private val ClonedLightColorScheme = lightColorScheme(
+    primary = ClonedPrimary,
+    primaryContainer = ClonedPrimaryVariant,
+    secondary = ClonedSecondary,
+    background = ClonedBackground,
+    surface = ClonedSurface,
+    onPrimary = ClonedOnPrimary,
+    onBackground = ClonedOnBackground,
+    onSurface = ClonedOnSurface,
+    error = ClonedError
 )
 
 @Composable
-fun DeadbotTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+fun ClonedTheme(
     content: @Composable () -> Unit
 ) {
-    val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
-
     MaterialTheme(
-        colorScheme = colorScheme,
+        colorScheme = ClonedLightColorScheme,
         typography = Typography,
         content = content
     )

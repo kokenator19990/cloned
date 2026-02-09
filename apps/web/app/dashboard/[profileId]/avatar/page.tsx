@@ -62,7 +62,7 @@ export default function AvatarPage() {
   if (!config) {
     return (
       <div className="flex items-center justify-center py-20">
-        <div className="w-8 h-8 border-2 border-deadbot-accent border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-cloned-accent border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -82,12 +82,12 @@ export default function AvatarPage() {
           accessories={accessories}
           size="xl"
         />
-        <p className="mt-4 text-sm text-deadbot-muted">
+        <p className="mt-4 text-sm text-cloned-muted">
           {config.skin} / {config.mood}
           {accessories.filter((a: string) => a !== 'none').length > 0 &&
             ` / ${accessories.filter((a: string) => a !== 'none').join(', ')}`}
         </p>
-        {saving && <p className="text-xs text-deadbot-accent mt-1">Saving...</p>}
+        {saving && <p className="text-xs text-cloned-accent mt-1">Saving...</p>}
       </Card>
 
       {/* Photo upload */}
@@ -97,7 +97,7 @@ export default function AvatarPage() {
           type="file"
           accept="image/*"
           onChange={handlePhotoUpload}
-          className="text-sm text-deadbot-muted file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-deadbot-accent file:text-white file:cursor-pointer"
+          className="text-sm text-cloned-muted file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-cloned-accent file:text-white file:cursor-pointer"
         />
       </Card>
 
@@ -112,8 +112,8 @@ export default function AvatarPage() {
               className={cn(
                 'rounded-xl p-4 text-center border-2 transition-colors',
                 config.skin === skin
-                  ? 'border-deadbot-accent bg-deadbot-accent/10'
-                  : 'border-deadbot-border hover:border-gray-600',
+                  ? 'border-cloned-accent bg-cloned-accent/10'
+                  : 'border-cloned-border hover:border-gray-600',
               )}
             >
               <div
@@ -137,8 +137,8 @@ export default function AvatarPage() {
               className={cn(
                 'rounded-xl p-4 text-center border-2 transition-colors',
                 config.mood === mood
-                  ? 'border-deadbot-accent bg-deadbot-accent/10'
-                  : 'border-deadbot-border hover:border-gray-600',
+                  ? 'border-cloned-accent bg-cloned-accent/10'
+                  : 'border-cloned-border hover:border-gray-600',
               )}
             >
               <span className="text-2xl block mb-1">{MOOD_EMOJIS[mood]}</span>
@@ -169,8 +169,8 @@ export default function AvatarPage() {
               className={cn(
                 'px-4 py-2 rounded-lg border-2 text-sm transition-colors',
                 accessories.includes(acc) || (acc === 'none' && accessories.length === 0)
-                  ? 'border-deadbot-accent bg-deadbot-accent/10'
-                  : 'border-deadbot-border hover:border-gray-600',
+                  ? 'border-cloned-accent bg-cloned-accent/10'
+                  : 'border-cloned-border hover:border-gray-600',
               )}
             >
               {acc}

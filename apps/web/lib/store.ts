@@ -63,26 +63,26 @@ export const useAuthStore = create<AuthState>((set) => ({
   loading: true,
   login: async (email, password) => {
     const { data } = await api.post('/auth/login', { email, password });
-    localStorage.setItem('deadbot_token', data.accessToken);
+    localStorage.setItem('cloned_token', data.accessToken);
     set({ token: data.accessToken, user: data.user });
   },
   register: async (email, password, displayName) => {
     const { data } = await api.post('/auth/register', { email, password, displayName });
-    localStorage.setItem('deadbot_token', data.accessToken);
+    localStorage.setItem('cloned_token', data.accessToken);
     set({ token: data.accessToken, user: data.user });
   },
   logout: () => {
-    localStorage.removeItem('deadbot_token');
+    localStorage.removeItem('cloned_token');
     set({ token: null, user: null });
   },
   loadFromStorage: async () => {
-    const token = localStorage.getItem('deadbot_token');
+    const token = localStorage.getItem('cloned_token');
     if (token) {
       try {
         const { data } = await api.get('/auth/me');
         set({ token, user: data, loading: false });
       } catch {
-        localStorage.removeItem('deadbot_token');
+        localStorage.removeItem('cloned_token');
         set({ loading: false });
       }
     } else {

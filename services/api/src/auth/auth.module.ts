@@ -10,7 +10,7 @@ import { LocalStrategy } from './local.strategy';
   imports: [
     PassportModule,
     JwtModule.register({
-      secret: process.env.JWT_SECRET || 'deadbot-dev-secret',
+      secret: process.env.JWT_SECRET || 'cloned-dev-secret',
       signOptions: { expiresIn: process.env.JWT_EXPIRY || '7d' },
     }),
   ],

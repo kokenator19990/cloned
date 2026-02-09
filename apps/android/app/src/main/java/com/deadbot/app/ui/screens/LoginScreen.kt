@@ -30,7 +30,7 @@ fun LoginScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text("Deadbot") })
+            TopAppBar(title = { Text("Cloned") })
         }
     ) { padding ->
         Column(

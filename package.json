@@ -1,8 +1,8 @@
 {
-  "name": "deadbot",
+  "name": "cloned",
   "version": "0.1.0",
   "private": true,
-  "description": "Cognitive identity simulation platform - interact with persistent cognitive profiles",
+  "description": "Preserva la esencia cognitiva de quienes amas - plataforma de simulación de identidad cognitiva",
   "scripts": {
     "dev": "turbo run dev",
     "dev:api": "cd services/api && pnpm exec nest start --watch",

@@ -3,20 +3,23 @@
 @tailwind utilities;
 
 :root {
-  --bg-primary: #0a0a0f;
-  --bg-card: #16161f;
-  --border: #2a2a3a;
-  --accent: #7c3aed;
+  --bg-primary: #FDFAF6;
+  --bg-card: #FFFFFF;
+  --border: #E8DFD3;
+  --accent: #C08552;
+  --accent-light: #D4A574;
+  --text: #2D2A26;
+  --muted: #8C8279;
 }
 
 body {
   background-color: var(--bg-primary);
-  color: #e2e8f0;
+  color: var(--text);
 }
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: #2a2a3a transparent;
+  scrollbar-color: #E8DFD3 transparent;
 }
 
 *::-webkit-scrollbar {
@@ -28,8 +31,12 @@ body {
 }
 
 *::-webkit-scrollbar-thumb {
-  background: #2a2a3a;
+  background: #E8DFD3;
   border-radius: 3px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: #D4C8B8;
 }
 
 @keyframes pulse-ring {
@@ -39,4 +46,27 @@ body {
 
 .animate-pulse-ring {
   animation: pulse-ring 1.5s ease-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+::selection {
+  background-color: #D4A574;
+  color: white;
 }

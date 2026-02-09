@@ -104,7 +104,7 @@ export default function EnrollmentPage() {
             Cognitive Enrollment {currentProfile ? `- ${currentProfile.name}` : ''}
           </h1>
           {progress && (
-            <span className="text-sm text-deadbot-accent-light font-medium">
+            <span className="text-sm text-cloned-accent-light font-medium">
               {progress.totalInteractions} / {progress.minRequired}
             </span>
           )}
@@ -120,8 +120,8 @@ export default function EnrollmentPage() {
                 key={cat}
                 className={`text-xs px-2.5 py-1 rounded-full border ${
                   data.covered
-                    ? 'bg-green-900/30 border-green-600/40 text-green-300'
-                    : 'bg-gray-800 border-deadbot-border text-deadbot-muted'
+                    ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
+                    : 'bg-cloned-soft border-cloned-border text-cloned-muted'
                 }`}
               >
                 {data.covered && <CheckCircle className="w-3 h-3 inline mr-1" />}
@@ -137,11 +137,11 @@ export default function EnrollmentPage() {
         {!started ? (
           <div className="flex items-center justify-center h-full">
             <div className="text-center">
-              <div className="w-24 h-24 rounded-full bg-deadbot-accent/20 border-2 border-deadbot-accent mx-auto mb-6 flex items-center justify-center">
+              <div className="w-24 h-24 rounded-full bg-cloned-accent/20 border-2 border-cloned-accent mx-auto mb-6 flex items-center justify-center">
                 <span className="text-4xl">🧠</span>
               </div>
               <h2 className="text-xl font-semibold mb-2">Ready to build your cognitive fingerprint?</h2>
-              <p className="text-deadbot-muted mb-6 max-w-md">
+              <p className="text-cloned-muted mb-6 max-w-md">
                 I&apos;ll ask you questions about how you think, what you value, and how you express yourself.
                 Minimum {progress?.minRequired || 50} interactions required.
               </p>
@@ -153,7 +153,7 @@ export default function EnrollmentPage() {
             {conversation.map((item, i) => (
               <div key={i}>
                 {item.category && (
-                  <div className="text-xs text-deadbot-muted mb-1 ml-1">
+                  <div className="text-xs text-cloned-muted mb-1 ml-1">
                     [{CATEGORY_LABELS[item.category] || item.category}]
                   </div>
                 )}
@@ -162,11 +162,11 @@ export default function EnrollmentPage() {
             ))}
             {loading && (
               <div className="flex justify-start">
-                <div className="bg-deadbot-card border border-deadbot-border rounded-2xl px-4 py-3 rounded-bl-md">
+                <div className="bg-white border border-cloned-border rounded-2xl px-4 py-3 rounded-bl-md">
                   <div className="flex gap-1.5">
-                    <div className="w-2 h-2 bg-deadbot-muted rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                    <div className="w-2 h-2 bg-deadbot-muted rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                    <div className="w-2 h-2 bg-deadbot-muted rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                    <div className="w-2 h-2 bg-cloned-muted rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                    <div className="w-2 h-2 bg-cloned-muted rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                    <div className="w-2 h-2 bg-cloned-muted rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
                   </div>
                 </div>
               </div>
@@ -178,8 +178,8 @@ export default function EnrollmentPage() {
 
       {/* Ready to activate */}
       {progress?.isReady && (
-        <div className="bg-green-900/30 border border-green-600/40 rounded-xl p-4 mb-4 text-center">
-          <p className="text-green-300 font-medium mb-2">
+        <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 mb-4 text-center">
+          <p className="text-emerald-700 font-medium mb-2">
             Profile ready! You have enough data to activate.
           </p>
           <div className="flex gap-3 justify-center">
@@ -196,7 +196,7 @@ export default function EnrollmentPage() {
         <form onSubmit={handleSubmit} className="flex gap-2">
           <button
             type="button"
-            className="p-3 rounded-xl bg-deadbot-card border border-deadbot-border text-deadbot-muted hover:text-deadbot-accent transition-colors"
+            className="p-3 rounded-xl bg-cloned-card border border-cloned-border text-cloned-muted hover:text-cloned-accent transition-colors"
             title="Voice input (coming soon)"
           >
             <Mic className="w-5 h-5" />
@@ -206,7 +206,7 @@ export default function EnrollmentPage() {
             value={answer}
             onChange={(e) => setAnswer(e.target.value)}
             placeholder="Type your answer..."
-            className="flex-1 bg-deadbot-card border border-deadbot-border rounded-xl px-4 py-3 text-deadbot-text outline-none focus:border-deadbot-accent transition-colors"
+            className="flex-1 bg-cloned-card border border-cloned-border rounded-xl px-4 py-3 text-cloned-text outline-none focus:border-cloned-accent transition-colors"
             disabled={loading}
           />
           <Button type="submit" disabled={!answer.trim() || loading}>

@@ -30,34 +30,34 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4">
+    <div className="min-h-screen bg-cloned-bg flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-purple-600 bg-clip-text text-transparent">
-            Create Account
+          <h1 className="font-display text-3xl font-bold text-cloned-text">
+            Crear Cuenta
           </h1>
-          <p className="text-deadbot-muted mt-2">Start building your cognitive twin</p>
+          <p className="text-cloned-muted mt-2">Empieza a preservar la esencia de quien amas</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-deadbot-card border border-deadbot-border rounded-xl p-8 space-y-5">
+        <form onSubmit={handleSubmit} className="bg-white border border-cloned-border rounded-2xl p-8 space-y-5 shadow-sm">
           {error && (
-            <div className="bg-red-900/30 border border-red-700/40 text-red-300 px-4 py-2 rounded-lg text-sm">
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-2 rounded-xl text-sm">
               {error}
             </div>
           )}
 
-          <Input label="Display Name" value={displayName} onChange={(e) => setDisplayName(e.target.value)} required />
+          <Input label="Nombre" value={displayName} onChange={(e) => setDisplayName(e.target.value)} required placeholder="Tu nombre" />
           <Input label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-          <Input label="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} />
+          <Input label="Contraseña" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} />
 
           <Button type="submit" loading={loading} className="w-full">
-            Create Account
+            Crear Cuenta
           </Button>
 
-          <p className="text-center text-sm text-deadbot-muted">
-            Already have an account?{' '}
-            <Link href="/auth/login" className="text-deadbot-accent-light hover:underline">
-              Sign In
+          <p className="text-center text-sm text-cloned-muted">
+            ¿Ya tienes cuenta?{' '}
+            <Link href="/auth/login" className="text-cloned-accent hover:underline">
+              Iniciar Sesión
             </Link>
           </p>
         </form>

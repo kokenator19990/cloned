@@ -7,7 +7,7 @@ import androidx.navigation.compose.rememberNavController
 import com.deadbot.app.ui.screens.*
 
 @Composable
-fun DeadbotNavigation() {
+fun ClonedNavigation() {
     val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination = "login") {

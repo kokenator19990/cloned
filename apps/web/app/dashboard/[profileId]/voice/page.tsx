@@ -100,12 +100,12 @@ export default function VoicePage() {
           <p className="text-sm text-green-300">Consent recorded. You can record more samples.</p>
         ) : (
           <div>
-            <p className="text-sm text-deadbot-muted mb-3">
+            <p className="text-sm text-cloned-muted mb-3">
               Please read the following phrase aloud to consent to voice modeling:
             </p>
-            <blockquote className="border-l-2 border-deadbot-accent pl-4 italic text-sm mb-4">
-              &quot;I consent to having my voice modeled and used by Deadbot for the purpose of
-              creating a cognitive profile simulation.&quot;
+            <blockquote className="border-l-2 border-cloned-accent pl-4 italic text-sm mb-4">
+              &quot;Consiento que mi voz sea modelada y utilizada por Cloned con el fin de
+              crear una simulación de perfil cognitivo.&quot;
             </blockquote>
             <Button onClick={recordConsent}>Record Consent</Button>
           </div>
@@ -115,7 +115,7 @@ export default function VoicePage() {
       {/* Recording section */}
       <Card className="mb-6">
         <h3 className="font-semibold mb-3">Record Voice Sample</h3>
-        <p className="text-sm text-deadbot-muted mb-4">
+        <p className="text-sm text-cloned-muted mb-4">
           Record voice samples to help build your voice profile. Speak naturally.
         </p>
         <div className="flex gap-3">
@@ -141,18 +141,18 @@ export default function VoicePage() {
       <Card>
         <h3 className="font-semibold mb-3">Voice Samples ({samples.length})</h3>
         {samples.length === 0 ? (
-          <p className="text-sm text-deadbot-muted">No voice samples yet.</p>
+          <p className="text-sm text-cloned-muted">No voice samples yet.</p>
         ) : (
           <div className="space-y-2">
             {samples.map((s: any) => (
-              <div key={s.id} className="flex items-center justify-between bg-gray-800 rounded-lg p-3">
+              <div key={s.id} className="flex items-center justify-between bg-cloned-soft rounded-lg p-3">
                 <div className="text-sm">
                   <span>{s.consentPhrase ? 'Consent' : 'Sample'}</span>
-                  <span className="text-deadbot-muted ml-2">
+                  <span className="text-cloned-muted ml-2">
                     {new Date(s.createdAt).toLocaleDateString()}
                   </span>
                 </div>
-                <span className="text-xs text-deadbot-muted">{s.durationSeconds?.toFixed(1)}s</span>
+                <span className="text-xs text-cloned-muted">{s.durationSeconds?.toFixed(1)}s</span>
               </div>
             ))}
           </div>

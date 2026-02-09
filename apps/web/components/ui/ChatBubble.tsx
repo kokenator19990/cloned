@@ -16,14 +16,14 @@ export function ChatBubble({ role, content, timestamp }: ChatBubbleProps) {
         className={cn(
           'max-w-[75%] rounded-2xl px-4 py-3',
           isUser
-            ? 'bg-deadbot-accent text-white rounded-br-md'
-            : 'bg-deadbot-card border border-deadbot-border text-deadbot-text rounded-bl-md',
-          role === 'SYSTEM' && 'bg-yellow-900/20 border-yellow-700/30 text-yellow-200 text-sm italic max-w-full',
+            ? 'bg-cloned-accent text-white rounded-br-md shadow-sm'
+            : 'bg-white border border-cloned-border text-cloned-text rounded-bl-md shadow-sm',
+          role === 'SYSTEM' && 'bg-amber-50 border-amber-200 text-amber-800 text-sm italic max-w-full',
         )}
       >
         <p className="whitespace-pre-wrap break-words">{content}</p>
         {timestamp && (
-          <p className={cn('text-xs mt-1', isUser ? 'text-purple-200' : 'text-deadbot-muted')}>
+            <p className={cn('text-xs mt-1', isUser ? 'text-white/70' : 'text-cloned-muted')}>
             {new Date(timestamp).toLocaleTimeString()}
           </p>
         )}

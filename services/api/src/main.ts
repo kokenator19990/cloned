@@ -20,7 +20,7 @@ async function bootstrap() {
   );
 
   const config = new DocumentBuilder()
-    .setTitle('Deadbot API')
+    .setTitle('Cloned API')
     .setDescription('Cognitive Identity Simulation Platform')
     .setVersion('0.1.0')
     .addBearerAuth()
@@ -31,7 +31,7 @@ async function bootstrap() {
 
   const port = process.env.PORT || 3001;
   await app.listen(port);
-  console.log(`Deadbot API running on http://localhost:${port}`);
+  console.log(`Cloned API running on http://localhost:${port}`);
   console.log(`Swagger docs at http://localhost:${port}/api/docs`);
 }
 

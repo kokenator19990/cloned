@@ -8,15 +8,25 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        deadbot: {
-          bg: '#0a0a0f',
-          card: '#16161f',
-          border: '#2a2a3a',
-          accent: '#7c3aed',
-          'accent-light': '#a78bfa',
-          text: '#e2e8f0',
-          muted: '#94a3b8',
+        cloned: {
+          bg: '#FDFAF6',
+          card: '#FFFFFF',
+          'card-alt': '#F8F2EB',
+          border: '#E8DFD3',
+          accent: '#C08552',
+          'accent-light': '#D4A574',
+          'accent-dark': '#9A6B3E',
+          text: '#2D2A26',
+          muted: '#8C8279',
+          soft: '#F5EDE3',
+          success: '#5A8A5E',
+          danger: '#C25B4A',
+          hero: '#FDF5EC',
         },
+      },
+      fontFamily: {
+        display: ['Georgia', 'Times New Roman', 'serif'],
+        body: ['Inter', 'system-ui', 'sans-serif'],
       },
     },
   },

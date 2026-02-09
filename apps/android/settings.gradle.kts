@@ -12,5 +12,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Deadbot"
+rootProject.name = "Cloned"
 include(":app")
