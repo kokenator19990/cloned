@@ -2,65 +2,246 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useAuthStore } from '@/lib/store';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
+import { UserPlus, Mail, Lock, User, AlertCircle, Eye, EyeOff } from 'lucide-react';
+import { ClonedLogo } from '@/components/ui/ClonedLogo';
 
 export default function RegisterPage() {
+  const router = useRouter();
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [displayName, setDisplayName] = useState('');
-  const [error, setError] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const register = useAuthStore((s) => s.register);
-  const router = useRouter();
+
+  const validateForm = (): boolean => {
+    if (!name.trim()) {
+      setError('El nombre es requerido');
+      return false;
+    }
+    if (!email.trim()) {
+      setError('El email es requerido');
+      return false;
+    }
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      setError('Email inválido');
+      return false;
+    }
+    if (password.length < 6) {
+      setError('La contraseña debe tener al menos 6 caracteres');
+      return false;
+    }
+    if (password !== confirmPassword) {
+      setError('Las contraseñas no coinciden');
+      return false;
+    }
+    return true;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError(null);
+
+    if (!validateForm()) return;
+
     setLoading(true);
     try {
-      await register(email, password, displayName);
+      const response = await fetch('http://localhost:3001/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ displayName: name, email, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Error al registrar usuario');
+      }
+
+      // Auto-login: guardar token
+      localStorage.setItem('token', data.accessToken);
+      
+      // Redirigir al dashboard
       router.push('/dashboard');
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Registration failed');
+    } catch (err) {
+      console.error('Registration error:', err);
+      setError(err instanceof Error ? err.message : 'Error al crear cuenta');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-cloned-bg flex items-center justify-center px-4">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <h1 className="font-display text-3xl font-bold text-cloned-text">
-            Crear Cuenta
-          </h1>
-          <p className="text-cloned-muted mt-2">Empieza a preservar la esencia de quien amas</p>
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-cloned-hero to-cloned-bg flex items-center justify-center px-6 py-12">
+      <div className="max-w-md w-full">
+        {/* Logo */}
+        <Link href="/" className="flex items-center justify-center gap-3 mb-8">
+          <ClonedLogo size={48} className="rounded-xl" />
+          <span className="font-display text-2xl font-bold text-cloned-text">Cloned</span>
+        </Link>
 
-        <form onSubmit={handleSubmit} className="bg-white border border-cloned-border rounded-2xl p-8 space-y-5 shadow-sm">
+        {/* Card */}
+        <div className="bg-white rounded-2xl shadow-xl p-8">
+          <div className="text-center mb-8">
+            <div className="w-14 h-14 rounded-full bg-cloned-accent/10 flex items-center justify-center mx-auto mb-4">
+              <UserPlus className="w-7 h-7 text-cloned-accent" />
+            </div>
+            <h1 className="font-display text-3xl font-bold text-cloned-text mb-2">
+              Crear Cuenta
+            </h1>
+            <p className="text-cloned-muted">
+              Guarda tus clones digitales permanentemente
+            </p>
+          </div>
+
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-2 rounded-xl text-sm">
-              {error}
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
+              <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+              <p className="text-sm text-red-800">{error}</p>
             </div>
           )}
 
-          <Input label="Nombre" value={displayName} onChange={(e) => setDisplayName(e.target.value)} required placeholder="Tu nombre" />
-          <Input label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-          <Input label="Contraseña" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} />
+          <form onSubmit={handleSubmit} className="space-y-5">
+            {/* Nombre */}
+            <div>
+              <label htmlFor="name" className="block text-sm font-medium text-cloned-text mb-2">
+                Nombre completo
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <User className="h-5 w-5 text-cloned-muted" />
+                </div>
+                <input
+                  id="name"
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="block w-full pl-10 pr-3 py-2.5 border border-cloned-border rounded-lg focus:ring-2 focus:ring-cloned-accent focus:border-transparent transition-all"
+                  placeholder="Juan Pérez"
+                  disabled={loading}
+                />
+              </div>
+            </div>
 
-          <Button type="submit" loading={loading} className="w-full">
-            Crear Cuenta
-          </Button>
+            {/* Email */}
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-cloned-text mb-2">
+                Email
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Mail className="h-5 w-5 text-cloned-muted" />
+                </div>
+                <input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="block w-full pl-10 pr-3 py-2.5 border border-cloned-border rounded-lg focus:ring-2 focus:ring-cloned-accent focus:border-transparent transition-all"
+                  placeholder="tu@email.com"
+                  disabled={loading}
+                />
+              </div>
+            </div>
 
-          <p className="text-center text-sm text-cloned-muted">
-            ¿Ya tienes cuenta?{' '}
-            <Link href="/auth/login" className="text-cloned-accent hover:underline">
-              Iniciar Sesión
-            </Link>
-          </p>
-        </form>
+            {/* Contraseña */}
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-cloned-text mb-2">
+                Contraseña
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Lock className="h-5 w-5 text-cloned-muted" />
+                </div>
+                <input
+                  id="password"
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="block w-full pl-10 pr-10 py-2.5 border border-cloned-border rounded-lg focus:ring-2 focus:ring-cloned-accent focus:border-transparent transition-all"
+                  placeholder="Mínimo 6 caracteres"
+                  disabled={loading}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-5 w-5 text-cloned-muted hover:text-cloned-text transition-colors" />
+                  ) : (
+                    <Eye className="h-5 w-5 text-cloned-muted hover:text-cloned-text transition-colors" />
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {/* Confirmar Contraseña */}
+            <div>
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-cloned-text mb-2">
+                Confirmar contraseña
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Lock className="h-5 w-5 text-cloned-muted" />
+                </div>
+                <input
+                  id="confirmPassword"
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="block w-full pl-10 pr-10 py-2.5 border border-cloned-border rounded-lg focus:ring-2 focus:ring-cloned-accent focus:border-transparent transition-all"
+                  placeholder="Repite tu contraseña"
+                  disabled={loading}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                >
+                  {showConfirmPassword ? (
+                    <EyeOff className="h-5 w-5 text-cloned-muted hover:text-cloned-text transition-colors" />
+                  ) : (
+                    <Eye className="h-5 w-5 text-cloned-muted hover:text-cloned-text transition-colors" />
+                  )}
+                </button>
+              </div>
+              {confirmPassword && password !== confirmPassword && (
+                <p className="mt-1.5 text-sm text-red-600">Las contraseñas no coinciden</p>
+              )}
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-3 bg-cloned-accent hover:bg-cloned-accent-dark text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? 'Creando cuenta...' : 'Crear cuenta'}
+            </button>
+          </form>
+
+          {/* Login Link */}
+          <div className="mt-6 text-center">
+            <p className="text-sm text-cloned-muted">
+              ¿Ya tienes cuenta?{' '}
+              <Link href="/auth/login" className="text-cloned-accent hover:text-cloned-accent-dark font-medium">
+                Inicia sesión
+              </Link>
+            </p>
+          </div>
+        </div>
+
+        {/* Back to Home */}
+        <div className="mt-6 text-center">
+          <Link href="/" className="text-sm text-cloned-muted hover:text-cloned-text transition-colors">
+            ← Volver al inicio
+          </Link>
+        </div>
       </div>
     </div>
   );

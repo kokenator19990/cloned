@@ -33,12 +33,14 @@ enum MessageRole {
 }
 
 model User {
-  id           String   @id @default(uuid())
-  email        String   @unique
+  id           String    @id @default(uuid())
+  email        String    @unique
   passwordHash String
   displayName  String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  isGuest      Boolean   @default(false)
+  expiresAt    DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 
   profiles     PersonaProfile[]
   chatSessions ChatSession[]

@@ -1,5 +1,6 @@
 import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
 
@@ -21,7 +22,7 @@ export class AuthService {
       data: { email, passwordHash, displayName },
     });
 
-    const token = this.jwtService.sign({ sub: user.id, email: user.email });
+    const token = this.jwtService.sign({ sub: user.id, email: user.email, name: user.displayName });
 
     return {
       accessToken: token,
@@ -47,7 +48,7 @@ export class AuthService {
 
   async login(email: string, password: string) {
     const user = await this.validateUser(email, password);
-    const token = this.jwtService.sign({ sub: user.id, email: user.email });
+    const token = this.jwtService.sign({ sub: user.id, email: user.email, name: user.displayName });
 
     return {
       accessToken: token,
@@ -83,5 +84,59 @@ export class AuthService {
     await this.prisma.user.delete({ where: { id: userId } });
 
     return { deleted: true };
+  }
+
+  async createGuestSession() {
+    const guestId = `guest-${Date.now()}-${Math.random().toString(36).substring(7)}`;
+    const expiresAt = new Date(Date.now() + 20 * 60 * 1000); // 20 minutes
+
+    const user = await this.prisma.user.create({
+      data: {
+        email: `${guestId}@guest.cloned.local`,
+        passwordHash: await bcrypt.hash(Math.random().toString(36), 10),
+        displayName: `Invitado ${new Date().toLocaleString('es-ES', { hour: '2-digit', minute: '2-digit' })}`,
+        isGuest: true,
+        expiresAt,
+      },
+    });
+
+    const token = this.jwtService.sign({
+      sub: user.id,
+      email: user.email,
+      name: user.displayName,
+      isGuest: true,
+      expiresAt: expiresAt.toISOString(),
+    });
+
+    return {
+      accessToken: token,
+      user: {
+        id: user.id,
+        email: user.email,
+        displayName: user.displayName,
+        isGuest: true,
+        expiresAt: expiresAt.toISOString(),
+        createdAt: user.createdAt.toISOString(),
+        updatedAt: user.updatedAt.toISOString(),
+      },
+    };
+  }
+
+  @Cron(CronExpression.EVERY_5_MINUTES)
+  async cleanupExpiredGuests() {
+    const now = new Date();
+    const expiredGuests = await this.prisma.user.findMany({
+      where: {
+        isGuest: true,
+        expiresAt: { lte: now },
+      },
+    });
+
+    for (const guest of expiredGuests) {
+      await this.prisma.personaProfile.deleteMany({ where: { userId: guest.id } });
+      await this.prisma.user.delete({ where: { id: guest.id } });
+    }
+
+    return { deletedCount: expiredGuests.length };
   }
 }

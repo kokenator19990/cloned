@@ -47,10 +47,20 @@ export class AuthController {
     return this.authService.getUser(req.user.userId);
   }
 
+  @Post('guest')
+  async createGuest() {
+    return this.authService.createGuestSession();
+  }
+
   @Delete('account')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   async deleteAccount(@Request() req: any) {
     return this.authService.deleteAccount(req.user.userId);
+  }
+
+  @Post('cleanup-guests')
+  async cleanupGuests() {
+    return this.authService.cleanupExpiredGuests();
   }
 }

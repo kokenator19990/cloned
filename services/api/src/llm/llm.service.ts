@@ -65,16 +65,16 @@ export class LlmService {
 
       const recentQs = previousQuestions.slice(-5).join('\n- ');
 
-      const prompt = `You are generating enrollment questions for a cognitive profile system.
-Target category: ${targetCategory}
-Coverage gaps: ${gaps}
-Recent questions already asked:
+      const prompt = `Estás generando preguntas de enrollment para un sistema de perfil cognitivo. Responde SIEMPRE en español.
+Categoría objetivo: ${targetCategory}
+Brechas de cobertura: ${gaps}
+Preguntas recientes ya realizadas:
 - ${recentQs}
 
-Generate ONE new, deep, thought-provoking question for the ${targetCategory} category.
-The question should reveal the person's genuine way of thinking, not just surface-level preferences.
-Do NOT repeat any previous question. Be creative and specific.
-Return ONLY the question, nothing else.`;
+Genera UNA nueva pregunta profunda y provocadora para la categoría ${targetCategory}.
+La pregunta debe revelar la manera genuina de pensar de la persona, no solo preferencias superficiales.
+NO repitas ninguna pregunta anterior. Sé creativo y específico.
+Devuelve SOLO la pregunta en español, nada más.`;
 
       const result = await this.generateResponse(prompt, [], { maxTokens: 200 });
       return result.trim() || null;
