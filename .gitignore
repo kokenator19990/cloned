@@ -11,4 +11,4 @@ coverage/
 build/
 *.apk
 *.aab
-local.properties
+local.properties*.tsbuildinfo
