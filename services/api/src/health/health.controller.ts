@@ -20,7 +20,7 @@ export class HealthController {
       await this.prisma.$queryRaw`SELECT 1`;
       checks.database = 'ok';
     } catch (error) {
-      checks.database = 'error';
+      checks.database = 'unavailable';
     }
 
     // Redis check
@@ -50,7 +50,7 @@ export class HealthController {
         signal: AbortSignal.timeout(2000),
         method: 'GET',
       });
-      checks.minio = response.ok ? 'ok' : 'error';
+      checks.minio = response.ok ? 'ok' : 'unavailable';
     } catch (error) {
       checks.minio = 'unavailable';
     }
