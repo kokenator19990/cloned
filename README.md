@@ -120,6 +120,11 @@ Password: password123
 | LLM_API_KEY | ollama | API key for LLM |
 | LLM_MODEL | llama3 | Model name |
 | PORT | 3001 | API port |
+| VOICE_CLONING_ENABLED | false | Enable/disable voice features |
+| STT_API_URL | http://localhost:8000/v1/audio/transcriptions | Speech-to-Text endpoint |
+| TTS_API_URL | http://localhost:8000/v1/audio/speech | Text-to-Speech endpoint |
+| EMBEDDING_MODEL | text-embedding-3-small | Embedding model for RAG |
+| EMBEDDINGS_ENABLED | true | Enable/disable embeddings |
 
 ### Web (apps/web/.env)
 
@@ -149,6 +154,15 @@ Like building a fingerprint pattern, Deadbot builds a "cognitive fingerprint" th
 5. Profile gets a **Coverage Map** showing which areas are explored
 6. Profile gets a **Consistency Score** measuring coherence
 
+### RAG Document Upload
+
+Enhance profiles with document-based knowledge:
+- Upload PDF, TXT, or DOCX files to build a knowledge base
+- Automatic text chunking and embedding generation
+- Vector similarity search using pgvector
+- Relevant document context included in chat responses
+- Keyword fallback when embeddings unavailable
+
 ### Chat (Post-Enrollment)
 
 Once activated, you can chat with the persona. The system:
@@ -163,6 +177,9 @@ Once activated, you can chat with the persona. The system:
 - Record voice samples (Web Audio API / MediaRecorder)
 - Consent recording required before voice modeling
 - STT/TTS interface ready (pluggable providers)
+- Configure external STT/TTS services via environment variables
+- Graceful fallback when voice services unavailable
+- Voice capabilities endpoint for frontend configuration
 
 ### Avatar
 
@@ -175,6 +192,7 @@ Once activated, you can chat with the persona. The system:
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
+| GET | /health | Health check with service status |
 | POST | /auth/register | Register new user |
 | POST | /auth/login | Login |
 | GET | /auth/me | Get current user |
@@ -192,9 +210,14 @@ Once activated, you can chat with the persona. The system:
 | GET | /chat/:profileId/sessions | List sessions |
 | GET | /chat/sessions/:id/messages | Get messages |
 | POST | /chat/sessions/:id/messages | Send message |
+| POST | /documents/:profileId/upload | Upload document for RAG |
+| GET | /documents/:profileId | List profile documents |
+| GET | /documents/detail/:documentId | Get document details |
+| DELETE | /documents/:documentId | Delete document |
 | POST | /voice/:profileId/upload | Upload voice sample |
 | POST | /voice/:profileId/consent | Record consent |
 | GET | /voice/:profileId/samples | List samples |
+| GET | /voice/config | Get voice service capabilities |
 | GET | /avatar/:profileId/config | Get avatar config |
 | PUT | /avatar/:profileId/config | Update avatar |
 | POST | /avatar/:profileId/upload | Upload photo |
@@ -233,6 +256,8 @@ The Android project is in `apps/android/`. To build:
 - [x] Embedding-based memory retrieval (pgvector)
 - [x] WebSocket streaming for chat (Socket.IO)
 - [x] Browser-native STT/TTS (Web Speech API)
+- [x] Health check endpoint for monitoring
+- [x] Comprehensive test suite (47 tests)
 - [ ] Voice cloning integration (Coqui/XTTS)
 - [ ] Cognitive timeline visualization
 
