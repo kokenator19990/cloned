@@ -2,7 +2,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useLocalStore } from '@/lib/localStore';
-import { Plus, MessageCircle, Trash2, User } from 'lucide-react';
+import { Plus, MessageCircle, Trash2, User, Mic } from 'lucide-react';
 import Link from 'next/link';
 
 export default function ClonesPage() {
@@ -75,7 +75,12 @@ export default function ClonesPage() {
                                 <div className="flex-1 min-w-0">
                                     <h3 className="text-lg font-display font-medium">{clone.name}</h3>
                                     <p className="text-sm text-charcoal/50">
-                                        {clone.answers.length} respuestas · {new Date(clone.createdAt).toLocaleDateString('es')}
+                                        {clone.answers.length} respuestas
+                                        {(clone.voiceSamples || 0) > 0 && (
+                                            <span className="inline-flex items-center gap-1 ml-1.5 text-primary"><Mic className="w-3 h-3" />{clone.voiceSamples}</span>
+                                        )}
+                                        <span className="mx-1">·</span>
+                                        {new Date(clone.createdAt).toLocaleDateString('es')}
                                     </p>
                                 </div>
 

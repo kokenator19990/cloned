@@ -1,8 +1,8 @@
 'use client';
-import { useEffect, useState, useRef, useMemo } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useLocalStore, type CloneProfile } from '@/lib/localStore';
-import { ArrowLeft, Send, User } from 'lucide-react';
+import { ArrowLeft, Send, User, Volume2, VolumeX } from 'lucide-react';
 import Link from 'next/link';
 
 interface Message {
@@ -10,20 +10,21 @@ interface Message {
     role: 'user' | 'clone';
     content: string;
     timestamp: Date;
+    audioUrl?: string; // original voice recording if available
 }
 
-// Simple response generator based on stored Q&A answers
-function generateResponse(clone: CloneProfile, userMessage: string): string {
+// Response generator based on stored Q&A answers
+function generateResponse(clone: CloneProfile, userMessage: string): { text: string; audioUrl?: string } {
     const msg = userMessage.toLowerCase();
     const answers = clone.answers;
 
     if (answers.length === 0) {
-        return `Hola, soy ${clone.name}. Aún no tengo mucha información para conversar. ¡Intenta hacerme preguntas!`;
+        return { text: `Hola, soy ${clone.name}. Aún no tengo mucha información para conversar.` };
     }
 
-    // Try to find a relevant answer based on keyword matching
+    // Try keyword matching
     const keywords = msg.split(/\s+/).filter((w) => w.length > 3);
-    let bestMatch: { score: number; answer: string } | null = null;
+    let bestMatch: { score: number; answer: string; audioUrl?: string } | null = null;
 
     for (const qa of answers) {
         const combined = (qa.question + ' ' + qa.answer).toLowerCase();
@@ -32,29 +33,28 @@ function generateResponse(clone: CloneProfile, userMessage: string): string {
             if (combined.includes(kw)) score++;
         }
         if (score > 0 && (!bestMatch || score > bestMatch.score)) {
-            bestMatch = { score, answer: qa.answer };
+            bestMatch = { score, answer: qa.answer, audioUrl: qa.audioUrl };
         }
     }
 
     if (bestMatch && bestMatch.score >= 1) {
-        // Add some personality variation
-        const prefixes = [
-            '', 'Mira, ', 'Te cuento, ', 'A ver... ', 'Buena pregunta. ',
-            'Hmm, ', 'Pues, ', 'Sabes qué, ', 'Déjame pensar... ',
-        ];
+        const prefixes = ['', 'Mira, ', 'Te cuento, ', 'A ver... ', 'Buena pregunta. ', 'Hmm, ', 'Pues, ', 'Sabes qué, '];
         const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
-        return prefix + bestMatch.answer;
+        return { text: prefix + bestMatch.answer, audioUrl: bestMatch.audioUrl };
     }
 
-    // Fallback: random answer from stored data
+    // Fallback: random answer
     const randomQA = answers[Math.floor(Math.random() * answers.length)];
     const fallbacks = [
         `No estoy seguro de eso, pero te cuento algo: ${randomQA.answer}`,
-        `Mmm, no sé bien qué decirte sobre eso. Pero algo que sí sé es que ${randomQA.answer.toLowerCase()}`,
+        `Mmm, no sé bien qué decirte. Pero algo que sí sé es que ${randomQA.answer.toLowerCase()}`,
         `Interesante pregunta. Yo más bien pienso en cosas como: ${randomQA.answer}`,
-        `No tengo una respuesta exacta, pero me recuerda a cuando me preguntaron "${randomQA.question}" y respondí: "${randomQA.answer}"`,
+        `Me recuerda a cuando me preguntaron "${randomQA.question}" y respondí: "${randomQA.answer}"`,
     ];
-    return fallbacks[Math.floor(Math.random() * fallbacks.length)];
+    return {
+        text: fallbacks[Math.floor(Math.random() * fallbacks.length)],
+        audioUrl: randomQA.audioUrl,
+    };
 }
 
 export default function ChatPage() {
@@ -66,8 +66,8 @@ export default function ChatPage() {
     const [messages, setMessages] = useState<Message[]>([]);
     const [input, setInput] = useState('');
     const [isTyping, setIsTyping] = useState(false);
+    const [ttsEnabled, setTtsEnabled] = useState(true);
     const messagesEndRef = useRef<HTMLDivElement>(null);
-    const inputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
         loadClones();
@@ -78,21 +78,42 @@ export default function ChatPage() {
     // Welcome message
     useEffect(() => {
         if (clone && messages.length === 0) {
-            setMessages([
-                {
-                    id: 'welcome',
-                    role: 'clone',
-                    content: `¡Hola! Soy ${clone.name}. Pregúntame lo que quieras, voy a responder con todo lo que sé de mí.`,
-                    timestamp: new Date(),
-                },
-            ]);
+            const welcomeMsg: Message = {
+                id: 'welcome',
+                role: 'clone',
+                content: `¡Hola! Soy ${clone.name}. Pregúntame lo que quieras — voy a responderte con mi propia voz y estilo.`,
+                timestamp: new Date(),
+            };
+            setMessages([welcomeMsg]);
+            // Speak the welcome message
+            if (ttsEnabled) speakText(welcomeMsg.content);
         }
-    }, [clone, messages.length]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [clone]);
 
-    // Auto-scroll
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages]);
+
+    // ── TTS: Speak text aloud ──
+    const speakText = (text: string) => {
+        if (!ttsEnabled || typeof window === 'undefined') return;
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'es-ES';
+        utterance.rate = 0.95;
+        utterance.pitch = 1;
+        const voices = window.speechSynthesis.getVoices();
+        const spanishVoice = voices.find((v) => v.lang.startsWith('es'));
+        if (spanishVoice) utterance.voice = spanishVoice;
+        window.speechSynthesis.speak(utterance);
+    };
+
+    // ── Play original voice recording ──
+    const playAudio = (audioUrl: string) => {
+        const audio = new Audio(audioUrl);
+        audio.play().catch(() => { });
+    };
 
     const handleSend = (e: React.FormEvent) => {
         e.preventDefault();
@@ -109,18 +130,25 @@ export default function ChatPage() {
         setInput('');
         setIsTyping(true);
 
-        // Simulate typing delay
         const delay = 800 + Math.random() * 1200;
         setTimeout(() => {
             const response = generateResponse(clone, userInput);
             const cloneMsg: Message = {
                 id: crypto.randomUUID(),
                 role: 'clone',
-                content: response,
+                content: response.text,
                 timestamp: new Date(),
+                audioUrl: response.audioUrl,
             };
             setMessages((prev) => [...prev, cloneMsg]);
             setIsTyping(false);
+
+            // Play original voice if available, otherwise TTS
+            if (response.audioUrl) {
+                playAudio(response.audioUrl);
+            } else {
+                speakText(response.text);
+            }
         }, delay);
     };
 
@@ -154,37 +182,85 @@ export default function ChatPage() {
                         </div>
                     )}
                 </div>
-                <div>
+                <div className="flex-1">
                     <h2 className="font-display font-medium text-lg leading-tight">Hablando con {clone.name}</h2>
-                    <p className="text-xs text-charcoal/40">{clone.answers.length} recuerdos</p>
+                    <p className="text-xs text-charcoal/40">
+                        {clone.answers.length} recuerdos · {clone.voiceSamples} grabaciones de voz
+                    </p>
                 </div>
+                {/* TTS toggle */}
+                <button
+                    onClick={() => {
+                        setTtsEnabled(!ttsEnabled);
+                        if (ttsEnabled) window.speechSynthesis.cancel();
+                    }}
+                    className={`p-2 rounded-full transition-colors ${ttsEnabled ? 'bg-primary/10 text-primary' : 'bg-charcoal/5 text-charcoal/30'
+                        }`}
+                >
+                    {ttsEnabled ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5" />}
+                </button>
             </div>
 
             {/* Messages */}
             <div className="flex-1 overflow-y-auto px-4 py-6 space-y-4">
                 {messages.map((msg) => (
-                    <div
-                        key={msg.id}
-                        className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                    >
-                        <div
-                            className={`max-w-[80%] px-5 py-3 rounded-2xl text-[15px] leading-relaxed ${msg.role === 'user'
-                                    ? 'bg-gradient-to-br from-[#1313ec] to-[#6366f1] text-white rounded-br-md'
-                                    : 'bg-white border border-charcoal/5 text-charcoal rounded-bl-md shadow-sm'
-                                }`}
-                        >
-                            {msg.content}
+                    <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                        <div className={`max-w-[80%] ${msg.role === 'user' ? '' : 'flex gap-3'}`}>
+                            {msg.role === 'clone' && (
+                                <div className="w-8 h-8 rounded-full overflow-hidden bg-charcoal/5 flex-shrink-0 mt-1">
+                                    {clone.photoUrl ? (
+                                        // eslint-disable-next-line @next/next/no-img-element
+                                        <img src={clone.photoUrl} alt="" className="w-full h-full object-cover" />
+                                    ) : (
+                                        <div className="w-full h-full flex items-center justify-center">
+                                            <User className="w-4 h-4 text-charcoal/30" />
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+                            <div>
+                                <div
+                                    className={`px-5 py-3 rounded-2xl text-[15px] leading-relaxed ${msg.role === 'user'
+                                            ? 'bg-gradient-to-br from-[#1313ec] to-[#6366f1] text-white rounded-br-md'
+                                            : 'bg-white border border-charcoal/5 text-charcoal rounded-bl-md shadow-sm'
+                                        }`}
+                                >
+                                    {msg.content}
+                                </div>
+                                {/* Play original voice */}
+                                {msg.role === 'clone' && msg.audioUrl && (
+                                    <button
+                                        onClick={() => playAudio(msg.audioUrl!)}
+                                        className="mt-1 flex items-center gap-1 text-xs text-primary/60 hover:text-primary transition-colors ml-1"
+                                    >
+                                        <Volume2 className="w-3 h-3" />
+                                        Escuchar voz original
+                                    </button>
+                                )}
+                            </div>
                         </div>
                     </div>
                 ))}
 
                 {isTyping && (
                     <div className="flex justify-start">
-                        <div className="bg-white border border-charcoal/5 px-5 py-3 rounded-2xl rounded-bl-md shadow-sm">
-                            <div className="flex gap-1.5">
-                                <span className="w-2 h-2 bg-charcoal/30 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                                <span className="w-2 h-2 bg-charcoal/30 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                                <span className="w-2 h-2 bg-charcoal/30 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                        <div className="flex gap-3">
+                            <div className="w-8 h-8 rounded-full overflow-hidden bg-charcoal/5 flex-shrink-0 mt-1">
+                                {clone.photoUrl ? (
+                                    // eslint-disable-next-line @next/next/no-img-element
+                                    <img src={clone.photoUrl} alt="" className="w-full h-full object-cover" />
+                                ) : (
+                                    <div className="w-full h-full flex items-center justify-center">
+                                        <User className="w-4 h-4 text-charcoal/30" />
+                                    </div>
+                                )}
+                            </div>
+                            <div className="bg-white border border-charcoal/5 px-5 py-3 rounded-2xl rounded-bl-md shadow-sm">
+                                <div className="flex gap-1.5">
+                                    <span className="w-2 h-2 bg-charcoal/30 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                                    <span className="w-2 h-2 bg-charcoal/30 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                                    <span className="w-2 h-2 bg-charcoal/30 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -193,13 +269,9 @@ export default function ChatPage() {
             </div>
 
             {/* Input */}
-            <form
-                onSubmit={handleSend}
-                className="px-4 py-4 border-t border-charcoal/5 bg-white/80 backdrop-blur-md"
-            >
+            <form onSubmit={handleSend} className="px-4 py-4 border-t border-charcoal/5 bg-white/80 backdrop-blur-md">
                 <div className="flex items-center gap-3 max-w-2xl mx-auto">
                     <input
-                        ref={inputRef}
                         type="text"
                         value={input}
                         onChange={(e) => setInput(e.target.value)}

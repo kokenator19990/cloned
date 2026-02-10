@@ -6,6 +6,8 @@ export interface QA {
     question: string;
     answer: string;
     category: string;
+    audioUrl?: string;  // base64 data URL of voice recording
+    isVoice?: boolean;  // true if answered by voice
 }
 
 export interface CloneProfile {
@@ -15,6 +17,7 @@ export interface CloneProfile {
     answers: QA[];
     createdAt: string;
     status: 'creating' | 'ready';
+    voiceSamples: number; // count of voice-recorded answers
 }
 
 interface LocalState {
@@ -61,6 +64,7 @@ export const useLocalStore = create<LocalState>((set, get) => ({
             answers: [],
             createdAt: new Date().toISOString(),
             status: 'creating',
+            voiceSamples: 0,
         };
         const updated = [...get().clones, clone];
         set({ clones: updated });
@@ -78,7 +82,13 @@ export const useLocalStore = create<LocalState>((set, get) => ({
 
     addAnswer: (id: string, qa: QA) => {
         const updated = get().clones.map((c) =>
-            c.id === id ? { ...c, answers: [...c.answers, qa] } : c,
+            c.id === id
+                ? {
+                    ...c,
+                    answers: [...c.answers, qa],
+                    voiceSamples: c.voiceSamples + (qa.isVoice ? 1 : 0),
+                }
+                : c,
         );
         set({ clones: updated });
         persist(updated);
