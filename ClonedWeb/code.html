@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1313ec",
+                        "background-light": "#fdfbf7",
+                        "background-dark": "#101022",
+                        "charcoal": "#333333",
+                    },
+                    fontFamily: {
+                        "display": ["Newsreader", "serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        :root {
+            --cream: #fdfbf7;
+            --charcoal: #333333;
+        }
+        body {
+            background-color: var(--cream);
+            color: var(--charcoal);
+        }
+        .polaroid-shadow {
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.06);
+        }
+        .gradient-btn {
+            background: linear-gradient(135deg, #1313ec 0%, #6366f1 100%);
+        }
+        .horizontal-scroll {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .horizontal-scroll::-webkit-scrollbar {
+            display: none;
+        }
+        .scroll-item {
+            scroll-snap-align: center;
+            flex: 0 0 auto;
+        }
+    </style>
+<title>Cloned - Elegant Landing Variant 1</title>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-display bg-background-light dark:bg-background-dark text-charcoal dark:text-gray-100 selection:bg-primary/20">
+<nav class="px-6 py-6 flex justify-between items-center sticky top-0 bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-md z-50">
+<div class="text-2xl font-semibold tracking-tight italic">Cloned</div>
+<div class="flex items-center gap-4">
+<a class="text-xs uppercase tracking-widest font-bold hidden sm:block" href="#">Login</a>
+<button class="w-10 h-10 flex items-center justify-center rounded-full bg-charcoal/5 dark:bg-white/5">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+</nav>
+<header class="relative px-6 pt-6 pb-12">
+<div class="max-w-screen-xl mx-auto flex flex-col gap-8">
+<div class="z-10">
+<h1 class="text-5xl leading-[1.05] font-medium mb-6">
+                Vuelve a conversar con quien <span class="italic text-primary/80">extrañas</span>
+</h1>
+<p class="text-lg leading-relaxed text-charcoal/70 dark:text-gray-400 mb-8 max-w-[85%]">
+                Una experiencia diseñada para preservar la esencia, la voz y los recuerdos más profundos a través de una IA empática.
+            </p>
+<button class="gradient-btn text-white px-8 py-4 rounded-full font-medium shadow-xl shadow-primary/20 flex items-center gap-3 w-fit">
+                Comenzar mi Legado
+                <span class="material-symbols-outlined text-lg">arrow_forward</span>
+</button>
+</div>
+<div class="relative h-[450px] w-full rounded-2xl overflow-hidden shadow-2xl">
+<img alt="Family hug soft focus" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAabIpBVnueefUD7yEhY4YJm5vYXnILrebzaSU40mB7qwgm5OeAlgeFbc8F2ZaHXC1VqY2iCVdmbCErysG73GLvGf6faoi0YRexGgIlmDXi0sfvK03S34_gFpb_-bKC4xanExwciTrXA0brXE2PYG3YIML4tXkH4BdQ4iSez9QxDJIEoGRVTN-hy3I6wu11HClpAUTBNlDImeqsP-dqpIUmc7np_c6EeB_khc_InnaByjT5xXeVPO2vlRLeMRZDAxi6oPujQkiJNaQ"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background-light/40 dark:from-background-dark/40 via-transparent to-transparent"></div>
+</div>
+</div>
+</header>
+<section class="py-20 overflow-hidden">
+<div class="px-6 mb-12">
+<span class="text-[10px] uppercase tracking-[0.3em] font-bold text-primary mb-3 block">Recuerdos</span>
+<h2 class="text-3xl font-light italic">Historias que perduran</h2>
+</div>
+<div class="horizontal-scroll gap-6 px-6 pb-10">
+<div class="scroll-item w-72 rotate-[-1.5deg]">
+<div class="bg-white p-4 pb-12 rounded-sm shadow-xl polaroid-shadow border border-gray-100">
+<div class="aspect-[4/5] bg-gray-100 overflow-hidden rounded-[2px]">
+<img alt="Vintage family photo" class="w-full h-full object-cover grayscale-[10%]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDILwAmJL1zePBDo_Rz2DagIfakK0Nt3rnvVeDzKSdinLloyLKJy6VTKHKLUaSA4C8PkRfvr5W-T1HSB5oT28EakboZ74GEuXFNt3mtkEybpS7RNW4K-Cb9vbfHzvWW7_wxcXM32DDQdkXvQVUNe7dybxLoFHq6uFwFR6_PazbRLcMkGjFVBdAvvITdCTdcYeDXfMUuaQBDZXAJfnQXO9yzjRdQl8tGgJgpNFMOQV7IUdKnkAW4uQp97Bm-W1kU5FXU1vK79DQtOyE"/>
+</div>
+<div class="mt-8 font-display italic text-charcoal/50 text-base text-center">
+                    "Aquel verano eterno"
+                </div>
+</div>
+</div>
+<div class="scroll-item w-72 rotate-[2deg] mt-4">
+<div class="bg-white p-4 pb-12 rounded-sm shadow-xl polaroid-shadow border border-gray-100">
+<div class="aspect-[4/5] bg-gray-100 overflow-hidden rounded-[2px]">
+<img alt="Elderly hands" class="w-full h-full object-cover grayscale-[10%]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA1NoJRnb6_EWRV8opWXCi19h98Vs1UcNHq7n1MMTg0QcGUCzAEjgQq_UlUTcmbIHkHT_tfvkbKMTZlyWgsw-qiPvl5DZZyIHiZDiDR4NFKOQ9BtFkoWpxCO-WDcbEP2S_49ivaHqWMR2FFvqXwWizKKqQAbX9wS-p_6DWwrS-xviKq3UUeH0WRYq2X-jBPKN-9iue921rlt5sLHH3ZU2uS4gO1vxnsKKvcC479YufjIPNC3YwN4pV2K3ArnY2qcbAdIewzoR5x-34"/>
+</div>
+<div class="mt-8 font-display italic text-charcoal/50 text-base text-center">
+                    "Sabiduría en silencio"
+                </div>
+</div>
+</div>
+<div class="scroll-item w-72 rotate-[-1deg] mt-2">
+<div class="bg-white p-4 pb-12 rounded-sm shadow-xl polaroid-shadow border border-gray-100">
+<div class="aspect-[4/5] bg-gray-100 overflow-hidden rounded-[2px]">
+<img alt="Soft editorial portrait" class="w-full h-full object-cover grayscale-[10%]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC_7xO6jcb_YXrIzVbTsZ_2RhBLBDhbdqsjTaFsH0uaGaS9Aw_g76uzZQczLEELaYjfl9YLSjzYftOu2QKy2WbmWyOHwGGMQmzGBd7nZPLf-bU1b0rqEqshz_eHZRPUekyU6I3BbSFWwAmnFRl379n7lr3ux9selqdrdpWATp8A0Pborq_YXdNMwd7bKnLGd3EVQEReZHJK0CPnjS7K0kc0lFyjxWOiT6hJrq9Bwj-DEksVGFENe-n--o1uMpAOFnKw3X-d6h04Se4"/>
+</div>
+<div class="mt-8 font-display italic text-charcoal/50 text-base text-center">
+                    "La promesa de volver"
+                </div>
+</div>
+</div>
+</div>
+</section>
+<section class="px-6 py-24 bg-white/40 dark:bg-black/20">
+<div class="max-w-screen-xl mx-auto">
+<div class="text-center mb-16">
+<h2 class="text-4xl font-light italic mb-4">Seguridad y Respeto</h2>
+<div class="w-12 h-px bg-primary/30 mx-auto"></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+<div class="flex flex-col items-center text-center px-4">
+<div class="w-14 h-14 flex items-center justify-center border border-charcoal/10 rounded-full mb-6">
+<span class="material-symbols-outlined font-light text-2xl">verified_user</span>
+</div>
+<h3 class="text-lg font-medium mb-3">Legado Protegido</h3>
+<p class="text-sm text-charcoal/60 dark:text-gray-400 leading-relaxed">
+                    Encriptación de grado militar para asegurar que cada palabra y recuerdo permanezca en el círculo familiar.
+                </p>
+</div>
+<div class="flex flex-col items-center text-center px-4">
+<div class="w-14 h-14 flex items-center justify-center border border-charcoal/10 rounded-full mb-6">
+<span class="material-symbols-outlined font-light text-2xl">health_and_safety</span>
+</div>
+<h3 class="text-lg font-medium mb-3">Ética Radical</h3>
+<p class="text-sm text-charcoal/60 dark:text-gray-400 leading-relaxed">
+                    Desarrollado bajo principios de acompañamiento psicológico y respeto absoluto por el duelo.
+                </p>
+</div>
+<div class="flex flex-col items-center text-center px-4">
+<div class="w-14 h-14 flex items-center justify-center border border-charcoal/10 rounded-full mb-6">
+<span class="material-symbols-outlined font-light text-2xl">visibility_off</span>
+</div>
+<h3 class="text-lg font-medium mb-3">Privacidad Total</h3>
+<p class="text-sm text-charcoal/60 dark:text-gray-400 leading-relaxed">
+                    Tus datos nunca serán vendidos. Eres el único dueño de la memoria que decides preservar.
+                </p>
+</div>
+</div>
+</div>
+</section>
+<footer class="px-8 pt-24 pb-32">
+<div class="max-w-screen-xl mx-auto">
+<div class="flex flex-col items-center text-center gap-10">
+<div class="text-3xl font-semibold italic">Cloned</div>
+<div class="flex flex-wrap justify-center gap-x-8 gap-y-4 text-xs uppercase tracking-widest font-bold text-charcoal/60">
+<a href="#">El Proceso</a>
+<a href="#">Privacidad</a>
+<a href="#">Seguridad</a>
+<a href="#">Ética</a>
+</div>
+<div class="max-w-md">
+<p class="text-[11px] text-charcoal/40 leading-relaxed uppercase tracking-widest italic">
+                    Descargo de responsabilidad: Cloned es una herramienta de preservación de memoria asistida por IA. No sustituye el proceso de duelo profesional ni pretende reemplazar la presencia física humana.
+                </p>
+</div>
+<div class="w-full h-px bg-charcoal/10"></div>
+<div class="flex flex-col gap-2">
+<p class="text-[10px] text-charcoal/30 uppercase tracking-[0.4em]">© 2024 CLONED ARTIFICIAL PRESENCE</p>
+<p class="text-[10px] text-charcoal/30 uppercase tracking-[0.2em]">Hecho con respeto y memoria.</p>
+</div>
+</div>
+</div>
+</footer>
+<div class="fixed bottom-0 left-0 right-0 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-2xl border-t border-charcoal/5 dark:border-white/5 flex justify-around items-center py-4 px-6 pb-8 z-50">
+<button class="flex flex-col items-center gap-1 text-primary">
+<span class="material-symbols-outlined">home</span>
+<span class="text-[9px] font-bold uppercase tracking-tighter">Inicio</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-charcoal/40 dark:text-gray-500">
+<span class="material-symbols-outlined">auto_awesome</span>
+<span class="text-[9px] font-bold uppercase tracking-tighter">Clonar</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-charcoal/40 dark:text-gray-500">
+<span class="material-symbols-outlined">history_edu</span>
+<span class="text-[9px] font-bold uppercase tracking-tighter">Legado</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-charcoal/40 dark:text-gray-500">
+<span class="material-symbols-outlined">account_circle</span>
+<span class="text-[9px] font-bold uppercase tracking-tighter">Perfil</span>
+</button>
+</div>
+
+</body></html>

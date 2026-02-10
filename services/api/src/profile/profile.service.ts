@@ -34,11 +34,13 @@ export class ProfileService {
     return profile;
   }
 
-  async createProfile(userId: string, name: string) {
+  async createProfile(userId: string, name: string, relationship?: string, description?: string) {
     return this.prisma.personaProfile.create({
       data: {
         userId,
         name,
+        relationship,
+        description,
         coverageMap: DEFAULT_COVERAGE_MAP,
       },
       include: { avatarConfig: true },

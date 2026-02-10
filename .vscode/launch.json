@@ -5,58 +5,42 @@
       "name": "API: Debug",
       "type": "node",
       "request": "launch",
-      "runtimeArgs": ["--nolazy", "-r", "ts-node/register"],
-      "args": ["${workspaceFolder}/services/api/src/main.ts"],
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": [
+        "exec",
+        "nest",
+        "start",
+        "--debug",
+        "--watch"
+      ],
       "cwd": "${workspaceFolder}/services/api",
-      "sourceMaps": true,
-      "envFile": "${workspaceFolder}/services/api/.env",
       "console": "integratedTerminal",
-      "restart": true
-    },
-    {
-      "name": "API: Attach",
-      "type": "node",
-      "request": "attach",
-      "port": 9229,
       "restart": true,
-      "sourceMaps": true,
-      "cwd": "${workspaceFolder}/services/api"
+      "envFile": "${workspaceFolder}/services/api/.env"
     },
     {
-      "name": "API: NestJS Watch",
+      "name": "Web: Debug (Next.js)",
       "type": "node",
       "request": "launch",
       "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["exec", "nest", "start", "--debug", "--watch"],
-      "cwd": "${workspaceFolder}/services/api",
-      "envFile": "${workspaceFolder}/services/api/.env",
-      "console": "integratedTerminal",
-      "autoAttachChildProcesses": true
-    },
-    {
-      "name": "Web: Next.js Dev",
-      "type": "node",
-      "request": "launch",
-      "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["exec", "next", "dev", "--port", "3000"],
+      "runtimeArgs": [
+        "exec",
+        "next",
+        "dev",
+        "--port",
+        "3000"
+      ],
       "cwd": "${workspaceFolder}/apps/web",
-      "envFile": "${workspaceFolder}/apps/web/.env",
-      "console": "integratedTerminal"
-    },
-    {
-      "name": "API: Jest Tests",
-      "type": "node",
-      "request": "launch",
-      "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["exec", "jest", "--runInBand", "--verbose"],
-      "cwd": "${workspaceFolder}/services/api",
       "console": "integratedTerminal"
     }
   ],
   "compounds": [
     {
-      "name": "Full Stack (API + Web)",
-      "configurations": ["API: NestJS Watch", "Web: Next.js Dev"]
+      "name": "Full Stack",
+      "configurations": [
+        "API: Debug",
+        "Web: Debug (Next.js)"
+      ]
     }
   ]
 }

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#2bbdee",
+              "background-light": "#f6f7f8",
+              "background-dark": "#101d22",
+              "accent-violet": "#a855f7",
+            },
+            fontFamily: {
+              "display": ["Inter", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+      body {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      .glass-card {
+        background: rgba(255, 255, 255, 0.4);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+      }
+      .gradient-text {
+        background: linear-gradient(135deg, #2bbdee 0%, #a855f7 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .gradient-bg {
+        background: linear-gradient(135deg, #2bbdee 0%, #a855f7 100%);
+      }
+      .thin-border {
+        border-width: 0.5px;
+      }
+    </style>
+<title>Cloned - Tu Memoria Viva</title>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 selection:bg-primary/30">
+<!-- Navigation -->
+<nav class="fixed top-0 w-full z-50 bg-white/70 dark:bg-background-dark/70 backdrop-blur-md border-b thin-border border-slate-200 dark:border-slate-800">
+<div class="max-w-md mx-auto px-6 h-16 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-lg gradient-bg flex items-center justify-center shadow-lg shadow-primary/20">
+<span class="text-white font-bold text-lg">C</span>
+</div>
+<span class="font-semibold text-lg tracking-tight">Cloned</span>
+</div>
+<button class="text-sm font-medium px-4 py-1.5 rounded-full border thin-border border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                Menu
+            </button>
+</div>
+</nav>
+<!-- Main Content (Phone Container) -->
+<main class="max-w-md mx-auto pt-24 pb-32">
+<!-- Hero Section -->
+<section class="px-8 pt-12 pb-20 text-center">
+<h1 class="text-5xl font-extrabold tracking-tight leading-tight mb-6">
+                Tu memoria, <br/>
+<span class="gradient-text">siempre viva.</span>
+</h1>
+<p class="text-lg text-slate-500 dark:text-slate-400 font-light leading-relaxed mb-10 max-w-xs mx-auto">
+                Preserva la esencia de quienes amas a través de una IA diseñada para recordar y acompañar.
+            </p>
+<div class="flex flex-col gap-4">
+<button class="gradient-bg text-white font-semibold py-4 px-8 rounded-xl shadow-xl shadow-primary/20 active:scale-95 transition-transform">
+                    Empezar ahora
+                </button>
+<button class="text-slate-500 dark:text-slate-400 text-sm font-medium py-2 hover:underline">
+                    Conoce cómo funciona
+                </button>
+</div>
+</section>
+<!-- Recuerdos Section (Glassmorphism) -->
+<section class="px-6 mb-24">
+<div class="mb-8 px-2">
+<h2 class="text-xs uppercase tracking-[0.2em] font-bold text-primary mb-2">Recuerdos</h2>
+<p class="text-2xl font-bold">Un legado inmersivo.</p>
+</div>
+<div class="grid grid-cols-1 gap-4">
+<!-- Voice Card -->
+<div class="glass-card rounded-2xl p-6 relative overflow-hidden group">
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-primary/20 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
+<div class="relative z-10 flex flex-col gap-4">
+<div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+<i class="material-icons text-primary">mic_none</i>
+</div>
+<div>
+<h3 class="font-bold text-lg mb-1">Voz</h3>
+<p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
+                                Capturamos el timbre, la cadencia y los matices únicos que hacen que una voz sea inolvidable.
+                            </p>
+</div>
+</div>
+</div>
+<!-- Tales Card -->
+<div class="glass-card rounded-2xl p-6 relative overflow-hidden group">
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-accent-violet/20 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
+<div class="relative z-10 flex flex-col gap-4">
+<div class="w-12 h-12 rounded-xl bg-accent-violet/10 flex items-center justify-center">
+<i class="material-icons text-accent-violet">auto_stories</i>
+</div>
+<div>
+<h3 class="font-bold text-lg mb-1">Relatos</h3>
+<p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
+                                Las historias familiares se convierten en un archivo interactivo listo para ser compartido.
+                            </p>
+</div>
+</div>
+</div>
+<!-- Presence Card -->
+<div class="glass-card rounded-2xl p-6 relative overflow-hidden group">
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-primary/20 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
+<div class="relative z-10 flex flex-col gap-4">
+<div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+<i class="material-icons text-primary">blur_on</i>
+</div>
+<div>
+<h3 class="font-bold text-lg mb-1">Presencia</h3>
+<p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
+                                Un compañero emocional que entiende el contexto y mantiene vivo el vínculo.
+                            </p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Safety Section (Fine-Line) -->
+<section class="px-8 py-20 bg-slate-50 dark:bg-slate-900/40 rounded-[2.5rem] mx-4 border thin-border border-slate-200 dark:border-slate-800">
+<div class="text-center mb-12">
+<h2 class="text-xs uppercase tracking-[0.2em] font-bold text-slate-400 mb-2">Privacidad</h2>
+<p class="text-2xl font-bold">Seguridad de grado ético.</p>
+</div>
+<div class="space-y-12">
+<div class="flex flex-col items-center text-center">
+<div class="w-48 h-32 mb-6 flex items-center justify-center">
+<!-- Abstract Fine Line Diagram (SVG) -->
+<svg fill="none" height="80" viewbox="0 0 120 80" width="120" xmlns="http://www.w3.org/2000/svg">
+<rect class="text-slate-400" height="40" rx="4" stroke="currentColor" stroke-width="0.5" width="80" x="20" y="20"></rect>
+<circle class="text-primary" cx="60" cy="40" r="15" stroke="currentColor" stroke-width="0.5"></circle>
+<path class="text-slate-300" d="M40 40H80" stroke="currentColor" stroke-dasharray="2 2" stroke-width="0.5"></path>
+<path class="text-slate-300" d="M60 20V60" stroke="currentColor" stroke-dasharray="2 2" stroke-width="0.5"></path>
+</svg>
+</div>
+<h4 class="font-semibold mb-2">Cifrado de extremo a extremo</h4>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-light">
+                        Tus recuerdos pertenecen solo a ti. Nadie más, ni siquiera nosotros, puede acceder a ellos.
+                    </p>
+</div>
+<div class="flex flex-col items-center text-center">
+<div class="w-48 h-32 mb-6 flex items-center justify-center">
+<!-- Abstract Fine Line Diagram 2 (SVG) -->
+<svg fill="none" height="80" viewbox="0 0 120 80" width="120" xmlns="http://www.w3.org/2000/svg">
+<circle class="text-slate-400" cx="60" cy="40" r="30" stroke="currentColor" stroke-width="0.5"></circle>
+<circle class="text-slate-400" cx="60" cy="40" r="20" stroke="currentColor" stroke-width="0.5"></circle>
+<circle class="text-primary" cx="60" cy="40" r="10" stroke="currentColor" stroke-width="0.5"></circle>
+<line class="text-slate-300" stroke="currentColor" stroke-width="0.5" x1="60" x2="60" y1="10" y2="70"></line>
+</svg>
+</div>
+<h4 class="font-semibold mb-2">Propiedad de datos</h4>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-light">
+                        Tú controlas qué se guarda y cuándo se elimina. Sin letras pequeñas.
+                    </p>
+</div>
+</div>
+</section>
+<!-- Final CTA -->
+<section class="px-8 py-24 text-center">
+<div class="w-16 h-16 rounded-2xl gradient-bg mx-auto mb-8 flex items-center justify-center shadow-2xl shadow-primary/40">
+<i class="material-icons text-white text-3xl">favorite</i>
+</div>
+<h2 class="text-3xl font-bold mb-6">Comienza tu legado hoy.</h2>
+<button class="w-full gradient-bg text-white font-semibold py-4 rounded-xl shadow-xl shadow-primary/20 active:scale-95 transition-transform mb-6">
+                Descargar App
+            </button>
+<p class="text-slate-400 text-sm">Disponible en iOS y Android</p>
+</section>
+<!-- Footer -->
+<footer class="px-8 border-t thin-border border-slate-200 dark:border-slate-800 pt-12 text-center">
+<div class="flex justify-center gap-6 mb-8 text-slate-400">
+<a class="text-xs font-medium hover:text-primary transition-colors" href="#">Términos</a>
+<a class="text-xs font-medium hover:text-primary transition-colors" href="#">Privacidad</a>
+<a class="text-xs font-medium hover:text-primary transition-colors" href="#">Soporte</a>
+</div>
+<p class="text-[10px] text-slate-400 font-light tracking-widest uppercase">
+                © 2024 Cloned AI. Hecho con respeto.
+            </p>
+</footer>
+</main>
+<!-- App Icon Floating (Optional Decoration) -->
+<div class="fixed bottom-6 right-6 z-40">
+<div class="w-14 h-14 rounded-full bg-white dark:bg-slate-800 shadow-2xl flex items-center justify-center border thin-border border-slate-200 dark:border-slate-700">
+<i class="material-icons text-primary">chat_bubble_outline</i>
+</div>
+</div>
+</body></html>

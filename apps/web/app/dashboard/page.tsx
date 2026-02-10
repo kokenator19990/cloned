@@ -7,12 +7,19 @@ import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Input } from '@/components/ui/Input';
-import { Plus, Trash2 } from 'lucide-react';
+import { Plus, Trash2, Heart } from 'lucide-react';
+
+const RELATIONSHIPS = [
+  'Padre', 'Madre', 'Abuelo/a', 'Hermano/a',
+  'Hijo/a', 'Pareja', 'Amigo/a', 'Mascota', 'Otro',
+];
 
 export default function DashboardPage() {
   const { profiles, fetchProfiles, createProfile, deleteProfile } = useProfileStore();
   const [showCreate, setShowCreate] = useState(false);
   const [newName, setNewName] = useState('');
+  const [newRelationship, setNewRelationship] = useState('');
+  const [newDescription, setNewDescription] = useState('');
   const [creating, setCreating] = useState(false);
   const router = useRouter();
 
@@ -25,8 +32,14 @@ export default function DashboardPage() {
     if (!newName.trim()) return;
     setCreating(true);
     try {
-      const profile = await createProfile(newName.trim());
+      const profile = await createProfile(
+        newName.trim(),
+        newRelationship || undefined,
+        newDescription.trim() || undefined,
+      );
       setNewName('');
+      setNewRelationship('');
+      setNewDescription('');
       setShowCreate(false);
       router.push(`/dashboard/${profile.id}/enrollment`);
     } finally {
@@ -48,18 +61,43 @@ export default function DashboardPage() {
 
       {showCreate && (
         <Card className="mb-6">
-          <form onSubmit={handleCreate} className="flex gap-3 items-end">
-            <div className="flex-1">
-              <Input
-                label="Profile Name"
-                placeholder="e.g. Jorge, Mom, Best Friend..."
-                value={newName}
-                onChange={(e) => setNewName(e.target.value)}
-                autoFocus
-              />
+          <form onSubmit={handleCreate} className="space-y-4">
+            <Input
+              label="Nombre del perfil"
+              placeholder="ej. Jorge, Mamá, Mi mejor amigo..."
+              value={newName}
+              onChange={(e) => setNewName(e.target.value)}
+              autoFocus
+            />
+            <div>
+              <label className="block text-sm font-medium text-cloned-text mb-1.5">Relación</label>
+              <div className="flex flex-wrap gap-2">
+                {RELATIONSHIPS.map((r) => (
+                  <button
+                    key={r}
+                    type="button"
+                    onClick={() => setNewRelationship(newRelationship === r ? '' : r)}
+                    className={`px-3 py-1.5 rounded-full text-sm border transition-colors ${
+                      newRelationship === r
+                        ? 'bg-cloned-accent text-white border-cloned-accent'
+                        : 'border-cloned-border text-cloned-muted hover:border-cloned-accent'
+                    }`}
+                  >
+                    {r}
+                  </button>
+                ))}
+              </div>
             </div>
-            <Button type="submit" loading={creating}>Create</Button>
-            <Button variant="ghost" onClick={() => setShowCreate(false)}>Cancel</Button>
+            <Input
+              label="Descripción (opcional)"
+              placeholder="Una breve descripción de quién era esta persona..."
+              value={newDescription}
+              onChange={(e) => setNewDescription(e.target.value)}
+            />
+            <div className="flex gap-3 justify-end">
+              <Button variant="ghost" onClick={() => setShowCreate(false)}>Cancelar</Button>
+              <Button type="submit" loading={creating}>Crear Perfil</Button>
+            </div>
           </form>
         </Card>
       )}
@@ -89,6 +127,11 @@ export default function DashboardPage() {
                 <div className="flex items-start justify-between mb-3">
                   <div>
                     <h3 className="font-semibold text-lg">{profile.name}</h3>
+                    {profile.relationship && (
+                      <span className="text-xs text-cloned-accent flex items-center gap-1 mt-0.5">
+                        <Heart className="w-3 h-3" /> {profile.relationship}
+                      </span>
+                    )}
                     <Badge status={profile.status} />
                   </div>
                   <button

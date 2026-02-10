@@ -8,6 +8,7 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { ChatService } from './chat.service';
+import * as jwt from 'jsonwebtoken';
 
 @WebSocketGateway({
   cors: { origin: ['http://localhost:3000', 'http://localhost:5173'], credentials: true },
@@ -17,11 +18,20 @@ export class ChatGateway implements OnGatewayConnection {
   @WebSocketServer()
   server!: Server;
 
-  constructor(private chatService: ChatService) {}
+  constructor(private chatService: ChatService) { }
 
   handleConnection(client: Socket) {
     const token = client.handshake.auth?.token;
     if (!token) {
+      client.disconnect();
+      return;
+    }
+
+    try {
+      const secret = process.env.JWT_SECRET || 'cloned-dev-secret';
+      const decoded = jwt.verify(token, secret) as { sub: string; email: string };
+      (client as any).userId = decoded.sub;
+    } catch {
       client.disconnect();
     }
   }

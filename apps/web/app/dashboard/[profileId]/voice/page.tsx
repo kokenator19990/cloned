@@ -5,7 +5,7 @@ import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { useProfileStore } from '@/lib/store';
 import api from '@/lib/api';
-import { Mic, Square, Upload, CheckCircle } from 'lucide-react';
+import { Mic, Square, Upload, CheckCircle, Volume2, MicOff } from 'lucide-react';
 
 export default function VoicePage() {
   const params = useParams();
@@ -16,6 +16,12 @@ export default function VoicePage() {
   const mediaRecorder = useRef<MediaRecorder | null>(null);
   const chunks = useRef<Blob[]>([]);
 
+  // STT/TTS test state
+  const [sttText, setSttText] = useState('');
+  const [sttListening, setSttListening] = useState(false);
+  const [ttsInput, setTtsInput] = useState('');
+  const recognitionRef = useRef<any>(null);
+
   useEffect(() => {
     fetchProfile(profileId);
     loadSamples();
@@ -25,7 +31,7 @@ export default function VoicePage() {
     try {
       const { data } = await api.get(`/voice/${profileId}/samples`);
       setSamples(data);
-    } catch {}
+    } catch { }
   };
 
   const startRecording = async () => {
@@ -84,6 +90,50 @@ export default function VoicePage() {
     alert('Recording consent phrase for 10 seconds. Please read the consent text aloud now.');
   };
 
+  // Browser-based STT
+  const toggleSTT = () => {
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert('Tu navegador no soporta reconocimiento de voz. Usa Chrome o Edge.');
+      return;
+    }
+
+    if (sttListening) {
+      recognitionRef.current?.stop();
+      setSttListening(false);
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'es-ES';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onresult = (event: any) => {
+      setSttText(event.results[0][0].transcript);
+      setSttListening(false);
+    };
+    recognition.onerror = () => setSttListening(false);
+    recognition.onend = () => setSttListening(false);
+
+    recognitionRef.current = recognition;
+    recognition.start();
+    setSttListening(true);
+  };
+
+  // Browser-based TTS
+  const playTTS = () => {
+    if (!ttsInput.trim()) return;
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(ttsInput);
+    utterance.lang = 'es-ES';
+    utterance.rate = 0.95;
+    const voices = window.speechSynthesis.getVoices();
+    const spanishVoice = voices.find(v => v.lang.startsWith('es'));
+    if (spanishVoice) utterance.voice = spanishVoice;
+    window.speechSynthesis.speak(utterance);
+  };
+
   return (
     <div className="max-w-2xl mx-auto">
       <h1 className="text-2xl font-bold mb-6">Voice Settings - {currentProfile?.name}</h1>
@@ -135,6 +185,47 @@ export default function VoicePage() {
             <span className="text-sm text-red-300">Recording...</span>
           </div>
         )}
+      </Card>
+
+      {/* Voice Test Section */}
+      <Card className="mb-6">
+        <h3 className="font-semibold mb-3">Test Voice (Browser)</h3>
+        <p className="text-sm text-cloned-muted mb-4">
+          Test speech-to-text and text-to-speech using your browser&apos;s built-in capabilities.
+        </p>
+
+        {/* STT Test */}
+        <div className="mb-4">
+          <label className="text-sm font-medium block mb-2">Speech → Text (STT)</label>
+          <div className="flex gap-2">
+            <Button onClick={toggleSTT} variant={sttListening ? 'danger' : 'primary'}>
+              {sttListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+              {sttListening ? ' Listening...' : ' Start STT'}
+            </Button>
+          </div>
+          {sttText && (
+            <div className="mt-2 p-3 bg-cloned-soft rounded-lg text-sm">
+              <span className="text-cloned-muted">Transcription:</span> {sttText}
+            </div>
+          )}
+        </div>
+
+        {/* TTS Test */}
+        <div>
+          <label className="text-sm font-medium block mb-2">Text → Speech (TTS)</label>
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={ttsInput}
+              onChange={(e) => setTtsInput(e.target.value)}
+              placeholder="Type text to speak..."
+              className="flex-1 bg-white border border-cloned-border rounded-lg px-3 py-2 text-sm outline-none focus:border-cloned-accent"
+            />
+            <Button onClick={playTTS} disabled={!ttsInput.trim()}>
+              <Volume2 className="w-4 h-4" /> Speak
+            </Button>
+          </div>
+        </div>
       </Card>
 
       {/* Samples list */}

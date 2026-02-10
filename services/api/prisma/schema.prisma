@@ -48,6 +48,8 @@ model PersonaProfile {
   id                  String        @id @default(uuid())
   userId              String
   name                String
+  relationship        String?
+  description         String?
   status              ProfileStatus @default(ENROLLING)
   minInteractions     Int           @default(50)
   currentInteractions Int           @default(0)

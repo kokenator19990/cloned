@@ -2,6 +2,7 @@ import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/commo
 import { PrismaService } from '../prisma/prisma.service';
 import { EnrollmentQuestionsService } from './enrollment-questions.service';
 import { MemoryService } from '../memory/memory.service';
+import { LlmService } from '../llm/llm.service';
 import { CognitiveCategory } from '@prisma/client';
 
 export interface CoverageEntry {
@@ -16,6 +17,7 @@ export class EnrollmentService {
     private prisma: PrismaService,
     private questionsService: EnrollmentQuestionsService,
     private memoryService: MemoryService,
+    private llmService: LlmService,
   ) {}
 
   async startEnrollment(profileId: string, userId: string) {
@@ -95,13 +97,29 @@ export class EnrollmentService {
     }
 
     // Update profile
-    await this.prisma.personaProfile.update({
+    const updatedProfile = await this.prisma.personaProfile.update({
       where: { id: profileId },
       data: {
         currentInteractions: { increment: 1 },
         coverageMap: coverageMap as unknown as any,
       },
     });
+
+    // Auto-evaluate consistency and activate when ready
+    const allCovered = Object.values(coverageMap).every((c) => c.covered);
+    if (updatedProfile.currentInteractions >= updatedProfile.minInteractions && allCovered) {
+      const memories = await this.memoryService.getAllMemories(profileId);
+      const consistencyScore = await this.llmService.evaluateConsistency(
+        memories.map((m) => ({ content: m.content, category: m.category })),
+      );
+      await this.prisma.personaProfile.update({
+        where: { id: profileId },
+        data: {
+          consistencyScore,
+          status: 'ACTIVE',
+        },
+      });
+    }
 
     return this.getProgress(profileId, userId);
   }

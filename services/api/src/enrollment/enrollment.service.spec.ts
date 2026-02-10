@@ -3,6 +3,7 @@ import { EnrollmentService, CoverageEntry } from './enrollment.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { EnrollmentQuestionsService } from './enrollment-questions.service';
 import { MemoryService } from '../memory/memory.service';
+import { LlmService } from '../llm/llm.service';
 import { NotFoundException, ForbiddenException } from '@nestjs/common';
 
 describe('EnrollmentService', () => {
@@ -72,6 +73,13 @@ describe('EnrollmentService', () => {
           provide: MemoryService,
           useValue: {
             addMemory: jest.fn().mockResolvedValue({ id: 'mem-1' }),
+            getAllMemories: jest.fn().mockResolvedValue([]),
+          },
+        },
+        {
+          provide: LlmService,
+          useValue: {
+            evaluateConsistency: jest.fn().mockResolvedValue(0.85),
           },
         },
       ],

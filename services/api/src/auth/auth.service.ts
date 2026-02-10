@@ -8,7 +8,7 @@ export class AuthService {
   constructor(
     private prisma: PrismaService,
     private jwtService: JwtService,
-  ) {}
+  ) { }
 
   async register(email: string, password: string, displayName: string) {
     const existing = await this.prisma.user.findUnique({ where: { email } });
@@ -71,5 +71,17 @@ export class AuthService {
       createdAt: user.createdAt.toISOString(),
       updatedAt: user.updatedAt.toISOString(),
     };
+  }
+
+  async deleteAccount(userId: string) {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) throw new UnauthorizedException('User not found');
+
+    // Delete all profiles (cascades to memories, sessions, etc.)
+    await this.prisma.personaProfile.deleteMany({ where: { userId } });
+    // Delete the user
+    await this.prisma.user.delete({ where: { id: userId } });
+
+    return { deleted: true };
   }
 }

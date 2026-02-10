@@ -10,13 +10,13 @@ export class EmbeddingService {
   private enabled: boolean;
 
   constructor(private prisma: PrismaService) {
-    const baseURL = process.env.LLM_BASE_URL || 'http://localhost:11434/v1';
+    const baseURL = process.env.LLM_BASE_URL || 'https://api.openai.com/v1';
     this.client = new OpenAI({
       baseURL,
-      apiKey: process.env.LLM_API_KEY || 'ollama',
+      apiKey: process.env.LLM_API_KEY || '',
     });
     this.embeddingModel =
-      process.env.EMBEDDING_MODEL || 'nomic-embed-text';
+      process.env.EMBEDDING_MODEL || 'text-embedding-3-small';
     this.enabled = process.env.EMBEDDINGS_ENABLED !== 'false';
   }
 

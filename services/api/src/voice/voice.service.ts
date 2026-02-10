@@ -23,9 +23,9 @@ export class VoiceService {
       },
       forcePathStyle: true,
     });
-    // Pluggable provider URLs
-    this.sttUrl = process.env.STT_API_URL || 'http://localhost:9100/v1/audio/transcriptions';
-    this.ttsUrl = process.env.TTS_API_URL || 'http://localhost:9200/v1/audio/speech';
+    // Pluggable provider URLs (defaults to OpenAI)
+    this.sttUrl = process.env.STT_API_URL || 'https://api.openai.com/v1/audio/transcriptions';
+    this.ttsUrl = process.env.TTS_API_URL || 'https://api.openai.com/v1/audio/speech';
     this.voiceCloningEnabled = process.env.VOICE_CLONING_ENABLED === 'true';
   }
 
@@ -92,6 +92,9 @@ export class VoiceService {
 
       const response = await fetch(this.sttUrl, {
         method: 'POST',
+        headers: {
+          Authorization: `Bearer ${process.env.LLM_API_KEY || ''}`,
+        },
         body: formData,
       });
 
@@ -112,11 +115,14 @@ export class VoiceService {
       // OpenAI-compatible TTS API format
       const response = await fetch(this.ttsUrl, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${process.env.LLM_API_KEY || ''}`,
+        },
         body: JSON.stringify({
           model: 'tts-1',
           input: text,
-          voice: 'alloy', // default voice; with cloning this would change per profile
+          voice: 'alloy',
           response_format: 'wav',
         }),
       });

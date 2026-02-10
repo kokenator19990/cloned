@@ -229,9 +229,10 @@ The Android project is in `apps/android/`. To build:
 - [x] Android app
 
 ### Beta
-- [ ] RAG: upload documents as knowledge base
-- [ ] Embedding-based memory retrieval
-- [ ] WebSocket streaming for chat
+- [x] RAG: upload documents as knowledge base
+- [x] Embedding-based memory retrieval (pgvector)
+- [x] WebSocket streaming for chat (Socket.IO)
+- [x] Browser-native STT/TTS (Web Speech API)
 - [ ] Voice cloning integration (Coqui/XTTS)
 - [ ] Cognitive timeline visualization
 

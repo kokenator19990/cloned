@@ -14,10 +14,10 @@ export class LlmService {
 
   constructor() {
     this.client = new OpenAI({
-      baseURL: process.env.LLM_BASE_URL || 'http://localhost:11434/v1',
-      apiKey: process.env.LLM_API_KEY || 'ollama',
+      baseURL: process.env.LLM_BASE_URL || 'https://api.openai.com/v1',
+      apiKey: process.env.LLM_API_KEY || '',
     });
-    this.model = process.env.LLM_MODEL || 'llama3';
+    this.model = process.env.LLM_MODEL || 'gpt-4o-mini';
   }
 
   async generateResponse(

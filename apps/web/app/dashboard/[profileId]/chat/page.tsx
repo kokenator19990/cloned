@@ -1,12 +1,12 @@
 'use client';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useChatStore, useProfileStore } from '@/lib/store';
 import { ChatBubble } from '@/components/ui/ChatBubble';
 import { Avatar } from '@/components/ui/Avatar';
 import { SimulationBanner } from '@/components/ui/SimulationBanner';
 import { Button } from '@/components/ui/Button';
-import { Send, Mic, PhoneOff, MessageSquare, X } from 'lucide-react';
+import { Send, Mic, MicOff, PhoneOff, MessageSquare, X, Volume2, VolumeX } from 'lucide-react';
 
 export default function ChatPage() {
   const params = useParams();
@@ -25,7 +25,12 @@ export default function ChatPage() {
   const [input, setInput] = useState('');
   const [showMessages, setShowMessages] = useState(false);
   const [sessionReady, setSessionReady] = useState(false);
+  const [listening, setListening] = useState(false);
+  const [ttsEnabled, setTtsEnabled] = useState(true);
+  const [speaking, setSpeaking] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const recognitionRef = useRef<any>(null);
+  const prevMessagesLenRef = useRef(0);
 
   useEffect(() => {
     fetchProfile(profileId);
@@ -35,9 +40,83 @@ export default function ChatPage() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, streaming]);
 
+  // Auto-read persona responses aloud
+  useEffect(() => {
+    if (!ttsEnabled || messages.length === 0) return;
+    if (messages.length > prevMessagesLenRef.current) {
+      const lastMsg = messages[messages.length - 1];
+      if (lastMsg.role === 'PERSONA') {
+        speakText(lastMsg.content);
+      }
+    }
+    prevMessagesLenRef.current = messages.length;
+  }, [messages, ttsEnabled]);
+
+  const speakText = useCallback((text: string) => {
+    if (typeof window === 'undefined' || !window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'es-ES';
+    utterance.rate = 0.95;
+    utterance.pitch = 1.0;
+    // Try to find a Spanish voice
+    const voices = window.speechSynthesis.getVoices();
+    const spanishVoice = voices.find(v => v.lang.startsWith('es'));
+    if (spanishVoice) utterance.voice = spanishVoice;
+    utterance.onstart = () => setSpeaking(true);
+    utterance.onend = () => setSpeaking(false);
+    utterance.onerror = () => setSpeaking(false);
+    window.speechSynthesis.speak(utterance);
+  }, []);
+
+  const toggleListening = useCallback(() => {
+    if (typeof window === 'undefined') return;
+
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert('Tu navegador no soporta reconocimiento de voz. Usa Chrome o Edge.');
+      return;
+    }
+
+    if (listening) {
+      recognitionRef.current?.stop();
+      setListening(false);
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'es-ES';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+    recognition.continuous = false;
+
+    recognition.onresult = (event: any) => {
+      const transcript = event.results[0][0].transcript;
+      setInput(transcript);
+      setListening(false);
+    };
+
+    recognition.onerror = (event: any) => {
+      console.error('Speech recognition error:', event.error);
+      setListening(false);
+    };
+
+    recognition.onend = () => {
+      setListening(false);
+    };
+
+    recognitionRef.current = recognition;
+    recognition.start();
+    setListening(true);
+  }, [listening]);
+
   const handleStartSession = async () => {
-    const sessionId = await createSession(profileId);
+    await createSession(profileId);
     setSessionReady(true);
+    // Load voices for TTS
+    if (typeof window !== 'undefined' && window.speechSynthesis) {
+      window.speechSynthesis.getVoices();
+    }
   };
 
   const handleSend = async (e: React.FormEvent) => {
@@ -93,13 +172,23 @@ export default function ChatPage() {
         </div>
         <div className="flex items-center gap-2">
           <button
+            onClick={() => setTtsEnabled(!ttsEnabled)}
+            className={`p-2 rounded-lg hover:bg-cloned-soft transition-colors ${ttsEnabled ? 'text-cloned-accent' : 'text-cloned-muted'}`}
+            title={ttsEnabled ? 'Disable voice responses' : 'Enable voice responses'}
+          >
+            {ttsEnabled ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5" />}
+          </button>
+          <button
             onClick={() => setShowMessages(!showMessages)}
             className="p-2 rounded-lg hover:bg-cloned-soft text-cloned-muted transition-colors"
           >
             <MessageSquare className="w-5 h-5" />
           </button>
           <button
-            onClick={() => router.push('/dashboard')}
+            onClick={() => {
+              if (typeof window !== 'undefined') window.speechSynthesis?.cancel();
+              router.push('/dashboard');
+            }}
             className="p-2 rounded-lg bg-red-600/20 hover:bg-red-600/40 text-red-400 transition-colors"
           >
             <PhoneOff className="w-5 h-5" />
@@ -133,11 +222,11 @@ export default function ChatPage() {
                 mood={avatarConfig?.mood}
                 accessories={avatarConfig?.accessories || []}
                 size="xl"
-                speaking={streaming}
+                speaking={streaming || speaking}
                 className="mx-auto mb-4"
               />
               <h2 className="text-lg font-semibold">{currentProfile.name}</h2>
-              {streaming && (
+              {(streaming || speaking) && (
                 <p className="text-sm text-cloned-accent-light mt-1 animate-pulse">Speaking...</p>
               )}
             </div>
@@ -181,18 +270,22 @@ export default function ChatPage() {
           <form onSubmit={handleSend} className="flex gap-2">
             <button
               type="button"
-              className="p-3 rounded-xl bg-white border border-cloned-border text-cloned-muted hover:text-cloned-accent transition-colors"
-              title="Voice input (coming soon)"
+              onClick={toggleListening}
+              className={`p-3 rounded-xl border transition-colors ${listening
+                  ? 'bg-red-500/20 border-red-400 text-red-400 animate-pulse'
+                  : 'bg-white border-cloned-border text-cloned-muted hover:text-cloned-accent'
+                }`}
+              title={listening ? 'Stop listening' : 'Voice input'}
             >
-              <Mic className="w-5 h-5" />
+              {listening ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
             </button>
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder={`Talk to ${currentProfile.name}...`}
+              placeholder={listening ? 'Listening...' : `Talk to ${currentProfile.name}...`}
               className="flex-1 bg-white border border-cloned-border rounded-xl px-4 py-3 text-cloned-text outline-none focus:border-cloned-accent transition-colors"
-              disabled={streaming}
+              disabled={streaming || listening}
             />
             <Button type="submit" disabled={!input.trim() || streaming}>
               <Send className="w-5 h-5" />
@@ -203,3 +296,4 @@ export default function ChatPage() {
     </div>
   );
 }
+

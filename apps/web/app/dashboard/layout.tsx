@@ -1,12 +1,14 @@
 'use client';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useAuthStore } from '@/lib/store';
-import { LogOut, User } from 'lucide-react';
+import { LogOut, User, Trash2 } from 'lucide-react';
+import api from '@/lib/api';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { user, loading, loadFromStorage, logout } = useAuthStore();
+  const [deleting, setDeleting] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -18,6 +20,21 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       router.push('/auth/login');
     }
   }, [loading, user, router]);
+
+  const handleDeleteAccount = async () => {
+    if (!confirm('¿Eliminar tu cuenta? Se borrarán TODOS tus perfiles, memorias y conversaciones. Esta acción es irreversible.')) return;
+    if (!confirm('¿Estás SEGURO? No hay vuelta atrás.')) return;
+    setDeleting(true);
+    try {
+      await api.delete('/auth/account');
+      logout();
+      router.push('/');
+    } catch {
+      alert('Error al eliminar la cuenta');
+    } finally {
+      setDeleting(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -44,8 +61,17 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               {user.displayName}
             </div>
             <button
+              onClick={handleDeleteAccount}
+              disabled={deleting}
+              className="text-cloned-muted hover:text-cloned-danger transition-colors"
+              title="Eliminar cuenta"
+            >
+              <Trash2 className="w-4 h-4" />
+            </button>
+            <button
               onClick={() => { logout(); router.push('/'); }}
               className="text-cloned-muted hover:text-cloned-danger transition-colors"
+              title="Cerrar sesión"
             >
               <LogOut className="w-4 h-4" />
             </button>

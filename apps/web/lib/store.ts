@@ -10,6 +10,8 @@ interface User {
 interface Profile {
   id: string;
   name: string;
+  relationship?: string;
+  description?: string;
   status: 'ENROLLING' | 'ACTIVE' | 'ARCHIVED';
   currentInteractions: number;
   minInteractions: number;
@@ -96,7 +98,7 @@ interface ProfileState {
   profiles: Profile[];
   currentProfile: Profile | null;
   fetchProfiles: () => Promise<void>;
-  createProfile: (name: string) => Promise<Profile>;
+  createProfile: (name: string, relationship?: string, description?: string) => Promise<Profile>;
   fetchProfile: (id: string) => Promise<void>;
   deleteProfile: (id: string) => Promise<void>;
   activateProfile: (id: string) => Promise<void>;
@@ -109,8 +111,8 @@ export const useProfileStore = create<ProfileState>((set) => ({
     const { data } = await api.get('/profiles');
     set({ profiles: data });
   },
-  createProfile: async (name) => {
-    const { data } = await api.post('/profiles', { name });
+  createProfile: async (name, relationship, description) => {
+    const { data } = await api.post('/profiles', { name, relationship, description });
     set((s) => ({ profiles: [data, ...s.profiles] }));
     return data;
   },
@@ -210,6 +212,63 @@ export const useChatStore = create<ChatState>((set, get) => ({
     };
     set((s) => ({ messages: [...s.messages, userMsg] }));
 
+    // Try streaming via Socket.IO first
+    try {
+      const { getChatSocket } = await import('./socket');
+      const socket = getChatSocket();
+
+      if (socket.connected) {
+        return new Promise<void>((resolve) => {
+          let fullText = '';
+          const streamingMsgId = `stream-${Date.now()}`;
+
+          const onChunk = (data: { sessionId: string; chunk: string }) => {
+            if (data.sessionId !== sessionId) return;
+            fullText += data.chunk;
+            set((s) => {
+              const withoutStream = s.messages.filter((m) => m.id !== streamingMsgId);
+              return {
+                messages: [
+                  ...withoutStream,
+                  { id: streamingMsgId, role: 'PERSONA' as const, content: fullText, timestamp: new Date().toISOString() },
+                ],
+                streamText: fullText,
+              };
+            });
+          };
+
+          const onEnd = (data: { sessionId: string }) => {
+            if (data.sessionId !== sessionId) return;
+            socket.off('chat:stream', onChunk);
+            socket.off('chat:end', onEnd);
+            socket.off('chat:error', onError);
+            set({ streaming: false, streamText: '' });
+            resolve();
+          };
+
+          const onError = (data: { sessionId: string; error: string }) => {
+            if (data.sessionId !== sessionId) return;
+            socket.off('chat:stream', onChunk);
+            socket.off('chat:end', onEnd);
+            socket.off('chat:error', onError);
+            set({ streaming: false, streamText: '' });
+            resolve();
+          };
+
+          socket.on('chat:stream', onChunk);
+          socket.on('chat:end', onEnd);
+          socket.on('chat:error', onError);
+
+          const token = localStorage.getItem('cloned_token');
+          const userId = token ? JSON.parse(atob(token.split('.')[1])).sub : '';
+          socket.emit('chat:send', { sessionId, content, userId });
+        });
+      }
+    } catch {
+      // Fall through to HTTP
+    }
+
+    // Fallback: HTTP POST
     try {
       const { data } = await api.post(`/chat/sessions/${sessionId}/messages`, { content });
       set((s) => ({
@@ -228,3 +287,4 @@ export const useChatStore = create<ChatState>((set, get) => ({
   appendStreamChunk: (chunk) => set((s) => ({ streamText: s.streamText + chunk })),
   finalizeStream: () => set({ streaming: false, streamText: '' }),
 }));
+

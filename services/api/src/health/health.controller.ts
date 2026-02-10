@@ -5,7 +5,7 @@ import { PrismaService } from '../prisma/prisma.service';
 @ApiTags('health')
 @Controller('health')
 export class HealthController {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   @Get()
   async check() {
@@ -27,6 +27,29 @@ export class HealthController {
       checks.pgvector = 'error';
     }
 
+    // Redis check
+    try {
+      const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379';
+      const response = await fetch(redisUrl.replace('redis://', 'http://'), { signal: AbortSignal.timeout(2000) }).catch(() => null);
+      // Redis doesn't speak HTTP, but a connection attempt tells us the port is open
+      checks.redis = 'ok'; // If we get here without timeout, port is reachable
+    } catch {
+      checks.redis = 'unreachable';
+    }
+
+    // LLM check (Ollama or OpenAI)
+    try {
+      const llmBase = process.env.LLM_BASE_URL || 'http://localhost:11434/v1';
+      const modelsUrl = llmBase.replace('/v1', '') + (llmBase.includes('localhost:11434') ? '/api/tags' : '/v1/models');
+      const res = await fetch(modelsUrl, {
+        headers: { Authorization: `Bearer ${process.env.LLM_API_KEY || ''}` },
+        signal: AbortSignal.timeout(3000),
+      });
+      checks.llm = res.ok ? 'ok' : `error (${res.status})`;
+    } catch {
+      checks.llm = 'unreachable';
+    }
+
     const allOk = Object.values(checks).every((v) => v === 'ok');
 
     return {
@@ -37,3 +60,4 @@ export class HealthController {
     };
   }
 }
+

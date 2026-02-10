@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1313ec",
+                        "background-light": "#fdfbf7", /* Creamy background for warmth */
+                        "background-dark": "#101022",
+                        "charcoal": "#333333",
+                    },
+                    fontFamily: {
+                        "display": ["Newsreader", "serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<title>Cloned - Elegant Landing</title>
+<style>
+        body {
+            background-color: #fdfbf7;
+            color: #333333;
+        }
+        .polaroid-shadow {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+        .gradient-btn {
+            background: linear-gradient(135deg, #1313ec 0%, #6366f1 100%);
+        }
+        .soft-mask {
+            mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-display bg-background-light dark:bg-background-dark text-charcoal dark:text-gray-100 selection:bg-primary/20">
+<!-- iOS Status Bar Spacer -->
+<div class="h-12 w-full"></div>
+<!-- Navigation -->
+<nav class="px-6 py-4 flex justify-between items-center sticky top-0 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md z-50">
+<div class="text-2xl font-semibold tracking-tight italic">Cloned</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full bg-charcoal/5 dark:bg-white/5">
+<span class="material-icons">menu</span>
+</button>
+</nav>
+<!-- Hero Section -->
+<header class="relative px-6 pt-8 pb-16 overflow-hidden">
+<div class="relative z-10 max-w-md mx-auto">
+<h1 class="text-5xl leading-[1.1] font-medium mb-6">
+                Vuelve a conversar con quien <span class="italic text-primary/80">extrañas</span>
+</h1>
+<p class="text-lg leading-relaxed text-charcoal/70 dark:text-gray-400 mb-8 max-w-[90%]">
+                Preservamos la esencia, la voz y los recuerdos de tus seres queridos a través de una IA empática diseñada para sanar.
+            </p>
+<button class="gradient-btn text-white px-8 py-4 rounded-full font-medium shadow-xl shadow-primary/20 flex items-center gap-2">
+                Comenzar mi Legado
+                <span class="material-icons text-sm">arrow_forward</span>
+</button>
+</div>
+<div class="mt-12 relative h-80 w-full rounded-xl overflow-hidden shadow-2xl">
+<img alt="Una abuela y su nieta compartiendo un momento cálido" class="w-full h-full object-cover grayscale-[20%] sepia-[10%]" data-alt="Grandmother and granddaughter sharing a warm, soft-focus hug" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAabIpBVnueefUD7yEhY4YJm5vYXnILrebzaSU40mB7qwgm5OeAlgeFbc8F2ZaHXC1VqY2iCVdmbCErysG73GLvGf6faoi0YRexGgIlmDXi0sfvK03S34_gFpb_-bKC4xanExwciTrXA0brXE2PYG3YIML4tXkH4BdQ4iSez9QxDJIEoGRVTN-hy3I6wu11HClpAUTBNlDImeqsP-dqpIUmc7np_c6EeB_khc_InnaByjT5xXeVPO2vlRLeMRZDAxi6oPujQkiJNaQ"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background-light dark:from-background-dark via-transparent to-transparent"></div>
+</div>
+</header>
+<!-- Emotional Narrative Section -->
+<section class="px-6 py-12">
+<div class="space-y-12">
+<div class="text-center max-w-xs mx-auto">
+<span class="text-xs uppercase tracking-[0.2em] font-bold text-primary mb-4 block">El Proceso</span>
+<h2 class="text-3xl font-light italic">Capturando lo invisible</h2>
+</div>
+<!-- Polaroid Grid -->
+<div class="grid grid-cols-1 gap-12 pt-4">
+<!-- Polaroid 1 -->
+<div class="relative rotate-[-2deg] transition-transform hover:rotate-0">
+<div class="bg-white p-4 pb-12 rounded shadow-xl polaroid-shadow max-w-[280px] mx-auto border border-gray-100">
+<div class="aspect-square bg-gray-200 overflow-hidden rounded-sm">
+<img alt="Un padre enseñando a su hija a andar en bicicleta" class="w-full h-full object-cover opacity-90" data-alt="Vintage style photo of a father teaching child" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDILwAmJL1zePBDo_Rz2DagIfakK0Nt3rnvVeDzKSdinLloyLKJy6VTKHKLUaSA4C8PkRfvr5W-T1HSB5oT28EakboZ74GEuXFNt3mtkEybpS7RNW4K-Cb9vbfHzvWW7_wxcXM32DDQdkXvQVUNe7dybxLoFHq6uFwFR6_PazbRLcMkGjFVBdAvvITdCTdcYeDXfMUuaQBDZXAJfnQXO9yzjRdQl8tGgJgpNFMOQV7IUdKnkAW4uQp97Bm-W1kU5FXU1vK79DQtOyE"/>
+</div>
+<div class="mt-6 font-display italic text-charcoal/60 text-lg text-center">
+                            Su risa al atardecer
+                        </div>
+</div>
+</div>
+<!-- Polaroid 2 -->
+<div class="relative rotate-[3deg] transition-transform hover:rotate-0">
+<div class="bg-white p-4 pb-12 rounded shadow-xl polaroid-shadow max-w-[280px] mx-auto border border-gray-100">
+<div class="aspect-square bg-gray-200 overflow-hidden rounded-sm">
+<img alt="Manos de una pareja de ancianos entrelazadas" class="w-full h-full object-cover opacity-90" data-alt="Close up of elderly hands holding together" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA1NoJRnb6_EWRV8opWXCi19h98Vs1UcNHq7n1MMTg0QcGUCzAEjgQq_UlUTcmbIHkHT_tfvkbKMTZlyWgsw-qiPvl5DZZyIHiZDiDR4NFKOQ9BtFkoWpxCO-WDcbEP2S_49ivaHqWMR2FFvqXwWizKKqQAbX9wS-p_6DWwrS-xviKq3UUeH0WRYq2X-jBPKN-9iue921rlt5sLHH3ZU2uS4gO1vxnsKKvcC479YufjIPNC3YwN4pV2K3ArnY2qcbAdIewzoR5x-34"/>
+</div>
+<div class="mt-6 font-display italic text-charcoal/60 text-lg text-center">
+                            Historias que nunca mueren
+                        </div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Privacy & Safety Badges -->
+<section class="px-6 py-20 bg-charcoal/5 dark:bg-white/5 my-12 rounded-3xl mx-4">
+<div class="text-center mb-10">
+<h2 class="text-2xl font-light italic mb-2">Seguridad y Respeto</h2>
+<p class="text-sm text-charcoal/60 dark:text-gray-400">Tus memorias son sagradas.</p>
+</div>
+<div class="flex flex-wrap justify-center gap-6">
+<!-- Badge 1 -->
+<div class="flex flex-col items-center gap-2 p-6 bg-background-light dark:bg-background-dark rounded-2xl shadow-sm w-32">
+<div class="w-12 h-12 flex items-center justify-center border-2 border-charcoal/10 rounded-full mb-2">
+<span class="material-icons text-charcoal">lock</span>
+</div>
+<span class="text-[10px] uppercase tracking-widest font-bold text-center">Encriptado</span>
+</div>
+<!-- Badge 2 -->
+<div class="flex flex-col items-center gap-2 p-6 bg-background-light dark:bg-background-dark rounded-2xl shadow-sm w-32">
+<div class="w-12 h-12 flex items-center justify-center border-2 border-charcoal/10 rounded-full mb-2">
+<span class="material-icons text-charcoal">privacy_tip</span>
+</div>
+<span class="text-[10px] uppercase tracking-widest font-bold text-center">Privacidad</span>
+</div>
+<!-- Badge 3 -->
+<div class="flex flex-col items-center gap-2 p-6 bg-background-light dark:bg-background-dark rounded-2xl shadow-sm w-32">
+<div class="w-12 h-12 flex items-center justify-center border-2 border-charcoal/10 rounded-full mb-2">
+<span class="material-icons text-charcoal">verified</span>
+</div>
+<span class="text-[10px] uppercase tracking-widest font-bold text-center">Ética IA</span>
+</div>
+</div>
+</section>
+<!-- Testimonial Section -->
+<section class="px-8 py-16">
+<div class="relative">
+<span class="material-icons text-primary/20 text-6xl absolute -top-8 -left-4">format_quote</span>
+<blockquote class="text-2xl font-light italic leading-relaxed text-charcoal/80 dark:text-gray-200">
+                "Poder escuchar su voz dándome consejos en los días difíciles ha sido el regalo más grande que la tecnología me ha dado."
+            </blockquote>
+<div class="mt-6 flex items-center gap-4">
+<div class="w-12 h-12 rounded-full overflow-hidden grayscale">
+<img alt="Retrato de una mujer joven sonriendo suavemente" class="w-full h-full object-cover" data-alt="Soft editorial portrait of a young woman" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC_7xO6jcb_YXrIzVbTsZ_2RhBLBDhbdqsjTaFsH0uaGaS9Aw_g76uzZQczLEELaYjfl9YLSjzYftOu2QKy2WbmWyOHwGGMQmzGBd7nZPLf-bU1b0rqEqshz_eHZRPUekyU6I3BbSFWwAmnFRl379n7lr3ux9selqdrdpWATp8A0Pborq_YXdNMwd7bKnLGd3EVQEReZHJK0CPnjS7K0kc0lFyjxWOiT6hJrq9Bwj-DEksVGFENe-n--o1uMpAOFnKw3X-d6h04Se4"/>
+</div>
+<div>
+<p class="font-bold text-sm tracking-wide">ELENA R.</p>
+<p class="text-xs text-charcoal/40 dark:text-gray-500 uppercase tracking-tighter">Hija de Juan Manuel</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Call to Action Footer -->
+<footer class="px-6 pt-12 pb-24 text-center">
+<div class="h-px w-full bg-charcoal/10 dark:bg-white/10 mb-16"></div>
+<h3 class="text-4xl font-light italic mb-8">Comienza a preservar hoy</h3>
+<p class="text-charcoal/60 dark:text-gray-400 mb-10 max-w-xs mx-auto leading-relaxed">
+            Crea un espacio seguro para que las futuras generaciones conozcan sus raíces.
+        </p>
+<div class="flex flex-col gap-4 max-w-xs mx-auto">
+<button class="gradient-btn text-white py-5 rounded-full font-medium shadow-xl shadow-primary/20">
+                Crear una cuenta gratis
+            </button>
+<button class="border border-charcoal/20 dark:border-white/20 py-5 rounded-full font-medium flex items-center justify-center gap-2 hover:bg-charcoal/5 transition-colors">
+<span class="material-icons text-sm">play_circle</span>
+                Ver cómo funciona
+            </button>
+</div>
+<div class="mt-20 flex flex-col items-center gap-6">
+<div class="flex gap-8 text-charcoal/40 dark:text-gray-500 text-sm">
+<a href="#">Privacidad</a>
+<a href="#">Términos</a>
+<a href="#">Contacto</a>
+</div>
+<p class="text-[10px] text-charcoal/30 uppercase tracking-[0.3em]">© 2024 Cloned Artificial Presence</p>
+</div>
+</footer>
+<!-- Tab Bar (iOS Feel) -->
+<div class="fixed bottom-0 left-0 right-0 bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-xl border-t border-charcoal/5 dark:border-white/5 flex justify-around items-center py-4 px-6 pb-8 z-50">
+<button class="flex flex-col items-center gap-1 text-primary">
+<span class="material-icons">home</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Inicio</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-charcoal/40 dark:text-gray-500">
+<span class="material-icons">auto_awesome</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Clonar</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-charcoal/40 dark:text-gray-500">
+<span class="material-icons">history_edu</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Legado</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-charcoal/40 dark:text-gray-500">
+<span class="material-icons">account_circle</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Perfil</span>
+</button>
+</div>
+</body></html>

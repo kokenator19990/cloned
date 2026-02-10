@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#5bec13",
+              "background-light": "#f6f8f6",
+              "background-dark": "#162210",
+              "taupe": "#e8e6e1",
+              "sage": "#d4dccf",
+              "charcoal": "#2d342a",
+            },
+            fontFamily: {
+              "display": ["Spline Sans", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>.linen-texture {
+    background-color: #f6f8f6;
+    background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuDt2Ux36-WlD5SggRmTTANIay4VtgoDYFntqbNPlyqHKC0sb3jZo8GGppW03K_cOdRVyTviZMhTuY6MSyIgYqGiMat9FjDNxMjOAGtfwJD6VqUlXZKXR0MdYbauCMRFwjDg_-Jyj2momKEBDLpseO0SpSiGg28QH_7qZ8T8GAYh-FUUS65_Asm4MBERMiTtfBemrNWS-n16icCiScWgIZMl7J3LC8e35eYM1GTB-NO8dj3g2UeEvu_E_k69TVDlL6MKG_S-od-mYsg)
+    }
+.masonry-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem
+    }
+.gradient-underline {
+    position: relative;
+    display: inline-block
+    }
+.gradient-underline::after {
+    content: "";
+    position: absolute;
+    bottom: 2px;
+    left: 0;
+    width: 100%;
+    height: 6px;
+    background: linear-gradient(90deg, #00f2ff, #7000ff);
+    z-index: -1;
+    opacity: 0.6;
+    border-radius: 9999px
+    }
+.hand-drawn {
+    font-family: "Material Icons";
+    font-size: 2.5rem;
+    color: #4a5446;
+    transform: rotate(-3deg)
+    }
+.paper-card {
+    box-shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.05), 0 2px 6px -2px rgba(0, 0, 0, 0.03)
+    }</style>
+<title>Cloned - Guarda su esencia</title>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-display bg-background-light dark:bg-background-dark text-charcoal dark:text-background-light selection:bg-primary/30">
+<!-- Navigation -->
+<nav class="fixed top-0 w-full z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-lg border-b border-sage/30 dark:border-primary/10">
+<div class="max-w-md mx-auto px-6 py-4 flex justify-between items-center">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+<span class="material-icons text-background-dark text-lg">auto_awesome</span>
+</div>
+<span class="font-bold text-xl tracking-tight">cloned</span>
+</div>
+<button class="material-icons p-2 hover:bg-sage/20 rounded-full transition-colors">menu</button>
+</div>
+</nav>
+<main class="linen-texture min-h-screen pt-24 pb-20 px-6">
+<!-- Hero Section -->
+<section class="max-w-md mx-auto mb-16 text-center">
+<div class="inline-block px-4 py-1.5 bg-sage/30 dark:bg-primary/10 rounded-full text-xs font-semibold tracking-widest uppercase mb-6 text-charcoal/70 dark:text-primary/80">
+                IA con Alma • Edición Álbum
+            </div>
+<h1 class="text-5xl font-bold leading-tight mb-6">
+                Guarda su <span class="gradient-underline">esencia</span>
+</h1>
+<p class="text-lg text-charcoal/60 dark:text-white/60 mb-10 leading-relaxed font-light">
+                Un espacio digital táctil para preservar la voz, los gestos y el legado emocional de quienes más amas.
+            </p>
+<div class="flex flex-col gap-4">
+<button class="bg-primary text-background-dark font-bold py-4 rounded-xl shadow-lg shadow-primary/20 flex items-center justify-center gap-2 active:scale-95 transition-transform">
+<span>Empezar ahora</span>
+<span class="material-icons">arrow_forward</span>
+</button>
+<button class="bg-transparent border-2 border-sage dark:border-white/10 text-charcoal/80 dark:text-white/80 font-semibold py-4 rounded-xl active:scale-95 transition-transform">
+                    Ver demo interactiva
+                </button>
+</div>
+</section>
+<!-- Masonry Grid: Recuerdos -->
+<section class="max-w-md mx-auto mb-16">
+<div class="flex justify-between items-end mb-6">
+<h2 class="text-2xl font-bold">Recuerdos</h2>
+<span class="text-primary font-semibold text-sm">Ver todos</span>
+</div>
+<div class="masonry-grid">
+<!-- Card 1: Portrait Photo -->
+<div class="paper-card bg-white dark:bg-white/5 rounded-lg p-3 rotate-1 hover:rotate-0 transition-transform duration-300">
+<div class="aspect-[3/4] rounded-lg overflow-hidden mb-3 relative">
+<img alt="Portrait" class="w-full h-full object-cover grayscale opacity-80" data-alt="Vintage black and white family portrait photo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAxSMJRv5gN473CeWqb2X57NP4EZcG7LxLsytwdpeCnWYrz-4vxNXFunacq37GDbeazm5INrz2QRTRBjqtnyTchX2GAXfxKgWB1bgYuPkFafwHCb8gYLkEO2N9Xq2NiiTfaLSYgVCEo1DQT1I4tQOLuW6dDTzUazLGH_uNDnjSIPBiv3ybd3YivQtTJsvMoeQPe8-oeaPlHu0M_cIK1hEGTOxVysWAVO2cvnP_VgdSb8dmpGGuAfeWuZtLtUcm3C8AcGFSOPN7WIDA"/>
+<div class="absolute inset-0 bg-sage/10"></div>
+</div>
+<p class="text-[10px] uppercase tracking-tighter text-charcoal/40 dark:text-white/40 mb-1">Nota de voz • 1994</p>
+<p class="text-sm font-medium italic">"Aquella tarde en el campo..."</p>
+</div>
+<!-- Card 2: Audio Waveform -->
+<div class="paper-card bg-sage/20 dark:bg-white/5 rounded-lg p-3 -rotate-2 hover:rotate-0 transition-transform duration-300">
+<div class="h-24 bg-primary/10 rounded-lg flex items-center justify-center mb-3">
+<div class="flex items-center gap-1">
+<div class="w-1 h-4 bg-primary rounded-full"></div>
+<div class="w-1 h-8 bg-primary rounded-full"></div>
+<div class="w-1 h-12 bg-primary rounded-full"></div>
+<div class="w-1 h-6 bg-primary rounded-full"></div>
+<div class="w-1 h-10 bg-primary rounded-full"></div>
+<div class="w-1 h-4 bg-primary rounded-full"></div>
+</div>
+</div>
+<p class="text-sm font-medium italic">La risa de Abuela</p>
+<div class="mt-2 flex items-center gap-2">
+<span class="material-icons text-primary text-xs">play_circle</span>
+<div class="h-0.5 flex-1 bg-charcoal/10 dark:bg-white/10 rounded-full"></div>
+</div>
+</div>
+<!-- Card 3: Quote -->
+<div class="paper-card bg-white dark:bg-white/5 rounded-lg p-4 rotate-2 hover:rotate-0 transition-transform duration-300 col-span-2">
+<p class="text-xl font-display leading-relaxed text-charcoal/70 dark:text-white/70 italic mb-2">
+                        "La vida no se mide por las respiraciones que tomas, sino por los momentos que te quitan el aliento."
+                    </p>
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-taupe"></div>
+<p class="text-xs font-bold text-charcoal/40 dark:text-white/40 italic">— Papá, 2012</p>
+</div>
+</div>
+<!-- Card 4: Small Photo -->
+<div class="paper-card bg-white dark:bg-white/5 rounded-lg p-3 -rotate-1 hover:rotate-0 transition-transform duration-300">
+<div class="aspect-square rounded-lg overflow-hidden relative">
+<img alt="Memory" class="w-full h-full object-cover sepia-[0.3]" data-alt="Blurred memory of two hands holding together" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0pQEzBt-x9HxZzNpSIktS01rgydH5AZsnhAii256rV2mfvJ4ZLiDNOAKVpplTsrqdhAgqyT-ZHYCVXt99vTKz-vpAiqZEXk9TC859FnGi19ASnCHIA68oVsKemzRqsBR-i2DffDfWEhFaHh5uYl0FmdclFBC9oYr94Pbfr4OgOamfdQRmhomEa-T2ogexSnfmbOYHLIsUg9v3d0-4Us11fKmWfZVLbQziQ-m0J4x8FXnV4g7Y40J5eqfZxbEKupRJwlLTJMhlLJA"/>
+</div>
+</div>
+<!-- Card 5: AI Status -->
+<div class="paper-card bg-charcoal dark:bg-primary/20 rounded-lg p-4 flex flex-col justify-between aspect-square">
+<span class="material-icons text-primary">blur_on</span>
+<div>
+<p class="text-white text-xs font-bold uppercase tracking-widest mb-1">Presencia</p>
+<p class="text-white/60 text-[10px] leading-tight">Procesando matices vocales para una conexión más profunda.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Safety Section -->
+<section class="max-w-md mx-auto bg-sage/10 dark:bg-white/5 rounded-xl p-8 border border-sage/40 dark:border-white/10">
+<h2 class="text-2xl font-bold mb-8 text-center">Seguridad por diseño</h2>
+<div class="space-y-10">
+<div class="flex items-start gap-6">
+<div class="hand-drawn shrink-0">history_edu</div>
+<div>
+<h3 class="font-bold text-lg mb-1">Consentimiento</h3>
+<p class="text-sm text-charcoal/60 dark:text-white/60">Tú eres el único dueño de los datos. Control total sobre quién accede al legado.</p>
+</div>
+</div>
+<div class="flex items-start gap-6">
+<div class="hand-drawn shrink-0">visibility</div>
+<div>
+<h3 class="font-bold text-lg mb-1">Transparencia</h3>
+<p class="text-sm text-charcoal/60 dark:text-white/60">Algoritmos claros. Explicamos cada interacción de la IA para tu tranquilidad.</p>
+</div>
+</div>
+<div class="flex items-start gap-6">
+<div class="hand-drawn shrink-0">verified_user</div>
+<div>
+<h3 class="font-bold text-lg mb-1">Control</h3>
+<p class="text-sm text-charcoal/60 dark:text-white/60">Pausar, eliminar o descargar todo en cualquier momento. Sin ataduras.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Floating Map Feature Mockup -->
+<section class="max-w-md mx-auto mt-16 text-center">
+<h2 class="text-sm font-bold uppercase tracking-[0.2em] mb-4 text-charcoal/40 dark:text-white/40">Geografía de Recuerdos</h2>
+<div class="relative w-full h-48 rounded-xl overflow-hidden shadow-inner">
+<div class="absolute inset-0 bg-sage/20 animate-pulse"></div>
+<img alt="Map" class="w-full h-full object-cover mix-blend-multiply opacity-50 grayscale" data-alt="Minimalist top down map of a city in soft tones" data-location="Barcelona" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAudl3MCGCurXZe0KmKyf0qqbgqZ24srKEtgwJZdjCk5CiIhtYHG5ZoGW0mcTHuxnaQUdyhcIQE2qR5t7YNd3yr-nCrA2i7Ii0bOZyj6VJnAp_cR2Ht-oqO9yIIUiVHOf2sed2_45hbq0J5Rf6ydSA182k59DHWoh2LujmjqsvPDeSaAStFnh1_baMMj1L7Uvl6r-nNmokyX6FDp68ovVr-DF1wfDbvCrUZ_V2ATWGI0aIfitN3sOJ2G5OLBpBq0BbyBE3CNQNU47A"/>
+<div class="absolute top-1/2 left-1/3 w-4 h-4 bg-primary rounded-full shadow-[0_0_15px_rgba(91,236,19,0.5)] border-2 border-white"></div>
+<div class="absolute top-1/4 left-1/2 w-4 h-4 bg-primary/40 rounded-full border-2 border-white"></div>
+<div class="absolute bottom-1/4 right-1/4 w-4 h-4 bg-primary/40 rounded-full border-2 border-white"></div>
+<div class="absolute inset-x-0 bottom-4 px-4">
+<div class="bg-white/90 dark:bg-charcoal/90 backdrop-blur py-2 px-4 rounded-full text-xs font-medium inline-block">
+                        3 recuerdos en Barcelona
+                    </div>
+</div>
+</div>
+</section>
+<!-- Footer -->
+<footer class="max-w-md mx-auto mt-20 text-center">
+<div class="w-12 h-0.5 bg-sage dark:bg-white/10 mx-auto mb-8"></div>
+<p class="font-display font-light text-charcoal/40 dark:text-white/40 mb-12">
+                Preservar el legado es el mayor acto de amor digital.
+            </p>
+<div class="flex justify-center gap-8 mb-12">
+<span class="material-icons text-sage hover:text-primary transition-colors cursor-pointer">facebook</span>
+<span class="material-icons text-sage hover:text-primary transition-colors cursor-pointer">camera_alt</span>
+<span class="material-icons text-sage hover:text-primary transition-colors cursor-pointer">alternate_email</span>
+</div>
+<p class="text-[10px] text-charcoal/30 dark:text-white/20 uppercase tracking-widest">
+                © 2024 Cloned • Made with empathy
+            </p>
+</footer>
+</main>
+<!-- Bottom Navigation (iOS Style) -->
+<div class="fixed bottom-0 w-full z-50 px-6 pb-6 pointer-events-none">
+<div class="max-w-md mx-auto pointer-events-auto bg-charcoal/90 dark:bg-white/10 backdrop-blur-xl border border-white/10 rounded-full flex justify-around items-center p-3 shadow-2xl">
+<button class="p-2 text-primary">
+<span class="material-icons">home</span>
+</button>
+<button class="p-2 text-white/50">
+<span class="material-icons">auto_stories</span>
+</button>
+<button class="w-12 h-12 bg-primary rounded-full flex items-center justify-center -translate-y-4 shadow-lg shadow-primary/30">
+<span class="material-icons text-background-dark font-bold">add</span>
+</button>
+<button class="p-2 text-white/50">
+<span class="material-icons">favorite_border</span>
+</button>
+<button class="p-2 text-white/50">
+<span class="material-icons">person_outline</span>
+</button>
+</div>
+</div>
+</body></html>

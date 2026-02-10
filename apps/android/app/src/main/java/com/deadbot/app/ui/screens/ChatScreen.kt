@@ -1,6 +1,6 @@
 package com.deadbot.app.ui.screens
 
-import androidx.compose.foundation.background
+import android.speech.tts.TextToSpeech
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -8,14 +8,16 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Send
+import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.deadbot.app.viewmodel.ChatViewModel
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -28,6 +30,37 @@ fun ChatScreen(
     val currentSession by viewModel.currentSession.collectAsState()
     val loading by viewModel.loading.collectAsState()
     var messageText by remember { mutableStateOf("") }
+    val context = LocalContext.current
+
+    // TTS engine
+    var tts by remember { mutableStateOf<TextToSpeech?>(null) }
+    var ttsReady by remember { mutableStateOf(false) }
+
+    DisposableEffect(Unit) {
+        val engine = TextToSpeech(context) { status ->
+            if (status == TextToSpeech.SUCCESS) {
+                ttsReady = true
+            }
+        }
+        tts = engine
+        onDispose {
+            engine.stop()
+            engine.shutdown()
+        }
+    }
+
+    // Auto-speak new persona messages
+    val lastMessageCount = remember { mutableIntStateOf(0) }
+    LaunchedEffect(messages.size) {
+        if (messages.size > lastMessageCount.intValue && messages.isNotEmpty()) {
+            val lastMsg = messages.last()
+            if (lastMsg.role != "user" && ttsReady) {
+                tts?.language = Locale("es")
+                tts?.speak(lastMsg.content, TextToSpeech.QUEUE_FLUSH, null, "msg-${lastMsg.id}")
+            }
+        }
+        lastMessageCount.intValue = messages.size
+    }
 
     LaunchedEffect(profileId) {
         viewModel.createSession(profileId)
@@ -56,7 +89,7 @@ fun ChatScreen(
                 color = MaterialTheme.colorScheme.errorContainer
             ) {
                 Text(
-                    "⚠️ This is a simulation. Not a real person.",
+                    "⚠️ Esto es una simulación. No es una persona real.",
                     modifier = Modifier.padding(8.dp),
                     style = MaterialTheme.typography.bodySmall
                 )
@@ -73,7 +106,13 @@ fun ChatScreen(
                 items(messages.reversed()) { message ->
                     MessageBubble(
                         message = message.content,
-                        isUser = message.role == "user"
+                        isUser = message.role == "user",
+                        onSpeak = if (!message.role.equals("user", true) && ttsReady) {
+                            {
+                                tts?.language = Locale("es")
+                                tts?.speak(message.content, TextToSpeech.QUEUE_FLUSH, null, "tap-${message.id}")
+                            }
+                        } else null
                     )
                 }
             }
@@ -89,7 +128,7 @@ fun ChatScreen(
                     value = messageText,
                     onValueChange = { messageText = it },
                     modifier = Modifier.weight(1f),
-                    placeholder = { Text("Type a message...") }
+                    placeholder = { Text("Escribe un mensaje...") }
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 IconButton(
@@ -101,7 +140,7 @@ fun ChatScreen(
                     },
                     enabled = !loading && messageText.isNotBlank()
                 ) {
-                    Icon(Icons.Default.Send, contentDescription = "Send")
+                    Icon(Icons.Default.Send, contentDescription = "Enviar")
                 }
             }
         }
@@ -109,23 +148,39 @@ fun ChatScreen(
 }
 
 @Composable
-fun MessageBubble(message: String, isUser: Boolean) {
+fun MessageBubble(message: String, isUser: Boolean, onSpeak: (() -> Unit)? = null) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp),
-        horizontalArrangement = if (isUser) Arrangement.End else Arrangement.Start
+        horizontalArrangement = if (isUser) Arrangement.End else Arrangement.Start,
+        verticalAlignment = Alignment.Bottom
     ) {
         Surface(
             shape = RoundedCornerShape(12.dp),
             color = if (isUser) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant,
             modifier = Modifier.widthIn(max = 280.dp)
         ) {
-            Text(
-                message,
-                modifier = Modifier.padding(12.dp),
-                color = if (isUser) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(start = 12.dp, end = if (onSpeak != null) 4.dp else 12.dp, top = 8.dp, bottom = 8.dp)
+            ) {
+                Text(
+                    message,
+                    modifier = Modifier.weight(1f, fill = false),
+                    color = if (isUser) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                if (onSpeak != null) {
+                    IconButton(onClick = onSpeak, modifier = Modifier.size(28.dp)) {
+                        Icon(
+                            Icons.Default.VolumeUp,
+                            contentDescription = "Escuchar",
+                            modifier = Modifier.size(16.dp),
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                        )
+                    }
+                }
+            }
         }
     }
 }

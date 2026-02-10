@@ -2,7 +2,7 @@ import {
   Controller, Get, Post, Delete, Param, Body, UseGuards, Request,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { IsString, MinLength } from 'class-validator';
+import { IsString, MinLength, IsOptional } from 'class-validator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ProfileService } from './profile.service';
 
@@ -10,6 +10,14 @@ class CreateProfileDto {
   @IsString()
   @MinLength(1)
   name!: string;
+
+  @IsOptional()
+  @IsString()
+  relationship?: string;
+
+  @IsOptional()
+  @IsString()
+  description?: string;
 }
 
 @ApiTags('profiles')
@@ -26,7 +34,7 @@ export class ProfileController {
 
   @Post()
   async create(@Request() req: any, @Body() dto: CreateProfileDto) {
-    return this.profileService.createProfile(req.user.userId, dto.name);
+    return this.profileService.createProfile(req.user.userId, dto.name, dto.relationship, dto.description);
   }
 
   @Get(':id')
