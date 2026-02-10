@@ -84,6 +84,14 @@ export class MemoryService {
     return scored.slice(0, limit);
   }
 
+  /**
+   * Get relevant memories using vector similarity when available.
+   * Alias for getRelevantMemories with explicit vector search emphasis.
+   */
+  async getRelevantMemoriesWithVectors(profileId: string, query: string, limit = 10) {
+    return this.getRelevantMemories(profileId, query, limit);
+  }
+
   async getMemoriesByCategory(profileId: string, category: CognitiveCategory) {
     return this.prisma.cognitiveMemory.findMany({
       where: { profileId, category },
