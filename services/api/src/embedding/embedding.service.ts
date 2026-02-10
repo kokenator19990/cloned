@@ -42,6 +42,28 @@ export class EmbeddingService {
   }
 
   /**
+   * Generate embeddings for multiple texts in batch.
+   * Returns array of embeddings (or null for failed generations).
+   */
+  async generateEmbeddings(texts: string[]): Promise<(number[] | null)[]> {
+    if (!this.enabled) return texts.map(() => null);
+
+    try {
+      const inputs = texts.map((t) => t.slice(0, 8000));
+      const response = await this.client.embeddings.create({
+        model: this.embeddingModel,
+        input: inputs,
+      });
+      return response.data.map((d) => d.embedding ?? null);
+    } catch (error) {
+      this.logger.warn(
+        `Batch embedding generation failed: ${(error as Error).message}`,
+      );
+      return texts.map(() => null);
+    }
+  }
+
+  /**
    * Store embedding vector for a CognitiveMemory row via raw SQL (Prisma doesn't natively support vector writes).
    */
   async storeMemoryEmbedding(memoryId: string, embedding: number[]): Promise<void> {

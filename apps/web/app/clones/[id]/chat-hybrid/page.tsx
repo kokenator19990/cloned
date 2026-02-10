@@ -2,6 +2,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useLocalStore, type CloneProfile, depthLabel, depthColor } from '@/lib/localStore';
+import { useBackendChat } from '@/lib/useBackendChat';
 import { generateCognitiveResponse } from '@/lib/chat';
 import { TalkingAvatar } from '@/components/ui/TalkingAvatar';
 import { ArrowLeft, Send, Volume2, VolumeX, Mic, Plus, Square, Zap } from 'lucide-react';
@@ -15,24 +16,48 @@ interface Message {
     audioUrl?: string;
 }
 
-export default function ChatPage() {
+export default function ChatPageHybrid() {
     const params = useParams();
     const router = useRouter();
     const cloneId = params.id as string;
     const { loadClones, getClone } = useLocalStore();
 
-    const [messages, setMessages] = useState<Message[]>([]);
-    const [input, setInput] = useState('');
-    const [isTyping, setIsTyping] = useState(false);
+    // Mode toggle: 'local' or 'llm' (Ollama)
+    const [mode, setMode] = useState<'local' | 'llm'>('llm');
+    
+    // Local mode state
+    const [localMessages, setLocalMessages] = useState<Message[]>([]);
+    const [localInput, setLocalInput] = useState('');
+    const [localTyping, setLocalTyping] = useState(false);
+    
+    // LLM mode state
+    const { 
+        messages: llmMessages, 
+        isTyping: llmTyping, 
+        sendMessage: sendLLMMessage,
+        initSession 
+    } = useBackendChat({
+        profileId: cloneId,
+        onError: (error) => {
+            console.error('Backend chat error:', error);
+            // Fallback to local mode
+            setMode('local');
+        },
+    });
+
+    // Shared state
     const [isSpeaking, setIsSpeaking] = useState(false);
     const [ttsEnabled, setTtsEnabled] = useState(true);
     const [isRecording, setIsRecording] = useState(false);
     const [inputMode, setInputMode] = useState<'text' | 'voice'>('text');
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const audioRef = useRef<HTMLAudioElement | null>(null);
-    const mediaRecorderRef = useRef<MediaRecorder | null>(null);
     const streamRef = useRef<MediaStream | null>(null);
     const sttRef = useRef<any>(null);
+
+    const messages = mode === 'llm' ? llmMessages : localMessages;
+    const input = mode === 'llm' ? localInput : localInput;
+    const isTyping = mode === 'llm' ? llmTyping : localTyping;
 
     useEffect(() => {
         loadClones();
@@ -40,9 +65,16 @@ export default function ChatPage() {
 
     const clone = getClone(cloneId);
 
+    // Initialize LLM session
+    useEffect(() => {
+        if (mode === 'llm' && clone) {
+            initSession();
+        }
+    }, [mode, clone, initSession]);
+
     // Welcome
     useEffect(() => {
-        if (clone && messages.length === 0) {
+        if (clone && mode === 'local' && localMessages.length === 0) {
             const text = `¡Hola! Soy ${clone.name}. Tengo ${clone.answers.length} recuerdos${clone.voiceSamples > 0 ? ` y ${clone.voiceSamples} grabaciones de mi voz` : ''}. Pregúntame lo que quieras.`;
             const welcomeMsg: Message = {
                 id: 'welcome',
@@ -50,11 +82,11 @@ export default function ChatPage() {
                 content: text,
                 timestamp: new Date(),
             };
-            setMessages([welcomeMsg]);
+            setLocalMessages([welcomeMsg]);
             if (ttsEnabled) speakText(text);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [clone]);
+    }, [clone, mode]);
 
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -94,10 +126,7 @@ export default function ChatPage() {
         const audio = new Audio(audioUrl);
         audioRef.current = audio;
         audio.onended = () => setIsSpeaking(false);
-        audio.onerror = () => {
-            setIsSpeaking(false);
-            // Fallback to TTS
-        };
+        audio.onerror = () => setIsSpeaking(false);
         audio.play().catch(() => setIsSpeaking(false));
     };
 
@@ -108,9 +137,8 @@ export default function ChatPage() {
             streamRef.current = stream;
             
             setIsRecording(true);
-            setInput('');
+            setLocalInput('');
 
-            // Start live STT
             const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
             if (SpeechRecognition) {
                 const recognition = new SpeechRecognition();
@@ -122,7 +150,7 @@ export default function ChatPage() {
                     for (let i = 0; i < event.results.length; i++) {
                         transcript += event.results[i][0].transcript;
                     }
-                    setInput(transcript);
+                    setLocalInput(transcript);
                 };
                 recognition.onerror = () => { };
                 sttRef.current = recognition;
@@ -139,9 +167,9 @@ export default function ChatPage() {
         try { sttRef.current?.stop(); } catch { }
     };
 
-    const handleSend = (e?: React.FormEvent) => {
+    const handleSendLocal = (e?: React.FormEvent) => {
         e?.preventDefault();
-        if (!input.trim() || !clone || isTyping) return;
+        if (!localInput.trim() || !clone || localTyping) return;
 
         if (isRecording) stopVoiceInput();
 
@@ -151,13 +179,13 @@ export default function ChatPage() {
         const userMsg: Message = {
             id: crypto.randomUUID(),
             role: 'user',
-            content: input.trim(),
+            content: localInput.trim(),
             timestamp: new Date(),
         };
-        setMessages((prev) => [...prev, userMsg]);
-        const userInput = input.trim();
-        setInput('');
-        setIsTyping(true);
+        setLocalMessages((prev) => [...prev, userMsg]);
+        const userInput = localInput.trim();
+        setLocalInput('');
+        setLocalTyping(true);
 
         const delay = 600 + Math.random() * 1200;
         setTimeout(() => {
@@ -174,10 +202,9 @@ export default function ChatPage() {
                 timestamp: new Date(),
                 audioUrl: response.audioUrl,
             };
-            setMessages((prev) => [...prev, cloneMsg]);
-            setIsTyping(false);
+            setLocalMessages((prev) => [...prev, cloneMsg]);
+            setLocalTyping(false);
 
-            // Speak: prefer original voice recording, fallback to TTS
             if (ttsEnabled) {
                 if (response.audioUrl) {
                     playOriginalVoice(response.audioUrl);
@@ -187,6 +214,28 @@ export default function ChatPage() {
             }
         }, delay);
     };
+
+    const handleSendLLM = async (e?: React.FormEvent) => {
+        e?.preventDefault();
+        if (!localInput.trim()) return;
+
+        if (isRecording) stopVoiceInput();
+        
+        const msg = localInput.trim();
+        setLocalInput('');
+        
+        await sendLLMMessage(msg);
+        
+        // Get last message for TTS
+        if (ttsEnabled && llmMessages.length > 0) {
+            const lastMsg = llmMessages[llmMessages.length - 1];
+            if (lastMsg.role === 'clone') {
+                speakText(lastMsg.content);
+            }
+        }
+    };
+
+    const handleSend = mode === 'llm' ? handleSendLLM : handleSendLocal;
 
     if (!clone) {
         return (
@@ -207,7 +256,6 @@ export default function ChatPage() {
                     <ArrowLeft className="w-5 h-5 text-charcoal/60" />
                 </Link>
 
-                {/* Talking Avatar in header */}
                 <TalkingAvatar
                     photoUrl={clone.photoUrl}
                     name={clone.name}
@@ -222,26 +270,31 @@ export default function ChatPage() {
                     <div className="flex items-center gap-2">
                         <span className="text-[11px] text-charcoal/40">
                             {clone.answers.length} interacciones
-                            {clone.voiceSamples > 0 && (
-                                <span className="inline-flex items-center gap-0.5 ml-1 text-red-500">
-                                    <Mic className="w-2.5 h-2.5" />{clone.voiceSamples}
-                                </span>
-                            )}
                         </span>
                         <span className={`text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full ${depthColor(clone.depth)}`}>
                             {depthLabel(clone.depth)}
                         </span>
+                        {mode === 'llm' && (
+                            <span className="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full bg-purple-100 text-purple-600 flex items-center gap-1">
+                                <Zap className="w-2.5 h-2.5" />
+                                LLM
+                            </span>
+                        )}
                     </div>
                 </div>
 
                 <div className="flex items-center gap-2">
-                    <Link
-                        href={`/clones/${cloneId}/chat-hybrid`}
-                        className="p-2 rounded-full transition-colors bg-purple-100 text-purple-600 hover:bg-purple-200"
-                        title="Modo LLM con Ollama (razonamiento real)"
+                    {/* Mode toggle */}
+                    <button
+                        onClick={() => setMode(m => m === 'local' ? 'llm' : 'local')}
+                        className={`p-2 rounded-full transition-colors ${
+                            mode === 'llm' ? 'bg-purple-100 text-purple-600' : 'bg-charcoal/5 text-charcoal/50'
+                        }`}
+                        title={mode === 'llm' ? 'Usando Ollama LLM' : 'Modo local simple'}
                     >
-                        <Zap className="w-5 h-5" />
-                    </Link>
+                        <Zap className="w-4 h-4" />
+                    </button>
+                    
                     <Link
                         href={`/create/questions?id=${cloneId}`}
                         className="p-2 rounded-full transition-colors bg-charcoal/5 hover:bg-charcoal/10 text-charcoal/60"
@@ -249,6 +302,7 @@ export default function ChatPage() {
                     >
                         <Plus className="w-5 h-5" />
                     </Link>
+                    
                     <button
                         onClick={() => {
                             const newVal = !ttsEnabled;
@@ -301,15 +355,15 @@ export default function ChatPage() {
                                 >
                                     {msg.content}
                                 </div>
-                                {msg.role === 'clone' && msg.audioUrl && (
+                                {msg.role === 'clone' && (msg as any).audioUrl ? (
                                     <button
-                                        onClick={() => playOriginalVoice(msg.audioUrl!)}
+                                        onClick={() => playOriginalVoice((msg as any).audioUrl)}
                                         className="mt-1 flex items-center gap-1 text-[11px] text-red-500/60 hover:text-red-500 transition-colors ml-1"
                                     >
                                         <Mic className="w-3 h-3" />
                                         Voz original grabada
                                     </button>
-                                )}
+                                ) : null}
                             </div>
                         </div>
                     </div>
@@ -354,15 +408,15 @@ export default function ChatPage() {
                                 <Square className="w-4 h-4 text-white" />
                             </button>
                             <span className="flex-1 text-sm text-charcoal/70 italic">
-                                {input || 'Escuchando...'}
+                                {localInput || 'Escuchando...'}
                             </span>
                         </div>
                     ) : (
                         <input
                             type="text"
-                            value={input}
-                            onChange={(e) => setInput(e.target.value)}
-                            placeholder={`Escribe a ${clone?.name || 'tu clon'}...`}
+                            value={localInput}
+                            onChange={(e) => setLocalInput(e.target.value)}
+                            placeholder={`Escribe a ${clone.name}...`}
                             className="flex-1 px-4 py-3 bg-charcoal/5 rounded-full focus:outline-none focus:ring-2 focus:ring-primary/20 text-[15px]"
                             autoFocus
                         />
@@ -381,7 +435,7 @@ export default function ChatPage() {
                     </button>
                     <button
                         type="submit"
-                        disabled={!input.trim() || isTyping}
+                        disabled={!localInput.trim() || isTyping}
                         className="w-11 h-11 flex items-center justify-center bg-primary text-white rounded-full hover:bg-primary/90 transition-colors disabled:opacity-30 shadow-lg shadow-primary/20"
                     >
                         <Send className="w-4.5 h-4.5" />

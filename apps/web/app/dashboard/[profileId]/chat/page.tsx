@@ -3,10 +3,12 @@ import { useEffect, useState, useRef, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useChatStore, useProfileStore } from '@/lib/store';
 import { ChatBubble } from '@/components/ui/ChatBubble';
-import { Avatar } from '@/components/ui/Avatar';
+import { TalkingAvatar } from '@/components/ui/TalkingAvatar';
 import { SimulationBanner } from '@/components/ui/SimulationBanner';
 import { Button } from '@/components/ui/Button';
 import { Send, Mic, MicOff, PhoneOff, MessageSquare, X, Volume2, VolumeX } from 'lucide-react';
+
+const MINIO_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
 export default function ChatPage() {
   const params = useParams();
@@ -147,6 +149,9 @@ export default function ChatPage() {
   }
 
   const avatarConfig = currentProfile.avatarConfig;
+  const photoUrl = avatarConfig?.baseImageKey 
+    ? `${MINIO_URL}/avatar/image/${avatarConfig.baseImageKey}` 
+    : null;
 
   return (
     <div className="flex flex-col h-[calc(100vh-8rem)] -mx-4 -mt-8">
@@ -156,10 +161,10 @@ export default function ChatPage() {
       {/* Top bar */}
       <div className="flex items-center justify-between px-4 py-3 bg-white/80 border-b border-cloned-border">
         <div className="flex items-center gap-3">
-          <Avatar
+          <TalkingAvatar
+            photoUrl={photoUrl}
             name={currentProfile.name}
-            skin={avatarConfig?.skin}
-            mood={avatarConfig?.mood}
+            isSpeaking={streaming || speaking}
             size="sm"
           />
           <div>
@@ -202,29 +207,26 @@ export default function ChatPage() {
         <div className="flex-1 flex flex-col items-center justify-center bg-gradient-to-b from-cloned-bg to-cloned-soft">
           {!sessionReady ? (
             <div className="text-center">
-              <Avatar
+              <TalkingAvatar
+                photoUrl={photoUrl}
                 name={currentProfile.name}
-                skin={avatarConfig?.skin}
-                mood={avatarConfig?.mood}
-                accessories={avatarConfig?.accessories || []}
+                isSpeaking={false}
                 size="xl"
-                className="mx-auto mb-6"
               />
+              <div className="h-6" />
               <h2 className="text-xl font-semibold mb-2">{currentProfile.name}</h2>
               <p className="text-cloned-muted mb-6">¿Listo para conectar?</p>
               <Button onClick={handleStartSession}>Iniciar Conversación</Button>
             </div>
           ) : (
             <div className="text-center">
-              <Avatar
+              <TalkingAvatar
+                photoUrl={photoUrl}
                 name={currentProfile.name}
-                skin={avatarConfig?.skin}
-                mood={avatarConfig?.mood}
-                accessories={avatarConfig?.accessories || []}
+                isSpeaking={streaming || speaking}
                 size="xl"
-                speaking={streaming || speaking}
-                className="mx-auto mb-4"
               />
+              <div className="h-4" />
               <h2 className="text-lg font-semibold">{currentProfile.name}</h2>
               {(streaming || speaking) && (
                 <p className="text-sm text-cloned-accent-light mt-1 animate-pulse">Speaking...</p>

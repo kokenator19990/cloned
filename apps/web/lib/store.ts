@@ -76,6 +76,10 @@ export const useAuthStore = create<AuthState>((set) => ({
   logout: () => {
     localStorage.removeItem('cloned_token');
     set({ token: null, user: null });
+    // Clear all dependent stores to prevent data leaking between sessions
+    useProfileStore.setState({ profiles: [], currentProfile: null });
+    useEnrollmentStore.setState({ currentQuestion: null, progress: null, loading: false });
+    useChatStore.setState({ sessions: [], messages: [], currentSessionId: null, streaming: false, streamText: '' });
   },
   loadFromStorage: async () => {
     const token = localStorage.getItem('cloned_token');
@@ -149,18 +153,37 @@ export const useEnrollmentStore = create<EnrollmentState>((set) => ({
   loading: false,
   startEnrollment: async (profileId) => {
     set({ loading: true });
-    const { data } = await api.post(`/enrollment/${profileId}/start`);
-    set({ currentQuestion: data, loading: false });
+    try {
+      const { data } = await api.post(`/enrollment/${profileId}/start`);
+      set({ currentQuestion: data });
+    } catch (e) {
+      console.error('startEnrollment failed:', e);
+    } finally {
+      set({ loading: false });
+    }
   },
   fetchNextQuestion: async (profileId) => {
     set({ loading: true });
-    const { data } = await api.get(`/enrollment/${profileId}/next-question`);
-    set({ currentQuestion: data, loading: false });
+    try {
+      const { data } = await api.get(`/enrollment/${profileId}/next-question`);
+      set({ currentQuestion: data });
+    } catch (e) {
+      console.error('fetchNextQuestion failed:', e);
+    } finally {
+      set({ loading: false });
+    }
   },
   submitAnswer: async (profileId, questionId, answer) => {
     set({ loading: true });
-    const { data } = await api.post(`/enrollment/${profileId}/answer`, { questionId, answer });
-    set({ progress: data, loading: false });
+    try {
+      const { data } = await api.post(`/enrollment/${profileId}/answer`, { questionId, answer });
+      set({ progress: data });
+    } catch (e) {
+      console.error('submitAnswer failed:', e);
+      throw e; // re-throw so UI can handle
+    } finally {
+      set({ loading: false });
+    }
   },
   fetchProgress: async (profileId) => {
     const { data } = await api.get(`/enrollment/${profileId}/progress`);
@@ -260,7 +283,8 @@ export const useChatStore = create<ChatState>((set, get) => ({
           socket.on('chat:error', onError);
 
           const token = localStorage.getItem('cloned_token');
-          const userId = token ? JSON.parse(atob(token.split('.')[1])).sub : '';
+          let userId = '';
+          try { userId = JSON.parse(atob(token!.split('.')[1])).sub; } catch {}
           socket.emit('chat:send', { sessionId, content, userId });
         });
       }

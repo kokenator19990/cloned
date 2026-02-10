@@ -2,8 +2,10 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useLocalStore, depthLabel, depthColor } from '@/lib/localStore';
-import { Plus, MessageCircle, Trash2, User, Mic, ArrowRight } from 'lucide-react';
+import { Plus, MessageCircle, Trash2, User, Mic, ArrowRight, Zap } from 'lucide-react';
 import Link from 'next/link';
+
+const MIN_QUESTIONS = 25;
 
 export default function ClonesPage() {
     const { clones, loadClones, deleteClone } = useLocalStore();
@@ -125,36 +127,68 @@ export default function ClonesPage() {
                         ))}
 
                         {/* In-progress clones */}
-                        {inProgressClones.map((clone) => (
-                            <div
-                                key={clone.id}
-                                className="bg-white/50 rounded-2xl border border-dashed border-charcoal/10 p-5 flex items-center gap-5 cursor-pointer hover:border-primary/30 transition-colors"
-                                onClick={() => router.push(`/create/questions?id=${clone.id}`)}
-                            >
-                                <div className="w-16 h-16 rounded-full overflow-hidden bg-charcoal/5 flex items-center justify-center flex-shrink-0">
-                                    {clone.photoUrl ? (
-                                        // eslint-disable-next-line @next/next/no-img-element
-                                        <img src={clone.photoUrl} alt={clone.name} className="w-full h-full object-cover" />
+                        {inProgressClones.map((clone) => {
+                            const hasMinimum = clone.answers.length >= MIN_QUESTIONS;
+                            
+                            return (
+                                <div
+                                    key={clone.id}
+                                    className="bg-white/50 rounded-2xl border border-dashed border-charcoal/10 p-5 flex items-center gap-5"
+                                >
+                                    <div className="w-16 h-16 rounded-full overflow-hidden bg-charcoal/5 flex items-center justify-center flex-shrink-0">
+                                        {clone.photoUrl ? (
+                                            // eslint-disable-next-line @next/next/no-img-element
+                                            <img src={clone.photoUrl} alt={clone.name} className="w-full h-full object-cover" />
+                                        ) : (
+                                            <User className="w-8 h-8 text-charcoal/20" />
+                                        )}
+                                    </div>
+                                    <div className="flex-1">
+                                        <h3 className="text-lg font-display font-medium text-charcoal/60">{clone.name}</h3>
+                                        <p className="text-sm text-charcoal/40">
+                                            En progreso · {clone.answers.length} respuestas
+                                            {(clone.voiceSamples || 0) > 0 && (
+                                                <span className="inline-flex items-center gap-1 ml-1 text-red-400">
+                                                    <Mic className="w-3 h-3" />{clone.voiceSamples}
+                                                </span>
+                                            )}
+                                        </p>
+                                        {!hasMinimum && (
+                                            <p className="text-xs text-amber-600 mt-1 font-medium">
+                                                Faltan {MIN_QUESTIONS - clone.answers.length} respuestas para activar
+                                            </p>
+                                        )}
+                                    </div>
+                                    
+                                    {/* Si tiene menos de 25: solo botón continuar */}
+                                    {!hasMinimum ? (
+                                        <button
+                                            onClick={() => router.push(`/create/questions?id=${clone.id}`)}
+                                            className="text-xs uppercase tracking-widest font-bold text-amber-600 bg-amber-50 px-4 py-2 rounded-full hover:bg-amber-100 transition-colors"
+                                        >
+                                            Continuar
+                                        </button>
                                     ) : (
-                                        <User className="w-8 h-8 text-charcoal/20" />
+                                        /* Si tiene 25+: dos opciones */
+                                        <div className="flex items-center gap-2">
+                                            <button
+                                                onClick={() => router.push(`/create/questions?id=${clone.id}`)}
+                                                className="text-xs uppercase tracking-widest font-bold text-charcoal/40 hover:text-charcoal/60 px-3 py-2 rounded-full hover:bg-charcoal/5 transition-colors"
+                                            >
+                                                Completar
+                                            </button>
+                                            <button
+                                                onClick={() => router.push(`/clones/${clone.id}/chat-hybrid`)}
+                                                className="flex items-center gap-2 text-sm font-medium text-white bg-gradient-to-br from-[#1313ec] to-[#6366f1] px-5 py-2.5 rounded-full hover:scale-105 transition-transform shadow-lg shadow-primary/20"
+                                            >
+                                                <Zap className="w-4 h-4" />
+                                                Hablar con {clone.name}
+                                            </button>
+                                        </div>
                                     )}
                                 </div>
-                                <div className="flex-1">
-                                    <h3 className="text-lg font-display font-medium text-charcoal/60">{clone.name}</h3>
-                                    <p className="text-sm text-charcoal/40">
-                                        En progreso · {clone.answers.length} respuestas
-                                        {(clone.voiceSamples || 0) > 0 && (
-                                            <span className="inline-flex items-center gap-1 ml-1 text-red-400">
-                                                <Mic className="w-3 h-3" />{clone.voiceSamples}
-                                            </span>
-                                        )}
-                                    </p>
-                                </div>
-                                <span className="text-xs uppercase tracking-widest font-bold text-amber-600 bg-amber-50 px-3 py-1.5 rounded-full">
-                                    Continuar
-                                </span>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 )}
             </div>

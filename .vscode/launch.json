@@ -16,7 +16,14 @@
       "cwd": "${workspaceFolder}/services/api",
       "console": "integratedTerminal",
       "restart": true,
-      "envFile": "${workspaceFolder}/services/api/.env"
+      "envFile": "${workspaceFolder}/services/api/.env",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "sourceMaps": true,
+      "outFiles": [
+        "${workspaceFolder}/services/api/dist/**/*.js"
+      ]
     },
     {
       "name": "Web: Debug (Next.js)",
@@ -31,7 +38,28 @@
         "3000"
       ],
       "cwd": "${workspaceFolder}/apps/web",
-      "console": "integratedTerminal"
+      "console": "integratedTerminal",
+      "skipFiles": [
+        "<node_internals>/**"
+      ]
+    },
+    {
+      "name": "API: Debug Tests",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": [
+        "test",
+        "--",
+        "--runInBand",
+        "--detectOpenHandles"
+      ],
+      "cwd": "${workspaceFolder}/services/api",
+      "console": "integratedTerminal",
+      "envFile": "${workspaceFolder}/services/api/.env",
+      "skipFiles": [
+        "<node_internals>/**"
+      ]
     }
   ],
   "compounds": [

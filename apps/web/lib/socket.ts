@@ -4,9 +4,11 @@ let socket: Socket | null = null;
 
 export function getChatSocket(): Socket {
     if (!socket) {
-        const token = typeof window !== 'undefined' ? localStorage.getItem('cloned_token') : null;
         socket = io(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/chat`, {
-            auth: { token },
+            auth: (cb) => {
+                const token = typeof window !== 'undefined' ? localStorage.getItem('cloned_token') : null;
+                cb({ token });
+            },
             transports: ['websocket', 'polling'],
             autoConnect: true,
         });

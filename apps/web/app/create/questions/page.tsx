@@ -1,11 +1,19 @@
 'use client';
-import { useEffect, useState, useMemo, useCallback, useRef } from 'react';
+import { Suspense, useEffect, useState, useMemo, useCallback, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useLocalStore, depthLabel, depthColor } from '@/lib/localStore';
 import { QUESTIONS, MIN_QUESTIONS } from '@/lib/questions';
-import { CheckCircle2, Sparkles, ChevronRight, Mic, Square, Keyboard, Volume2, RotateCcw } from 'lucide-react';
+import { CheckCircle2, Sparkles, ChevronRight, Mic, Square, Keyboard, Volume2, RotateCcw, MessageCircle } from 'lucide-react';
 
 export default function QuestionsPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-cloned-bg flex items-center justify-center"><p className="text-cloned-muted">Cargando...</p></div>}>
+      <QuestionsContent />
+    </Suspense>
+  );
+}
+
+function QuestionsContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const cloneId = searchParams.get('id');
@@ -188,12 +196,13 @@ export default function QuestionsPage() {
         setCurrentIndex((i) => i + 1);
     };
 
-    const handleFinalize = () => {
+    const handleFinalize = (goToChat = true) => {
         if (!cloneId) return;
         setIsFinishing(true);
         window.speechSynthesis.cancel();
         finalizeClone(cloneId);
-        setTimeout(() => router.push('/clones'), 1500);
+        const destination = goToChat ? `/clones/${cloneId}/chat` : '/clones';
+        setTimeout(() => router.push(destination), 1500);
     };
 
     const resetRecording = () => {
@@ -248,14 +257,17 @@ export default function QuestionsPage() {
         return (
             <div className="min-h-screen bg-background-light flex flex-col items-center justify-center gap-6 px-6">
                 <h2 className="text-3xl font-display font-medium text-center">
-                    ¡Has respondido todas las preguntas!
+                    ¡Has respondido todas las preguntas del banco!
                 </h2>
+                <p className="text-charcoal/60 text-center max-w-md">
+                    Ya completaste las {shuffled.length} preguntas disponibles. Puedes hablar con tu clon o volver para responder más cuando se agreguen nuevas.
+                </p>
                 <button
-                    onClick={handleFinalize}
+                    onClick={() => handleFinalize(true)}
                     className="bg-gradient-to-br from-[#1313ec] to-[#6366f1] text-white px-8 py-4 rounded-full font-medium shadow-xl flex items-center gap-3"
                 >
-                    Crear Perfil de {clone?.name}
-                    <Sparkles className="w-5 h-5" />
+                    Hablar con {clone?.name}
+                    <ChevronRight className="w-5 h-5" />
                 </button>
             </div>
         );
@@ -470,15 +482,25 @@ export default function QuestionsPage() {
                     </button>
                 </div>
 
-                {/* Finalize */}
+                {/* Finalize - Can interact now */}
                 {canFinalize && (
-                    <button
-                        onClick={handleFinalize}
-                        className="mt-3 w-full py-3.5 rounded-full bg-green-600 text-white font-medium flex items-center justify-center gap-2 hover:bg-green-700 transition-colors shadow-lg text-sm"
-                    >
-                        <Sparkles className="w-4 h-4" />
-                        Crear Perfil ({answeredCount} respuestas · {clone?.voiceSamples || 0} voz)
-                    </button>
+                    <div className="mt-3 space-y-2">
+                        <button
+                            onClick={() => handleFinalize(true)}
+                            className="w-full py-3.5 rounded-full bg-gradient-to-br from-green-600 to-green-700 text-white font-medium flex items-center justify-center gap-2 hover:scale-[1.02] transition-all shadow-lg text-sm"
+                        >
+                            <MessageCircle className="w-4 h-4" />
+                            Hablar con {clone?.name}
+                        </button>
+                        <button
+                            onClick={handleSubmit}
+                            disabled={!answer.trim()}
+                            className="w-full py-2.5 rounded-full bg-charcoal/5 text-charcoal/70 font-medium flex items-center justify-center gap-2 hover:bg-charcoal/10 transition-colors text-xs disabled:opacity-30"
+                        >
+                            <ChevronRight className="w-3.5 h-3.5" />
+                            O seguir respondiendo ({answeredCount}/{shuffled.length})
+                        </button>
+                    </div>
                 )}
             </div>
         </div>
