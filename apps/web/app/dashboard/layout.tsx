@@ -1,9 +1,9 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
 import { useAuthStore } from '@/lib/store';
 import { LogOut, User, Trash2 } from 'lucide-react';
+import { ClonedLogo } from '@/components/ui/ClonedLogo';
 import api from '@/lib/api';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -51,7 +51,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <header className="border-b border-cloned-border bg-white/80 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => router.push('/dashboard')}>
-            <Image src="/ClonedLogo.png" alt="Cloned" width={32} height={32} className="rounded-lg" />
+            <ClonedLogo size={32} className="rounded-lg" />
             <span className="font-display font-semibold text-cloned-text">Cloned</span>
           </div>
 

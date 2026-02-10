@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import Image from 'next/image';
 import { Heart, Shield, Eye, Lock, MessageCircle, Brain, Mic2, ChevronRight } from 'lucide-react';
+import { ClonedLogo } from '@/components/ui/ClonedLogo';
 
 export default function Home() {
   return (
@@ -9,7 +9,7 @@ export default function Home() {
       <nav className="sticky top-0 z-50 backdrop-blur-md bg-cloned-bg/80 border-b border-cloned-border">
         <div className="max-w-6xl mx-auto flex items-center justify-between px-6 py-4">
           <div className="flex items-center gap-3">
-            <Image src="/ClonedLogo.png" alt="Cloned" width={36} height={36} className="rounded-lg" />
+            <ClonedLogo size={36} className="rounded-lg" />
             <span className="font-display text-xl font-semibold text-cloned-text">Cloned</span>
           </div>
           <div className="flex items-center gap-3">
@@ -27,7 +27,7 @@ export default function Home() {
       <section className="relative overflow-hidden bg-gradient-to-b from-cloned-hero to-cloned-bg">
         <div className="max-w-4xl mx-auto text-center px-6 pt-20 pb-24">
           <div className="mb-8">
-            <Image src="/ClonedLogo.png" alt="Cloned" width={80} height={80} className="mx-auto rounded-2xl shadow-lg animate-float" />
+            <ClonedLogo size={80} className="mx-auto rounded-2xl shadow-lg animate-float" />
           </div>
           <h1 className="font-display text-4xl md:text-6xl font-bold text-cloned-text leading-tight mb-6">
             Vuelve a conversar<br />
@@ -190,7 +190,7 @@ export default function Home() {
       <footer className="border-t border-cloned-border py-10 px-6">
         <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <Image src="/ClonedLogo.png" alt="Cloned" width={24} height={24} className="rounded" />
+            <ClonedLogo size={24} className="rounded" />
             <span className="text-sm text-cloned-muted">Cloned — Simulación cognitiva con ética y respeto</span>
           </div>
           <p className="text-xs text-cloned-muted">
