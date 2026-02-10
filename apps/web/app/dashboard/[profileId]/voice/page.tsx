@@ -87,7 +87,7 @@ export default function VoicePage() {
 
     recorder.start();
     setTimeout(() => recorder.stop(), 10000);
-    alert('Recording consent phrase for 10 seconds. Please read the consent text aloud now.');
+    alert('Grabando frase de consentimiento durante 10 segundos. Lee el texto en voz alta ahora.');
   };
 
   // Browser-based STT
@@ -136,93 +136,93 @@ export default function VoicePage() {
 
   return (
     <div className="max-w-2xl mx-auto">
-      <h1 className="text-2xl font-bold mb-6">Voice Settings - {currentProfile?.name}</h1>
+      <h1 className="text-2xl font-bold mb-6">Configuración de Voz - {currentProfile?.name}</h1>
 
       {/* Consent section */}
       <Card className="mb-6">
         <h3 className="font-semibold mb-3 flex items-center gap-2">
-          Voice Consent
+          Consentimiento de Voz
           {currentProfile?.voiceConsentGiven && (
-            <CheckCircle className="w-4 h-4 text-green-400" />
+            <CheckCircle className="w-4 h-4 text-green-500" />
           )}
         </h3>
         {currentProfile?.voiceConsentGiven ? (
-          <p className="text-sm text-green-300">Consent recorded. You can record more samples.</p>
+          <p className="text-sm text-green-600">Consentimiento grabado. Puedes grabar más muestras.</p>
         ) : (
           <div>
             <p className="text-sm text-cloned-muted mb-3">
-              Please read the following phrase aloud to consent to voice modeling:
+              Lee la siguiente frase en voz alta para dar tu consentimiento al modelado de voz:
             </p>
             <blockquote className="border-l-2 border-cloned-accent pl-4 italic text-sm mb-4">
               &quot;Consiento que mi voz sea modelada y utilizada por Cloned con el fin de
               crear una simulación de perfil cognitivo.&quot;
             </blockquote>
-            <Button onClick={recordConsent}>Record Consent</Button>
+            <Button onClick={recordConsent}>Grabar Consentimiento</Button>
           </div>
         )}
       </Card>
 
       {/* Recording section */}
       <Card className="mb-6">
-        <h3 className="font-semibold mb-3">Record Voice Sample</h3>
+        <h3 className="font-semibold mb-3">Grabar Muestra de Voz</h3>
         <p className="text-sm text-cloned-muted mb-4">
-          Record voice samples to help build your voice profile. Speak naturally.
+          Graba muestras de voz para construir tu perfil vocal. Habla con naturalidad.
         </p>
         <div className="flex gap-3">
           {recording ? (
             <Button variant="danger" onClick={stopRecording}>
-              <Square className="w-4 h-4" /> Stop Recording
+              <Square className="w-4 h-4" /> Detener Grabación
             </Button>
           ) : (
             <Button onClick={startRecording}>
-              <Mic className="w-4 h-4" /> Start Recording
+              <Mic className="w-4 h-4" /> Iniciar Grabación
             </Button>
           )}
         </div>
         {recording && (
           <div className="mt-3 flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-red-500 animate-pulse" />
-            <span className="text-sm text-red-300">Recording...</span>
+            <span className="text-sm text-red-500">Grabando...</span>
           </div>
         )}
       </Card>
 
       {/* Voice Test Section */}
       <Card className="mb-6">
-        <h3 className="font-semibold mb-3">Test Voice (Browser)</h3>
+        <h3 className="font-semibold mb-3">Probar Voz (Navegador)</h3>
         <p className="text-sm text-cloned-muted mb-4">
-          Test speech-to-text and text-to-speech using your browser&apos;s built-in capabilities.
+          Prueba voz-a-texto y texto-a-voz usando las capacidades integradas de tu navegador.
         </p>
 
         {/* STT Test */}
         <div className="mb-4">
-          <label className="text-sm font-medium block mb-2">Speech → Text (STT)</label>
+          <label className="text-sm font-medium block mb-2">Voz → Texto (STT)</label>
           <div className="flex gap-2">
             <Button onClick={toggleSTT} variant={sttListening ? 'danger' : 'primary'}>
               {sttListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
-              {sttListening ? ' Listening...' : ' Start STT'}
+              {sttListening ? ' Escuchando...' : ' Iniciar STT'}
             </Button>
           </div>
           {sttText && (
             <div className="mt-2 p-3 bg-cloned-soft rounded-lg text-sm">
-              <span className="text-cloned-muted">Transcription:</span> {sttText}
+              <span className="text-cloned-muted">Transcripción:</span> {sttText}
             </div>
           )}
         </div>
 
         {/* TTS Test */}
         <div>
-          <label className="text-sm font-medium block mb-2">Text → Speech (TTS)</label>
+          <label className="text-sm font-medium block mb-2">Texto → Voz (TTS)</label>
           <div className="flex gap-2">
             <input
               type="text"
               value={ttsInput}
               onChange={(e) => setTtsInput(e.target.value)}
-              placeholder="Type text to speak..."
+              placeholder="Escribe texto para reproducir..."
               className="flex-1 bg-white border border-cloned-border rounded-lg px-3 py-2 text-sm outline-none focus:border-cloned-accent"
             />
             <Button onClick={playTTS} disabled={!ttsInput.trim()}>
-              <Volume2 className="w-4 h-4" /> Speak
+              <Volume2 className="w-4 h-4" /> Reproducir
             </Button>
           </div>
         </div>
@@ -230,15 +230,15 @@ export default function VoicePage() {
 
       {/* Samples list */}
       <Card>
-        <h3 className="font-semibold mb-3">Voice Samples ({samples.length})</h3>
+        <h3 className="font-semibold mb-3">Muestras de Voz ({samples.length})</h3>
         {samples.length === 0 ? (
-          <p className="text-sm text-cloned-muted">No voice samples yet.</p>
+          <p className="text-sm text-cloned-muted">Aún no hay muestras de voz.</p>
         ) : (
           <div className="space-y-2">
             {samples.map((s: any) => (
               <div key={s.id} className="flex items-center justify-between bg-cloned-soft rounded-lg p-3">
                 <div className="text-sm">
-                  <span>{s.consentPhrase ? 'Consent' : 'Sample'}</span>
+                  <span>{s.consentPhrase ? 'Consentimiento' : 'Muestra'}</span>
                   <span className="text-cloned-muted ml-2">
                     {new Date(s.createdAt).toLocaleDateString()}
                   </span>

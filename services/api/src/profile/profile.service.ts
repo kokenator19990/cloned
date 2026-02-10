@@ -39,8 +39,8 @@ export class ProfileService {
       data: {
         userId,
         name,
-        relationship,
-        description,
+        relationship: relationship || null,
+        description: description || null,
         coverageMap: DEFAULT_COVERAGE_MAP,
       },
       include: { avatarConfig: true },

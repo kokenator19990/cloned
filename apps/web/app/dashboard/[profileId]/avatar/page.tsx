@@ -71,7 +71,7 @@ export default function AvatarPage() {
 
   return (
     <div className="max-w-3xl mx-auto">
-      <h1 className="text-2xl font-bold mb-6">Avatar Settings</h1>
+      <h1 className="text-2xl font-bold mb-6">Configuración de Avatar</h1>
 
       {/* Live preview */}
       <Card className="mb-6 flex flex-col items-center py-8">
@@ -87,12 +87,12 @@ export default function AvatarPage() {
           {accessories.filter((a: string) => a !== 'none').length > 0 &&
             ` / ${accessories.filter((a: string) => a !== 'none').join(', ')}`}
         </p>
-        {saving && <p className="text-xs text-cloned-accent mt-1">Saving...</p>}
+        {saving && <p className="text-xs text-cloned-accent mt-1">Guardando...</p>}
       </Card>
 
       {/* Photo upload */}
       <Card className="mb-6">
-        <h3 className="font-semibold mb-3">Base Photo</h3>
+        <h3 className="font-semibold mb-3">Foto Base</h3>
         <input
           type="file"
           accept="image/*"
@@ -103,7 +103,7 @@ export default function AvatarPage() {
 
       {/* Skin selector */}
       <Card className="mb-6">
-        <h3 className="font-semibold mb-3">Skin</h3>
+        <h3 className="font-semibold mb-3">Apariencia</h3>
         <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
           {SKINS.map((skin) => (
             <button
@@ -128,7 +128,7 @@ export default function AvatarPage() {
 
       {/* Mood selector */}
       <Card className="mb-6">
-        <h3 className="font-semibold mb-3">Mood</h3>
+        <h3 className="font-semibold mb-3">Estado de Ánimo</h3>
         <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
           {MOODS.map((mood) => (
             <button
@@ -150,7 +150,7 @@ export default function AvatarPage() {
 
       {/* Accessories */}
       <Card>
-        <h3 className="font-semibold mb-3">Accessories</h3>
+        <h3 className="font-semibold mb-3">Accesorios</h3>
         <div className="flex flex-wrap gap-3">
           {ACCESSORIES.map((acc) => (
             <button

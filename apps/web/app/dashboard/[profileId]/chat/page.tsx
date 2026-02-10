@@ -138,9 +138,9 @@ export default function ChatPage() {
   if (currentProfile.status !== 'ACTIVE') {
     return (
       <div className="flex flex-col items-center justify-center h-[calc(100vh-8rem)]">
-        <p className="text-cloned-muted mb-4">This profile needs to complete enrollment first.</p>
+        <p className="text-cloned-muted mb-4">Este perfil necesita completar el enrollment primero.</p>
         <Button onClick={() => router.push(`/dashboard/${profileId}/enrollment`)}>
-          Go to Enrollment
+          Ir al Enrollment
         </Button>
       </div>
     );
@@ -166,7 +166,7 @@ export default function ChatPage() {
             <span className="font-medium">{currentProfile.name}</span>
             <div className="flex items-center gap-1.5">
               <div className="w-2 h-2 rounded-full bg-green-500" />
-              <span className="text-xs text-cloned-muted">Active Profile</span>
+              <span className="text-xs text-cloned-muted">Perfil Activo</span>
             </div>
           </div>
         </div>
@@ -174,7 +174,7 @@ export default function ChatPage() {
           <button
             onClick={() => setTtsEnabled(!ttsEnabled)}
             className={`p-2 rounded-lg hover:bg-cloned-soft transition-colors ${ttsEnabled ? 'text-cloned-accent' : 'text-cloned-muted'}`}
-            title={ttsEnabled ? 'Disable voice responses' : 'Enable voice responses'}
+            title={ttsEnabled ? 'Desactivar voz' : 'Activar voz'}
           >
             {ttsEnabled ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5" />}
           </button>
@@ -211,8 +211,8 @@ export default function ChatPage() {
                 className="mx-auto mb-6"
               />
               <h2 className="text-xl font-semibold mb-2">{currentProfile.name}</h2>
-              <p className="text-cloned-muted mb-6">Ready to connect?</p>
-              <Button onClick={handleStartSession}>Start Conversation</Button>
+              <p className="text-cloned-muted mb-6">¿Listo para conectar?</p>
+              <Button onClick={handleStartSession}>Iniciar Conversación</Button>
             </div>
           ) : (
             <div className="text-center">
@@ -244,7 +244,7 @@ export default function ChatPage() {
         {showMessages && (
           <div className="w-96 border-l border-cloned-border bg-cloned-bg flex flex-col">
             <div className="flex items-center justify-between p-3 border-b border-cloned-border">
-              <span className="text-sm font-medium">Messages</span>
+              <span className="text-sm font-medium">Mensajes</span>
               <button onClick={() => setShowMessages(false)} className="text-cloned-muted hover:text-white">
                 <X className="w-4 h-4" />
               </button>
@@ -283,7 +283,7 @@ export default function ChatPage() {
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder={listening ? 'Listening...' : `Talk to ${currentProfile.name}...`}
+              placeholder={listening ? 'Escuchando...' : `Habla con ${currentProfile.name}...`}
               className="flex-1 bg-white border border-cloned-border rounded-xl px-4 py-3 text-cloned-text outline-none focus:border-cloned-accent transition-colors"
               disabled={streaming || listening}
             />

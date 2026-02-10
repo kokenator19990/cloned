@@ -35,7 +35,7 @@ export default function ProfilePage() {
   return (
     <div>
       <button onClick={() => router.push('/dashboard')} className="flex items-center gap-2 text-cloned-muted hover:text-cloned-text mb-6 transition-colors">
-        <ArrowLeft className="w-4 h-4" /> Back to Profiles
+        <ArrowLeft className="w-4 h-4" /> Volver a perfiles
       </button>
 
       <div className="flex items-center gap-4 mb-8">
@@ -50,29 +50,29 @@ export default function ProfilePage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         <Card>
-          <h3 className="font-semibold mb-4">Coverage Map</h3>
+          <h3 className="font-semibold mb-4">Mapa de Cobertura</h3>
           <div className="flex justify-center">
             <RadarChart data={currentProfile.coverageMap} />
           </div>
         </Card>
 
         <Card>
-          <h3 className="font-semibold mb-4">Profile Stats</h3>
+          <h3 className="font-semibold mb-4">Estadísticas del Perfil</h3>
           <div className="space-y-4">
             <div>
-              <div className="text-sm text-cloned-muted mb-1">Enrollment Progress</div>
+              <div className="text-sm text-cloned-muted mb-1">Progreso del Enrollment</div>
               <ProgressBar value={Math.min(progress, 100)} />
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-cloned-muted">Interactions</span>
+              <span className="text-cloned-muted">Interacciones</span>
               <span>{currentProfile.currentInteractions} / {currentProfile.minInteractions}</span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-cloned-muted">Consistency Score</span>
+              <span className="text-cloned-muted">Consistencia</span>
               <span>{(currentProfile.consistencyScore * 100).toFixed(0)}%</span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-cloned-muted">Status</span>
+              <span className="text-cloned-muted">Estado</span>
               <Badge status={currentProfile.status} />
             </div>
           </div>

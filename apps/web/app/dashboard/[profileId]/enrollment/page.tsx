@@ -72,7 +72,7 @@ export default function EnrollmentPage() {
       {
         role: 'PERSONA',
         content:
-          "Welcome! I'm going to ask you a series of questions to build your cognitive profile. Answer honestly and in detail - the more you share, the better the profile. Let's begin.",
+          '¡Bienvenido! Voy a hacerte una serie de preguntas para construir tu perfil cognitivo. Responde con honestidad y detalle — mientras más compartas, mejor será el perfil. ¡Empecemos!',
       },
     ]);
     await startEnrollment(profileId);
@@ -101,7 +101,7 @@ export default function EnrollmentPage() {
       <div className="mb-4">
         <div className="flex items-center justify-between mb-3">
           <h1 className="text-xl font-bold">
-            Cognitive Enrollment {currentProfile ? `- ${currentProfile.name}` : ''}
+            Enrollment Cognitivo {currentProfile ? `- ${currentProfile.name}` : ''}
           </h1>
           {progress && (
             <span className="text-sm text-cloned-accent-light font-medium">
@@ -140,12 +140,12 @@ export default function EnrollmentPage() {
               <div className="w-24 h-24 rounded-full bg-cloned-accent/20 border-2 border-cloned-accent mx-auto mb-6 flex items-center justify-center">
                 <span className="text-4xl">🧠</span>
               </div>
-              <h2 className="text-xl font-semibold mb-2">Ready to build your cognitive fingerprint?</h2>
+              <h2 className="text-xl font-semibold mb-2">¿Listo para construir tu huella cognitiva?</h2>
               <p className="text-cloned-muted mb-6 max-w-md">
-                I&apos;ll ask you questions about how you think, what you value, and how you express yourself.
-                Minimum {progress?.minRequired || 50} interactions required.
+                Te haré preguntas sobre cómo piensas, qué valoras y cómo te expresas.
+                Se requieren mínimo {progress?.minRequired || 50} interacciones.
               </p>
-              <Button onClick={handleStart}>Begin Enrollment</Button>
+              <Button onClick={handleStart}>Comenzar Enrollment</Button>
             </div>
           </div>
         ) : (
@@ -180,12 +180,12 @@ export default function EnrollmentPage() {
       {progress?.isReady && (
         <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 mb-4 text-center">
           <p className="text-emerald-700 font-medium mb-2">
-            Profile ready! You have enough data to activate.
+            ¡Perfil listo! Tienes suficientes datos para activarlo.
           </p>
           <div className="flex gap-3 justify-center">
-            <Button onClick={handleActivate}>Activate Profile & Start Chatting</Button>
+            <Button onClick={handleActivate}>Activar Perfil y Empezar a Chatear</Button>
             <Button variant="secondary" onClick={() => fetchNextQuestion(profileId)}>
-              Keep Answering
+              Seguir Respondiendo
             </Button>
           </div>
         </div>
@@ -205,7 +205,7 @@ export default function EnrollmentPage() {
             type="text"
             value={answer}
             onChange={(e) => setAnswer(e.target.value)}
-            placeholder="Type your answer..."
+            placeholder="Escribe tu respuesta..."
             className="flex-1 bg-cloned-card border border-cloned-border rounded-xl px-4 py-3 text-cloned-text outline-none focus:border-cloned-accent transition-colors"
             disabled={loading}
           />

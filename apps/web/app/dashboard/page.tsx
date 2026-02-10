@@ -95,7 +95,7 @@ export default function DashboardPage() {
               onChange={(e) => setNewDescription(e.target.value)}
             />
             <div className="flex gap-3 justify-end">
-              <Button variant="ghost" onClick={() => setShowCreate(false)}>Cancelar</Button>
+              <Button type="button" variant="ghost" onClick={() => setShowCreate(false)}>Cancelar</Button>
               <Button type="submit" loading={creating}>Crear Perfil</Button>
             </div>
           </form>
@@ -137,7 +137,7 @@ export default function DashboardPage() {
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      if (confirm(`Delete "${profile.name}"? This cannot be undone.`)) {
+                      if (confirm(`¿Eliminar "${profile.name}"? Esta acción no se puede deshacer.`)) {
                         deleteProfile(profile.id);
                       }
                     }}
