@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service';
 import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
@@ -13,20 +14,25 @@ export class VoiceService {
   private ttsUrl: string;
   private voiceCloningEnabled: boolean;
 
-  constructor(private prisma: PrismaService) {
+  constructor(
+    private prisma: PrismaService,
+    private config: ConfigService,
+  ) {
     this.s3 = new S3Client({
-      endpoint: `http${process.env.MINIO_USE_SSL === 'true' ? 's' : ''}://${process.env.MINIO_ENDPOINT || 'localhost'}:${process.env.MINIO_PORT || '9000'}`,
+      endpoint: `http${this.config.get('MINIO_USE_SSL') === 'true' ? 's' : ''}://${this.config.get('MINIO_ENDPOINT', 'localhost')}:${this.config.get('MINIO_PORT', '9000')}`,
       region: 'us-east-1',
       credentials: {
-        accessKeyId: process.env.MINIO_ACCESS_KEY || 'deadbot',
-        secretAccessKey: process.env.MINIO_SECRET_KEY || 'deadbot_dev_2024',
+        accessKeyId: this.config.get('MINIO_ACCESS_KEY', 'deadbot'),
+        secretAccessKey: this.config.get('MINIO_SECRET_KEY', 'deadbot_dev_2024'),
       },
       forcePathStyle: true,
     });
-    // Pluggable provider URLs (defaults to OpenAI)
-    this.sttUrl = process.env.STT_API_URL || 'https://api.openai.com/v1/audio/transcriptions';
-    this.ttsUrl = process.env.TTS_API_URL || 'https://api.openai.com/v1/audio/speech';
-    this.voiceCloningEnabled = process.env.VOICE_CLONING_ENABLED === 'true';
+    // Pluggable STT/TTS provider URLs
+    this.sttUrl = this.config.get('STT_API_URL', 'http://localhost:8000/v1/audio/transcriptions');
+    this.ttsUrl = this.config.get('TTS_API_URL', 'http://localhost:8000/v1/audio/speech');
+    this.voiceCloningEnabled = this.config.get('VOICE_CLONING_ENABLED') === 'true';
+    
+    this.logger.log(`Voice service initialized - STT: ${this.sttUrl}, TTS: ${this.ttsUrl}, Cloning: ${this.voiceCloningEnabled}`);
   }
 
   async uploadSample(profileId: string, file: Express.Multer.File, isConsent = false) {
@@ -82,53 +88,79 @@ export class VoiceService {
     return { ...sample, url };
   }
 
-  async speechToText(audioBuffer: Buffer, mimetype = 'audio/wav'): Promise<string> {
+  async speechToText(audioBuffer: Buffer, mimetype = 'audio/wav', profileId?: string): Promise<string> {
+    // Check if STT is configured
+    if (!this.sttUrl || this.sttUrl === '') {
+      this.logger.warn('STT_API_URL not configured');
+      return 'Speech transcription not configured';
+    }
+
     try {
       // Whisper-compatible API (OpenAI /v1/audio/transcriptions format)
       const formData = new FormData();
       const blob = new Blob([new Uint8Array(audioBuffer)], { type: mimetype });
       formData.append('file', blob, 'audio.wav');
       formData.append('model', 'whisper-1');
+      
+      // Add profileId if provided for voice-specific models
+      if (profileId) {
+        formData.append('profileId', profileId);
+      }
 
       const response = await fetch(this.sttUrl, {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${process.env.LLM_API_KEY || ''}`,
+          Authorization: `Bearer ${this.config.get('LLM_API_KEY', '')}`,
         },
         body: formData,
       });
 
       if (!response.ok) {
-        throw new Error(`STT provider returned ${response.status}`);
+        const errorText = await response.text().catch(() => 'Unknown error');
+        throw new Error(`STT provider returned ${response.status}: ${errorText}`);
       }
 
       const result = (await response.json()) as { text?: string };
       return result.text || '[No transcription returned]';
     } catch (error) {
-      this.logger.warn(`STT failed, returning placeholder: ${(error as Error).message}`);
+      this.logger.warn(`STT failed: ${(error as Error).message}`);
       return '[STT provider unavailable - audio received successfully]';
     }
   }
 
-  async textToSpeech(text: string, _profileId?: string): Promise<Buffer> {
+  async textToSpeech(text: string, profileId?: string): Promise<Buffer> {
+    // Check if TTS is configured
+    if (!this.ttsUrl || this.ttsUrl === '') {
+      this.logger.warn('TTS_API_URL not configured, returning silence');
+      return this.generateSilenceWav(1);
+    }
+
     try {
       // OpenAI-compatible TTS API format
+      const requestBody: any = {
+        model: 'tts-1',
+        input: text,
+        voice: 'alloy',
+        response_format: 'wav',
+      };
+
+      // Add profileId if provided for voice cloning
+      if (profileId && this.voiceCloningEnabled) {
+        requestBody.profileId = profileId;
+      }
+
       const response = await fetch(this.ttsUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${process.env.LLM_API_KEY || ''}`,
+          Authorization: `Bearer ${this.config.get('LLM_API_KEY', '')}`,
         },
-        body: JSON.stringify({
-          model: 'tts-1',
-          input: text,
-          voice: 'alloy',
-          response_format: 'wav',
-        }),
+        body: JSON.stringify(requestBody),
       });
 
       if (!response.ok) {
-        throw new Error(`TTS provider returned ${response.status}`);
+        const errorText = await response.text().catch(() => 'Unknown error');
+        throw new Error(`TTS provider returned ${response.status}: ${errorText}`);
       }
 
       const arrayBuffer = await response.arrayBuffer();
