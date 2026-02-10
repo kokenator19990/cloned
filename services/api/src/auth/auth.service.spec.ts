@@ -123,4 +123,97 @@ describe('AuthService', () => {
       await expect(service.getUser('bad-id')).rejects.toThrow(UnauthorizedException);
     });
   });
+
+  describe('deleteAccount', () => {
+    it('should delete user and all profiles', async () => {
+      (prisma.user.findUnique as jest.Mock).mockResolvedValue(mockUser);
+      (prisma.personaProfile as any) = {
+        deleteMany: jest.fn().mockResolvedValue({ count: 2 }),
+      };
+      (prisma.user.delete as jest.Mock) = jest.fn().mockResolvedValue(mockUser);
+
+      const result = await service.deleteAccount('user-1');
+
+      expect(result.deleted).toBe(true);
+      expect(prisma.user.delete).toHaveBeenCalledWith({ where: { id: 'user-1' } });
+    });
+
+    it('should throw UnauthorizedException if user not found', async () => {
+      (prisma.user.findUnique as jest.Mock).mockResolvedValue(null);
+
+      await expect(service.deleteAccount('bad-id')).rejects.toThrow(UnauthorizedException);
+    });
+  });
+
+  describe('createGuestSession', () => {
+    it('should create guest user with expiration', async () => {
+      const guestUser = {
+        ...mockUser,
+        id: 'guest-123',
+        email: 'guest-123@guest.cloned.local',
+        displayName: 'Invitado 12:00',
+        isGuest: true,
+        expiresAt: new Date(Date.now() + 20 * 60 * 1000),
+      };
+      (prisma.user.create as jest.Mock).mockResolvedValue(guestUser);
+      (bcrypt.hash as jest.Mock).mockResolvedValue('$2b$10$hashedpassword');
+
+      const result = await service.createGuestSession();
+
+      expect(result.accessToken).toBe('mock-jwt-token');
+      expect(result.user.isGuest).toBe(true);
+      expect(result.user.expiresAt).toBeDefined();
+      expect(prisma.user.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({
+            isGuest: true,
+            expiresAt: expect.any(Date),
+          }),
+        }),
+      );
+    });
+  });
+
+  describe('cleanupExpiredGuests', () => {
+    it('should delete expired guest users and their profiles', async () => {
+      const expiredGuest1 = {
+        ...mockUser,
+        id: 'guest-1',
+        isGuest: true,
+        expiresAt: new Date(Date.now() - 10000),
+      };
+      const expiredGuest2 = {
+        ...mockUser,
+        id: 'guest-2',
+        isGuest: true,
+        expiresAt: new Date(Date.now() - 5000),
+      };
+      
+      (prisma.user.findMany as jest.Mock) = jest.fn().mockResolvedValue([expiredGuest1, expiredGuest2]);
+      (prisma.personaProfile as any) = {
+        deleteMany: jest.fn().mockResolvedValue({ count: 3 }),
+      };
+      (prisma.user.delete as jest.Mock) = jest.fn().mockResolvedValue({});
+
+      const result = await service.cleanupExpiredGuests();
+
+      expect(result.deletedCount).toBe(2);
+      expect(prisma.user.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: expect.objectContaining({
+            isGuest: true,
+            expiresAt: expect.objectContaining({ lte: expect.any(Date) }),
+          }),
+        }),
+      );
+    });
+
+    it('should return 0 when no expired guests', async () => {
+      (prisma.user.findMany as jest.Mock) = jest.fn().mockResolvedValue([]);
+
+      const result = await service.cleanupExpiredGuests();
+
+      expect(result.deletedCount).toBe(0);
+    });
+  });
 });
