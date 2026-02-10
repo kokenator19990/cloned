@@ -1,5 +1,6 @@
-import { Controller, Get } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { Controller, Get, HttpStatus, Res } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { Response } from 'express';
 import { PrismaService } from '../prisma/prisma.service';
 
 @ApiTags('health')
@@ -8,56 +9,66 @@ export class HealthController {
   constructor(private prisma: PrismaService) { }
 
   @Get()
-  async check() {
+  @ApiOperation({ summary: 'Health check endpoint' })
+  @ApiResponse({ status: 200, description: 'All services healthy' })
+  @ApiResponse({ status: 503, description: 'One or more services unhealthy' })
+  async check(@Res() res: Response) {
     const checks: Record<string, string> = {};
 
     // Database check
     try {
       await this.prisma.$queryRaw`SELECT 1`;
       checks.database = 'ok';
-    } catch {
+    } catch (error) {
       checks.database = 'error';
-    }
-
-    // pgvector check
-    try {
-      await this.prisma.$queryRaw`SELECT extversion FROM pg_extension WHERE extname = 'vector'`;
-      checks.pgvector = 'ok';
-    } catch {
-      checks.pgvector = 'error';
     }
 
     // Redis check
     try {
+      const Redis = (await import('ioredis')).default;
       const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379';
-      const response = await fetch(redisUrl.replace('redis://', 'http://'), { signal: AbortSignal.timeout(2000) }).catch(() => null);
-      // Redis doesn't speak HTTP, but a connection attempt tells us the port is open
-      checks.redis = 'ok'; // If we get here without timeout, port is reachable
-    } catch {
-      checks.redis = 'unreachable';
-    }
-
-    // LLM check (Ollama or OpenAI)
-    try {
-      const llmBase = process.env.LLM_BASE_URL || 'http://localhost:11434/v1';
-      const modelsUrl = llmBase.replace('/v1', '') + (llmBase.includes('localhost:11434') ? '/api/tags' : '/v1/models');
-      const res = await fetch(modelsUrl, {
-        headers: { Authorization: `Bearer ${process.env.LLM_API_KEY || ''}` },
-        signal: AbortSignal.timeout(3000),
+      const redis = new Redis(redisUrl, {
+        lazyConnect: true,
+        connectTimeout: 2000,
+        maxRetriesPerRequest: 1,
       });
-      checks.llm = res.ok ? 'ok' : `error (${res.status})`;
-    } catch {
-      checks.llm = 'unreachable';
+      await redis.connect();
+      await redis.ping();
+      checks.redis = 'ok';
+      await redis.quit();
+    } catch (error) {
+      checks.redis = 'unavailable';
     }
 
+    // MinIO check
+    try {
+      const endpoint = process.env.MINIO_ENDPOINT || 'localhost:9000';
+      const useSSL = process.env.MINIO_USE_SSL === 'true';
+      const protocol = useSSL ? 'https' : 'http';
+      const url = `${protocol}://${endpoint}/minio/health/live`;
+      const response = await fetch(url, { 
+        signal: AbortSignal.timeout(2000),
+        method: 'GET',
+      });
+      checks.minio = response.ok ? 'ok' : 'error';
+    } catch (error) {
+      checks.minio = 'unavailable';
+    }
+
+    const criticalServices = ['database'];
+    const allCriticalOk = criticalServices.every((service) => checks[service] === 'ok');
     const allOk = Object.values(checks).every((v) => v === 'ok');
 
-    return {
-      status: allOk ? 'ok' : 'degraded',
+    const statusCode = allCriticalOk ? HttpStatus.OK : HttpStatus.SERVICE_UNAVAILABLE;
+    const status = allOk ? 'ok' : allCriticalOk ? 'degraded' : 'unhealthy';
+
+    const response = {
+      status,
       timestamp: new Date().toISOString(),
-      version: '0.1.0',
       checks,
     };
+
+    return res.status(statusCode).json(response);
   }
 }
 
