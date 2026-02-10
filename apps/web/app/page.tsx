@@ -1,203 +1,149 @@
 import Link from 'next/link';
-import { Heart, Shield, Eye, Lock, MessageCircle, Brain, Mic2, ChevronRight } from 'lucide-react';
-import { ClonedLogo } from '@/components/ui/ClonedLogo';
+import {
+  ArrowRight,
+  Menu,
+  ShieldCheck,
+  Heart,
+  EyeOff,
+  Home,
+  Sparkles,
+  Feather,
+  User
+} from 'lucide-react';
+import { MemoryGallery } from '@/components/landing/MemoryGallery';
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-cloned-bg">
+    <div className="min-h-screen bg-background-light text-charcoal font-body selection:bg-primary/20">
       {/* Navbar */}
-      <nav className="sticky top-0 z-50 backdrop-blur-md bg-cloned-bg/80 border-b border-cloned-border">
-        <div className="max-w-6xl mx-auto flex items-center justify-between px-6 py-4">
-          <div className="flex items-center gap-3">
-            <ClonedLogo size={36} className="rounded-lg" />
-            <span className="font-display text-xl font-semibold text-cloned-text">Cloned</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <Link href="/auth/login" className="px-5 py-2 text-sm font-medium text-cloned-muted hover:text-cloned-text transition-colors">
-              Iniciar Sesión
-            </Link>
-            <Link href="/auth/register" className="px-5 py-2 text-sm font-medium bg-cloned-accent hover:bg-cloned-accent-dark text-white rounded-full transition-colors">
-              Comenzar
-            </Link>
-          </div>
+      <nav className="px-6 py-6 flex justify-between items-center sticky top-0 bg-background-light/90 backdrop-blur-md z-50">
+        <div className="text-2xl font-display font-semibold tracking-tight italic">Cloned</div>
+        <div className="flex items-center gap-4">
+          <Link href="/auth/login" className="text-xs uppercase tracking-widest font-bold hidden sm:block hover:text-primary transition-colors">
+            Iniciar Sesión
+          </Link>
+          <button className="w-10 h-10 flex items-center justify-center rounded-full bg-charcoal/5 hover:bg-charcoal/10 transition-colors">
+            <Menu className="w-5 h-5" />
+          </button>
         </div>
       </nav>
 
       {/* Hero */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-cloned-hero to-cloned-bg">
-        <div className="max-w-4xl mx-auto text-center px-6 pt-20 pb-24">
-          <div className="mb-8">
-            <ClonedLogo size={80} className="mx-auto rounded-2xl shadow-lg animate-float" />
-          </div>
-          <h1 className="font-display text-4xl md:text-6xl font-bold text-cloned-text leading-tight mb-6">
-            Vuelve a conversar<br />
-            <span className="text-cloned-accent">con quien extrañas</span>
-          </h1>
-          <p className="text-lg md:text-xl text-cloned-muted max-w-2xl mx-auto mb-10 leading-relaxed">
-            Preserva la esencia cognitiva de quienes amas. Recrea sus formas de pensar,
-            sus valores, su humor y su manera de ver el mundo — para que la conversación
-            nunca tenga que terminar.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/auth/register" className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-cloned-accent hover:bg-cloned-accent-dark text-white rounded-full text-lg font-medium transition-all shadow-lg shadow-cloned-accent/25 hover:shadow-xl hover:shadow-cloned-accent/30">
-              Crear un Perfil de Memoria
-              <ChevronRight className="w-5 h-5" />
-            </Link>
-            <Link href="/auth/login" className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white border border-cloned-border hover:border-cloned-accent/40 text-cloned-text rounded-full text-lg font-medium transition-colors">
-              Ya tengo cuenta
+      <header className="relative px-6 pt-6 pb-12">
+        <div className="max-w-screen-xl mx-auto flex flex-col gap-8">
+          <div className="z-10">
+            <h1 className="text-5xl md:text-7xl leading-[1.05] font-display font-medium mb-4">
+              Crea tu <span className="italic text-primary/80">Clon Digital</span>
+            </h1>
+            <h2 className="text-2xl md:text-3xl font-display italic text-charcoal/80 mb-6">
+              Preserva tu esencia para el futuro
+            </h2>
+            <p className="text-lg leading-relaxed text-charcoal/70 mb-8 max-w-[85%] md:max-w-xl">
+              Guarda tu forma de pensar, tu humor, tu voz y tus valores en un Perfil de Memoria. Crea una presencia conversable que tus seres queridos puedan conocer hoy y recordar mañana, con respeto y autenticidad.
+            </p>
+            <Link href="/auth/register" className="bg-gradient-to-br from-[#1313ec] to-[#6366f1] text-white px-8 py-4 rounded-full font-medium shadow-xl shadow-primary/20 flex items-center gap-3 w-fit hover:scale-105 transition-transform">
+              Crear mi Perfil de Memoria
+              <ArrowRight className="w-5 h-5" />
             </Link>
           </div>
+          <div className="relative h-[450px] w-full rounded-2xl overflow-hidden shadow-2xl">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              alt="Family hug soft focus"
+              className="w-full h-full object-cover"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuAabIpBVnueefUD7yEhY4YJm5vYXnILrebzaSU40mB7qwgm5OeAlgeFbc8F2ZaHXC1VqY2iCVdmbCErysG73GLvGf6faoi0YRexGgIlmDXi0sfvK03S34_gFpb_-bKC4xanExwciTrXA0brXE2PYG3YIML4tXkH4BdQ4iSez9QxDJIEoGRVTN-hy3I6wu11HClpAUTBNlDImeqsP-dqpIUmc7np_c6EeB_khc_InnaByjT5xXeVPO2vlRLeMRZDAxi6oPujQkiJNaQ"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-background-light/40 via-transparent to-transparent"></div>
+          </div>
         </div>
-        {/* Decorative gradient orbs */}
-        <div className="absolute top-20 -left-32 w-64 h-64 bg-cloned-accent/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-10 -right-32 w-64 h-64 bg-cloned-accent/5 rounded-full blur-3xl" />
-      </section>
+      </header>
 
-      {/* How It Works */}
-      <section className="py-20 px-6">
-        <div className="max-w-5xl mx-auto">
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-center text-cloned-text mb-4">
-            ¿Cómo funciona?
-          </h2>
-          <p className="text-center text-cloned-muted mb-16 max-w-xl mx-auto">
-            Tres pasos para preservar la esencia de quien amas
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      {/* Memory Gallery */}
+      <MemoryGallery />
+
+      {/* Security & Ethics */}
+      <section className="px-6 py-24 bg-white/40">
+        <div className="max-w-screen-xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-display font-light italic mb-4">Seguridad y Respeto</h2>
+            <div className="w-12 h-px bg-primary/30 mx-auto"></div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
             {[
               {
-                step: '01',
-                icon: Brain,
-                title: 'Enrollment Cognitivo',
-                desc: 'Responde preguntas sobre cómo piensa, qué valora y cómo se expresa la persona. Cada respuesta construye su huella cognitiva única.',
+                icon: ShieldCheck,
+                title: 'Legado Protegido',
+                desc: 'Encriptación de grado militar para asegurar que cada palabra y recuerdo permanezca en el círculo familiar.',
               },
               {
-                step: '02',
-                icon: MessageCircle,
-                title: 'Conversación',
-                desc: 'Una vez activado el perfil, conversa con la esencia cognitiva. El sistema recrea sus patrones de razonamiento, humor y emociones.',
+                icon: Heart,
+                title: 'Ética Radical',
+                desc: 'Desarrollado bajo principios de acompañamiento psicológico y respeto absoluto por el duelo.',
               },
               {
-                step: '03',
-                icon: Mic2,
-                title: 'Voz y Presencia',
-                desc: 'Agrega muestras de voz y personaliza el avatar para una experiencia más cercana e inmersiva.',
+                icon: EyeOff,
+                title: 'Privacidad Total',
+                desc: 'Tus datos nunca serán vendidos. Eres el único dueño de la memoria que decides preservar.',
               },
             ].map((item) => (
-              <div key={item.step} className="relative bg-white rounded-2xl p-8 border border-cloned-border hover:border-cloned-accent/30 transition-colors group">
-                <span className="absolute top-6 right-6 text-5xl font-display font-bold text-cloned-soft group-hover:text-cloned-accent/10 transition-colors">
-                  {item.step}
-                </span>
-                <div className="w-12 h-12 rounded-xl bg-cloned-soft flex items-center justify-center mb-5 group-hover:bg-cloned-accent/10 transition-colors">
-                  <item.icon className="w-6 h-6 text-cloned-accent" />
+              <div key={item.title} className="flex flex-col items-center text-center px-4">
+                <div className="w-14 h-14 flex items-center justify-center border border-charcoal/10 rounded-full mb-6 text-primary">
+                  <item.icon className="w-7 h-7" />
                 </div>
-                <h3 className="font-display text-xl font-semibold text-cloned-text mb-3">{item.title}</h3>
-                <p className="text-cloned-muted leading-relaxed">{item.desc}</p>
+                <h3 className="text-lg font-medium mb-3">{item.title}</h3>
+                <p className="text-sm text-charcoal/60 leading-relaxed">
+                  {item.desc}
+                </p>
               </div>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* Memory Gallery (Emotional Section) */}
-      <section className="py-20 px-6 bg-cloned-soft/50">
-        <div className="max-w-5xl mx-auto">
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-center text-cloned-text mb-4">
-            Una galería de recuerdos vivos
-          </h2>
-          <p className="text-center text-cloned-muted mb-16 max-w-xl mx-auto">
-            Cada perfil es una constelación de memorias, valores y formas de ser que hacen única a una persona
-          </p>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {[
-              { label: 'Valores', emoji: '💎', color: 'from-amber-50 to-orange-50' },
-              { label: 'Humor', emoji: '😄', color: 'from-yellow-50 to-amber-50' },
-              { label: 'Sueños', emoji: '✨', color: 'from-purple-50 to-pink-50' },
-              { label: 'Recuerdos', emoji: '📸', color: 'from-blue-50 to-cyan-50' },
-              { label: 'Opiniones', emoji: '💭', color: 'from-green-50 to-emerald-50' },
-              { label: 'Emociones', emoji: '❤️', color: 'from-red-50 to-rose-50' },
-              { label: 'Lenguaje', emoji: '🗣️', color: 'from-indigo-50 to-blue-50' },
-              { label: 'Lógica', emoji: '🧩', color: 'from-teal-50 to-green-50' },
-            ].map((item) => (
-              <div
-                key={item.label}
-                className={`bg-gradient-to-br ${item.color} rounded-2xl p-6 text-center border border-white/60 hover:scale-105 transition-transform cursor-default shadow-sm`}
-              >
-                <span className="text-3xl mb-3 block">{item.emoji}</span>
-                <span className="text-sm font-medium text-cloned-text">{item.label}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Safety & Ethics */}
-      <section className="py-20 px-6">
-        <div className="max-w-5xl mx-auto">
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-center text-cloned-text mb-4">
-            Diseñado con respeto y ética
-          </h2>
-          <p className="text-center text-cloned-muted mb-16 max-w-xl mx-auto">
-            Tu privacidad y la dignidad de los recuerdos son nuestra prioridad
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                icon: Shield,
-                title: 'Consentimiento',
-                desc: 'Cada perfil requiere consentimiento explícito. Nada se crea sin autorización clara y verificable.',
-              },
-              {
-                icon: Eye,
-                title: 'Transparencia',
-                desc: 'Siempre se indica claramente que se trata de una simulación. Nunca pretendemos reemplazar a una persona real.',
-              },
-              {
-                icon: Lock,
-                title: 'Control Total',
-                desc: 'Tú decides qué datos se usan, puedes pausar o eliminar cualquier perfil en cualquier momento.',
-              },
-            ].map((item) => (
-              <div key={item.title} className="bg-white rounded-2xl p-8 border border-cloned-border text-center">
-                <div className="w-14 h-14 rounded-full bg-cloned-soft mx-auto mb-5 flex items-center justify-center">
-                  <item.icon className="w-7 h-7 text-cloned-accent" />
-                </div>
-                <h3 className="font-display text-lg font-semibold text-cloned-text mb-3">{item.title}</h3>
-                <p className="text-cloned-muted leading-relaxed text-sm">{item.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="py-20 px-6 bg-gradient-to-b from-cloned-bg to-cloned-hero">
-        <div className="max-w-3xl mx-auto text-center">
-          <Heart className="w-12 h-12 text-cloned-accent mx-auto mb-6" />
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-cloned-text mb-4">
-            Los recuerdos merecen seguir vivos
-          </h2>
-          <p className="text-cloned-muted mb-10 text-lg max-w-xl mx-auto">
-            Comienza hoy a preservar la esencia de quien amas. Es gratuito y siempre lo será.
-          </p>
-          <Link href="/auth/register" className="inline-flex items-center gap-2 px-10 py-4 bg-cloned-accent hover:bg-cloned-accent-dark text-white rounded-full text-lg font-medium transition-all shadow-lg shadow-cloned-accent/25">
-            Empezar Ahora
-            <ChevronRight className="w-5 h-5" />
-          </Link>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-cloned-border py-10 px-6">
-        <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <ClonedLogo size={24} className="rounded" />
-            <span className="text-sm text-cloned-muted">Cloned — Simulación cognitiva con ética y respeto</span>
+      <footer className="px-8 pt-24 pb-32">
+        <div className="max-w-screen-xl mx-auto">
+          <div className="flex flex-col items-center text-center gap-10">
+            <div className="text-3xl font-display font-semibold italic">Cloned</div>
+            <div className="flex flex-wrap justify-center gap-x-8 gap-y-4 text-xs uppercase tracking-widest font-bold text-charcoal/60">
+              <Link href="#">El Proceso</Link>
+              <Link href="#">Privacidad</Link>
+              <Link href="#">Seguridad</Link>
+              <Link href="#">Ética</Link>
+            </div>
+            <div className="max-w-md">
+              <p className="text-[11px] text-charcoal/40 leading-relaxed uppercase tracking-widest italic">
+                Descargo de responsabilidad: Cloned es una herramienta de preservación de memoria asistida por IA. No sustituye el proceso de duelo profesional ni pretende reemplazar la presencia física humana.
+              </p>
+            </div>
+            <div className="w-full h-px bg-charcoal/10"></div>
+            <div className="flex flex-col gap-2">
+              <p className="text-[10px] text-charcoal/30 uppercase tracking-[0.4em]">© 2024 CLONED ARTIFICIAL PRESENCE</p>
+              <p className="text-[10px] text-charcoal/30 uppercase tracking-[0.2em]">Hecho con respeto y memoria.</p>
+            </div>
           </div>
-          <p className="text-xs text-cloned-muted">
-            ⚠️ Cloned genera simulaciones basadas en IA. No pretende reemplazar a personas reales.
-          </p>
         </div>
       </footer>
+
+      {/* Mobile Bottom Nav */}
+      <div className="fixed bottom-0 left-0 right-0 bg-background-light/95 backdrop-blur-2xl border-t border-charcoal/5 flex justify-around items-center py-4 px-6 pb-8 z-50 md:hidden">
+        <button className="flex flex-col items-center gap-1 text-primary">
+          <Home className="w-6 h-6" />
+          <span className="text-[9px] font-bold uppercase tracking-tighter">Inicio</span>
+        </button>
+        <Link href="/auth/register" className="flex flex-col items-center gap-1 text-charcoal/40">
+          <Sparkles className="w-6 h-6" />
+          <span className="text-[9px] font-bold uppercase tracking-tighter">Clonar</span>
+        </Link>
+        <button className="flex flex-col items-center gap-1 text-charcoal/40">
+          <Feather className="w-6 h-6" />
+          <span className="text-[9px] font-bold uppercase tracking-tighter">Legado</span>
+        </button>
+        <Link href="/dashboard" className="flex flex-col items-center gap-1 text-charcoal/40">
+          <User className="w-6 h-6" />
+          <span className="text-[9px] font-bold uppercase tracking-tighter">Perfil</span>
+        </Link>
+      </div>
     </div>
   );
 }
