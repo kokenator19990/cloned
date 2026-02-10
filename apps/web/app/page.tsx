@@ -5,7 +5,7 @@ import {
   ShieldCheck,
   Heart,
   EyeOff,
-  Home,
+  Home as HomeIcon,
   Sparkles,
   Feather,
   User
@@ -19,8 +19,8 @@ export default function Home() {
       <nav className="px-6 py-6 flex justify-between items-center sticky top-0 bg-background-light/90 backdrop-blur-md z-50">
         <div className="text-2xl font-display font-semibold tracking-tight italic">Cloned</div>
         <div className="flex items-center gap-4">
-          <Link href="/auth/login" className="text-xs uppercase tracking-widest font-bold hidden sm:block hover:text-primary transition-colors">
-            Iniciar Sesión
+          <Link href="/clones" className="text-xs uppercase tracking-widest font-bold hidden sm:block hover:text-primary transition-colors">
+            Mis Clones
           </Link>
           <button className="w-10 h-10 flex items-center justify-center rounded-full bg-charcoal/5 hover:bg-charcoal/10 transition-colors">
             <Menu className="w-5 h-5" />
@@ -41,9 +41,12 @@ export default function Home() {
             <p className="text-lg leading-relaxed text-charcoal/70 mb-8 max-w-[85%] md:max-w-xl">
               Guarda tu forma de pensar, tu humor, tu voz y tus valores en un Perfil de Memoria. Crea una presencia conversable que tus seres queridos puedan conocer hoy y recordar mañana, con respeto y autenticidad.
             </p>
-            <Link href="/auth/register" className="bg-gradient-to-br from-[#1313ec] to-[#6366f1] text-white px-8 py-4 rounded-full font-medium shadow-xl shadow-primary/20 flex items-center gap-3 w-fit hover:scale-105 transition-transform">
-              Crear mi Perfil de Memoria
+            <Link href="/create" className="bg-gradient-to-br from-[#1313ec] to-[#6366f1] text-white px-8 py-4 rounded-full font-medium shadow-xl shadow-primary/20 flex items-center gap-3 w-fit hover:scale-105 transition-transform">
+              Crear mi Clon Digital
               <ArrowRight className="w-5 h-5" />
+            </Link>
+            <Link href="/clones" className="text-sm text-charcoal/50 underline underline-offset-4 hover:text-primary transition-colors mt-2">
+              Ya tengo cuenta
             </Link>
           </div>
           <div className="relative h-[450px] w-full rounded-2xl overflow-hidden shadow-2xl">
@@ -128,10 +131,10 @@ export default function Home() {
       {/* Mobile Bottom Nav */}
       <div className="fixed bottom-0 left-0 right-0 bg-background-light/95 backdrop-blur-2xl border-t border-charcoal/5 flex justify-around items-center py-4 px-6 pb-8 z-50 md:hidden">
         <button className="flex flex-col items-center gap-1 text-primary">
-          <Home className="w-6 h-6" />
+          <HomeIcon className="w-6 h-6" />
           <span className="text-[9px] font-bold uppercase tracking-tighter">Inicio</span>
         </button>
-        <Link href="/auth/register" className="flex flex-col items-center gap-1 text-charcoal/40">
+        <Link href="/create" className="flex flex-col items-center gap-1 text-charcoal/40">
           <Sparkles className="w-6 h-6" />
           <span className="text-[9px] font-bold uppercase tracking-tighter">Clonar</span>
         </Link>
@@ -139,9 +142,9 @@ export default function Home() {
           <Feather className="w-6 h-6" />
           <span className="text-[9px] font-bold uppercase tracking-tighter">Legado</span>
         </button>
-        <Link href="/dashboard" className="flex flex-col items-center gap-1 text-charcoal/40">
+        <Link href="/clones" className="flex flex-col items-center gap-1 text-charcoal/40">
           <User className="w-6 h-6" />
-          <span className="text-[9px] font-bold uppercase tracking-tighter">Perfil</span>
+          <span className="text-[9px] font-bold uppercase tracking-tighter">Mis Clones</span>
         </Link>
       </div>
     </div>
