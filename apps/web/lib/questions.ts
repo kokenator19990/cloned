@@ -5,6 +5,7 @@ export interface Question {
     id: number;
     category: string;
     text: string;
+    depth: 'basic' | 'deep' | 'expert';
 }
 
 const raw: Record<string, string[]> = {
@@ -582,11 +583,16 @@ const raw: Record<string, string[]> = {
     ],
 };
 
-// Flatten into indexed questions
+// Flatten into indexed questions with auto-assigned depth
 let id = 0;
 export const QUESTIONS: Question[] = Object.entries(raw).flatMap(
     ([category, texts]) =>
-        texts.map((text) => ({ id: id++, category, text })),
+        texts.map((text, i) => {
+            const ratio = i / texts.length;
+            const depth: 'basic' | 'deep' | 'expert' =
+                ratio < 0.4 ? 'basic' : ratio < 0.75 ? 'deep' : 'expert';
+            return { id: id++, category, text, depth };
+        }),
 );
 
 export const CATEGORIES = Object.keys(raw);

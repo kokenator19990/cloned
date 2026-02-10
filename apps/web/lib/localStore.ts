@@ -6,9 +6,12 @@ export interface QA {
     question: string;
     answer: string;
     category: string;
-    audioUrl?: string;  // base64 data URL of voice recording
-    isVoice?: boolean;  // true if answered by voice
+    audioUrl?: string;
+    isVoice?: boolean;
+    depth?: 'basic' | 'deep' | 'expert';
 }
+
+export type ProfileDepth = 'basic' | 'deep' | 'expert' | 'master';
 
 export interface CloneProfile {
     id: string;
@@ -17,7 +20,36 @@ export interface CloneProfile {
     answers: QA[];
     createdAt: string;
     status: 'creating' | 'ready';
-    voiceSamples: number; // count of voice-recorded answers
+    voiceSamples: number;
+    totalVoiceDuration: number; // seconds
+    depth: ProfileDepth;
+}
+
+// Compute depth from answer count and voice %
+export function computeDepth(answerCount: number, voiceCount: number): ProfileDepth {
+    const voiceRatio = answerCount > 0 ? voiceCount / answerCount : 0;
+    if (answerCount >= 200 && voiceRatio >= 0.5) return 'master';
+    if (answerCount >= 100) return 'expert';
+    if (answerCount >= 50) return 'deep';
+    return 'basic';
+}
+
+export function depthLabel(depth: ProfileDepth): string {
+    switch (depth) {
+        case 'master': return 'Maestro';
+        case 'expert': return 'Experto';
+        case 'deep': return 'Profundo';
+        case 'basic': return 'Básico';
+    }
+}
+
+export function depthColor(depth: ProfileDepth): string {
+    switch (depth) {
+        case 'master': return 'text-amber-600 bg-amber-50';
+        case 'expert': return 'text-purple-600 bg-purple-50';
+        case 'deep': return 'text-blue-600 bg-blue-50';
+        case 'basic': return 'text-charcoal/60 bg-charcoal/5';
+    }
 }
 
 interface LocalState {
@@ -65,6 +97,8 @@ export const useLocalStore = create<LocalState>((set, get) => ({
             createdAt: new Date().toISOString(),
             status: 'creating',
             voiceSamples: 0,
+            totalVoiceDuration: 0,
+            depth: 'basic',
         };
         const updated = [...get().clones, clone];
         set({ clones: updated });
@@ -81,15 +115,17 @@ export const useLocalStore = create<LocalState>((set, get) => ({
     },
 
     addAnswer: (id: string, qa: QA) => {
-        const updated = get().clones.map((c) =>
-            c.id === id
-                ? {
-                    ...c,
-                    answers: [...c.answers, qa],
-                    voiceSamples: c.voiceSamples + (qa.isVoice ? 1 : 0),
-                }
-                : c,
-        );
+        const updated = get().clones.map((c) => {
+            if (c.id !== id) return c;
+            const newAnswers = [...c.answers, qa];
+            const newVoice = c.voiceSamples + (qa.isVoice ? 1 : 0);
+            return {
+                ...c,
+                answers: newAnswers,
+                voiceSamples: newVoice,
+                depth: computeDepth(newAnswers.length, newVoice),
+            };
+        });
         set({ clones: updated });
         persist(updated);
     },

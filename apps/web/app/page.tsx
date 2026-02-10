@@ -8,7 +8,8 @@ import {
   Home as HomeIcon,
   Sparkles,
   Feather,
-  User
+  User,
+  Mic
 } from 'lucide-react';
 import { MemoryGallery } from '@/components/landing/MemoryGallery';
 
@@ -33,20 +34,21 @@ export default function Home() {
         <div className="max-w-screen-xl mx-auto flex flex-col gap-8">
           <div className="z-10">
             <h1 className="text-5xl md:text-7xl leading-[1.05] font-display font-medium mb-4">
-              Crea tu <span className="italic text-primary/80">Clon Digital</span>
+              Captura tu <span className="italic text-primary/80">voz</span>, tu esencia
             </h1>
             <h2 className="text-2xl md:text-3xl font-display italic text-charcoal/80 mb-6">
-              Preserva tu esencia para el futuro
+              La app te entrevista. Tu avatar habla como tú.
             </h2>
             <p className="text-lg leading-relaxed text-charcoal/70 mb-8 max-w-[85%] md:max-w-xl">
-              Guarda tu forma de pensar, tu humor, tu voz y tus valores en un Perfil de Memoria. Crea una presencia conversable que tus seres queridos puedan conocer hoy y recordar mañana, con respeto y autenticidad.
+              Cloned te hace cientos de preguntas con tu voz — tu forma de pensar, tu humor, tus valores, tus expresiones. Con cada respuesta, tu Clon Digital se vuelve más tú. Después de 25 preguntas tienes un perfil básico. Después de 200, eres inconfundible.
             </p>
             <Link href="/create" className="bg-gradient-to-br from-[#1313ec] to-[#6366f1] text-white px-8 py-4 rounded-full font-medium shadow-xl shadow-primary/20 flex items-center gap-3 w-fit hover:scale-105 transition-transform">
+              <Mic className="w-5 h-5" />
               Crear mi Clon Digital
               <ArrowRight className="w-5 h-5" />
             </Link>
             <Link href="/clones" className="text-sm text-charcoal/50 underline underline-offset-4 hover:text-primary transition-colors mt-2">
-              Ya tengo cuenta
+              Ver mis clones
             </Link>
           </div>
           <div className="relative h-[450px] w-full rounded-2xl overflow-hidden shadow-2xl">
