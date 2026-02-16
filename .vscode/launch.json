@@ -1,0 +1,46 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "API: Debug",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": [
+        "exec",
+        "nest",
+        "start",
+        "--debug",
+        "--watch"
+      ],
+      "cwd": "${workspaceFolder}/services/api",
+      "console": "integratedTerminal",
+      "restart": true,
+      "envFile": "${workspaceFolder}/services/api/.env"
+    },
+    {
+      "name": "Web: Debug (Next.js)",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": [
+        "exec",
+        "next",
+        "dev",
+        "--port",
+        "3000"
+      ],
+      "cwd": "${workspaceFolder}/apps/web",
+      "console": "integratedTerminal"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Full Stack",
+      "configurations": [
+        "API: Debug",
+        "Web: Debug (Next.js)"
+      ]
+    }
+  ]
+}
