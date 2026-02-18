@@ -237,6 +237,60 @@ img {
     background: var(--off);
 }
 
+.btn--guest {
+    background: transparent;
+    color: #b45309;
+    border-color: #d97706;
+    font-family: var(--font);
+}
+
+.btn--guest:hover {
+    background: #fffbeb;
+    border-color: #b45309;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(217, 119, 6, .15);
+}
+
+.btn--guest:disabled {
+    opacity: .6;
+    cursor: wait;
+    transform: none;
+    box-shadow: none;
+}
+
+/* ─── GUEST BANNER ─── */
+.guest-banner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 24px;
+    padding: 12px 24px;
+    background: #1c1917;
+    color: #fbbf24;
+    border-radius: 12px;
+    font-size: .85rem;
+    font-weight: 500;
+    animation: slideDown .4s var(--ease);
+}
+
+.guest-banner a {
+    color: #fbbf24;
+    text-decoration: underline;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 /* ─── SECTIONS ─── */
 .section {
     padding: 120px 0;

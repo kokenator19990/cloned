@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Cloned — Tu Persona Digital</title>
-  <meta name="description" content="Crea tu persona digital con memoria, identidad y voz. Entrena tu clon con tus respuestas y compártelo con quien quieras." />
+  <meta name="description"
+    content="Crea tu persona digital con memoria, identidad y voz. Entrena tu clon con tus respuestas y compártelo con quien quieras." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
+
 <body>
 
   <!-- ─── NAV ─── -->
@@ -39,7 +42,13 @@
       </p>
       <div class="hero__actions">
         <a href="#cta" class="btn btn--primary">Probar beta</a>
+        <button id="guestBtn" class="btn btn--guest">Probar como invitado (30 min)</button>
         <a href="#how" class="btn btn--ghost">Ver cómo funciona ↓</a>
+      </div>
+
+      <!-- Guest banner (hidden by default) -->
+      <div id="guestBanner" class="guest-banner" style="display:none;">
+        <span>🧪 Modo invitado — expira en <strong id="guestCountdown">30:00</strong></span>
       </div>
     </div>
   </section>
@@ -55,7 +64,8 @@
         <div class="step">
           <div class="step__icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+              <circle cx="12" cy="8" r="4" />
+              <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
             </svg>
           </div>
           <h3>Crea tu perfil</h3>
@@ -65,7 +75,7 @@
         <div class="step">
           <div class="step__icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
             </svg>
           </div>
           <h3>Onboarding conversacional</h3>
@@ -75,7 +85,7 @@
         <div class="step">
           <div class="step__icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
             </svg>
           </div>
           <h3>Entrena y refina</h3>
@@ -96,39 +106,49 @@
         <div class="card">
           <div class="card__icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"/>
+              <ellipse cx="12" cy="5" rx="9" ry="3" />
+              <path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5" />
+              <path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3" />
             </svg>
           </div>
           <h3>Memoria</h3>
-          <p>Tu clon recuerda conversaciones, hechos y relaciones. Construye una base de conocimiento episódica sobre tu vida.</p>
+          <p>Tu clon recuerda conversaciones, hechos y relaciones. Construye una base de conocimiento episódica sobre tu
+            vida.</p>
         </div>
         <div class="card">
           <div class="card__icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
             </svg>
           </div>
           <h3>Identidad</h3>
-          <p>Capturamos tu tono, muletillas y estilo cognitivo. No es un chatbot genérico — es tu huella lingüística.</p>
+          <p>Capturamos tu tono, muletillas y estilo cognitivo. No es un chatbot genérico — es tu huella lingüística.
+          </p>
         </div>
         <div class="card">
           <div class="card__icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>
+              <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+              <polyline points="17 6 23 6 23 12" />
             </svg>
           </div>
           <h3>Entrenamiento con feedback</h3>
-          <p>Cada interacción mejora el modelo. Corrige respuestas, ajusta el tono y refina la precisión con el tiempo.</p>
+          <p>Cada interacción mejora el modelo. Corrige respuestas, ajusta el tono y refina la precisión con el tiempo.
+          </p>
         </div>
         <div class="card">
           <div class="card__icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
-              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+              <circle cx="18" cy="5" r="3" />
+              <circle cx="6" cy="12" r="3" />
+              <circle cx="18" cy="19" r="3" />
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
             </svg>
           </div>
           <h3>Compartir por link</h3>
-          <p>Genera un enlace seguro para que otros interactúen con tu persona digital bajo tus propias reglas de acceso.</p>
+          <p>Genera un enlace seguro para que otros interactúen con tu persona digital bajo tus propias reglas de
+            acceso.</p>
         </div>
       </div>
     </div>
@@ -200,6 +220,75 @@
       el.classList.add('fade-up');
       observer.observe(el);
     });
+
+    // ─── GUEST TRIAL ───
+    const API_BASE = 'http://localhost:3001'; // change to prod URL when deployed
+    const guestBtn = document.getElementById('guestBtn');
+    const guestBanner = document.getElementById('guestBanner');
+    const guestCountdown = document.getElementById('guestCountdown');
+
+    guestBtn.addEventListener('click', async () => {
+      guestBtn.disabled = true;
+      guestBtn.textContent = 'Creando sesión...';
+      try {
+        const res = await fetch(API_BASE + '/auth/guest', { method: 'POST' });
+        if (!res.ok) throw new Error('Error al crear sesión');
+        const data = await res.json();
+        localStorage.setItem('cloned_token', data.accessToken);
+        localStorage.setItem('cloned_guest', 'true');
+        localStorage.setItem('cloned_guest_expires', data.guestExpiresAt);
+
+        // Show banner with countdown
+        guestBanner.style.display = 'flex';
+        guestBtn.style.display = 'none';
+        startCountdown(new Date(data.guestExpiresAt));
+
+        // Show success state
+        const heroSub = document.querySelector('.hero__sub');
+        heroSub.innerHTML = '✅ <strong>¡Sesión activa!</strong> Tienes 30 minutos para explorar. Abre la app en <a href="/cloned/" style="color:inherit;text-decoration:underline">/cloned/</a> para crear tu persona.';
+      } catch (err) {
+        guestBtn.disabled = false;
+        guestBtn.textContent = 'Probar como invitado (30 min)';
+        alert('No se pudo crear la sesión de invitado. Verifica que el servidor esté activo.');
+      }
+    });
+
+    function startCountdown(expiresAt) {
+      const tick = () => {
+        const diff = expiresAt - Date.now();
+        if (diff <= 0) {
+          guestCountdown.textContent = '00:00';
+          guestBanner.innerHTML = '<span>⏰ Sesión expirada. <a href="#" onclick="location.reload()">Recargar</a></span>';
+          localStorage.removeItem('cloned_token');
+          localStorage.removeItem('cloned_guest');
+          localStorage.removeItem('cloned_guest_expires');
+          return;
+        }
+        const m = Math.floor(diff / 60000);
+        const s = Math.floor((diff % 60000) / 1000);
+        guestCountdown.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+        requestAnimationFrame(tick);
+      };
+      tick();
+    }
+
+    // Resume countdown if guest session exists
+    if (localStorage.getItem('cloned_guest') === 'true') {
+      const expires = localStorage.getItem('cloned_guest_expires');
+      if (expires) {
+        const expiresAt = new Date(expires);
+        if (expiresAt > new Date()) {
+          guestBanner.style.display = 'flex';
+          guestBtn.style.display = 'none';
+          startCountdown(expiresAt);
+        } else {
+          localStorage.removeItem('cloned_token');
+          localStorage.removeItem('cloned_guest');
+          localStorage.removeItem('cloned_guest_expires');
+        }
+      }
+    }
   </script>
 </body>
+
 </html>
