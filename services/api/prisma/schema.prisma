@@ -58,6 +58,8 @@ model PersonaProfile {
   voiceConsentGiven   Boolean       @default(false)
   coverageMap         Json          @default("{}")
   consistencyScore    Float         @default(0)
+  isPublic            Boolean       @default(false)
+  shareCode           String?       @unique
   createdAt           DateTime      @default(now())
   updatedAt           DateTime      @updatedAt
 

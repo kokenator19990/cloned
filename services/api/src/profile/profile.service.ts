@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { randomBytes } from 'crypto';
 
 const DEFAULT_COVERAGE_MAP = {
   LINGUISTIC: { count: 0, minRequired: 5, covered: false },
@@ -99,4 +100,87 @@ export class ProfileService {
       chatSessions: sessions,
     };
   }
+
+  // ─── Public / Share ────────────────────────────────────────────────────────
+
+  /** Generate a short unique share code and make the profile public */
+  async makePublic(profileId: string, userId: string) {
+    const profile = await this.prisma.personaProfile.findUnique({ where: { id: profileId } });
+    if (!profile) throw new NotFoundException('Profile not found');
+    if (profile.userId !== userId) throw new ForbiddenException();
+
+    // Reuse existing shareCode or generate a new one
+    const shareCode = profile.shareCode ?? randomBytes(5).toString('hex'); // 10-char hex
+
+    const updated = await this.prisma.personaProfile.update({
+      where: { id: profileId },
+      data: { isPublic: true, shareCode },
+    });
+
+    return {
+      shareCode: updated.shareCode,
+      shareUrl: `/clones/public/${updated.shareCode}`,
+      isPublic: true,
+    };
+  }
+
+  /** Revoke public access */
+  async makePrivate(profileId: string, userId: string) {
+    const profile = await this.prisma.personaProfile.findUnique({ where: { id: profileId } });
+    if (!profile) throw new NotFoundException('Profile not found');
+    if (profile.userId !== userId) throw new ForbiddenException();
+
+    await this.prisma.personaProfile.update({
+      where: { id: profileId },
+      data: { isPublic: false },
+    });
+
+    return { isPublic: false };
+  }
+
+  /** Get a public profile by share code — no auth required */
+  async getPublicProfile(shareCode: string) {
+    const profile = await this.prisma.personaProfile.findUnique({
+      where: { shareCode },
+      include: { avatarConfig: true },
+    });
+    if (!profile || !profile.isPublic) throw new NotFoundException('Profile not found or not public');
+
+    // Return safe subset — no userId, no internal fields
+    return {
+      id: profile.id,
+      name: profile.name,
+      relationship: profile.relationship,
+      description: profile.description,
+      status: profile.status,
+      shareCode: profile.shareCode,
+      avatarConfig: profile.avatarConfig,
+      createdAt: profile.createdAt,
+    };
+  }
+
+  /** List all public profiles (for explore page) */
+  async listPublicProfiles(limit = 20, offset = 0) {
+    const profiles = await this.prisma.personaProfile.findMany({
+      where: { isPublic: true, status: 'ACTIVE' },
+      orderBy: { updatedAt: 'desc' },
+      take: limit,
+      skip: offset,
+      include: { avatarConfig: true },
+    });
+
+    // Strip internal fields before returning
+    return profiles.map((p) => ({
+      id: p.id,
+      name: p.name,
+      relationship: p.relationship,
+      description: p.description,
+      shareCode: p.shareCode,
+      status: p.status,
+      avatarConfig: p.avatarConfig,
+      createdAt: p.createdAt,
+    }));
+  }
 }
+
+

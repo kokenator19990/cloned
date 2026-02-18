@@ -21,7 +21,13 @@ class SendMessageDto {
 @UseGuards(JwtAuthGuard)
 @Controller('chat')
 export class ChatController {
-  constructor(private chatService: ChatService) {}
+  constructor(private chatService: ChatService) { }
+
+  /** Start a chat session with a public profile (any authenticated user, including guests) */
+  @Post('public/:shareCode/sessions')
+  async createPublicSession(@Request() req: any, @Param('shareCode') shareCode: string) {
+    return this.chatService.createPublicSession(shareCode, req.user.userId);
+  }
 
   @Post(':profileId/sessions')
   async createSession(@Request() req: any, @Param('profileId') profileId: string) {

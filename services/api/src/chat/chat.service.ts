@@ -31,6 +31,16 @@ export class ChatService {
     });
   }
 
+  /** Create a chat session with a public profile using its shareCode — any user can do this */
+  async createPublicSession(shareCode: string, userId: string) {
+    const profile = await this.prisma.personaProfile.findUnique({ where: { shareCode } });
+    if (!profile || !profile.isPublic) throw new NotFoundException('Public profile not found');
+
+    return this.prisma.chatSession.create({
+      data: { profileId: profile.id, userId },
+    });
+  }
+
   async listSessions(profileId: string, userId: string) {
     const profile = await this.prisma.personaProfile.findUnique({ where: { id: profileId } });
     if (!profile) throw new NotFoundException();
