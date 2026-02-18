@@ -1,227 +1,76 @@
-# 🚀 INICIO RÁPIDO - DEADBOT (Cloned)
+# Cloned — Guía de arranque rápido
 
-## ⚡ 5 Minutos hasta tener la app corriendo
+## Requisitos
+- Node.js 18+
+- Docker Desktop
+- Cuenta en [console.groq.com](https://console.groq.com) (gratis)
 
-### Paso 0: Fix PATH en PowerShell (Windows)
-
-Si node/pnpm no se reconocen en nuevas terminales:
-```powershell
-$env:PATH = [System.Environment]::GetEnvironmentVariable("PATH","Machine")+";"+[System.Environment]::GetEnvironmentVariable("PATH","User")
-```
-
-### Paso 1: Verificar Requisitos (30 segundos)
+## Setup inicial (solo la primera vez)
 
 ```powershell
-node --version   # Debe ser >= 20.0.0 (probado con v24.13.0)
-pnpm --version   # Debe ser >= 9.0.0
-docker --version # Cualquier versión reciente
-```
-
-Si falta algo:
-- Node: `winget install OpenJS.NodeJS.LTS` o https://nodejs.org/
-- pnpm: `npm install -g pnpm@9`
-- Docker: https://www.docker.com/products/docker-desktop
-
----
-
-### Paso 2: Instalar Dependencias (2-3 minutos)
-
-```powershell
-cd c:\Users\coook\Desktop\deadbot
+# 1. Instalar dependencias
 pnpm install
+
+# 2. Configurar API key de Groq
+# Edita services/api/.env y reemplaza REEMPLAZA_CON_TU_GROQ_API_KEY
+# con tu key de https://console.groq.com
+
+# 3. Arrancar todo
+.\start.ps1
 ```
 
----
-
-### Paso 3: Iniciar Docker (30 segundos)
+## Arranque diario
 
 ```powershell
-pnpm docker:up
-# O directamente:
-docker compose -f infra\docker-compose.yml up -d
+.\start.ps1
 ```
 
-Verifica que esté corriendo:
-```powershell
-docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Image}}"
+## URLs
+
+| Servicio | URL |
+|----------|-----|
+| API | http://localhost:3001 |
+| Swagger Docs | http://localhost:3001/api/docs |
+| Health Check | http://localhost:3001/health |
+
+## Cuenta demo
+
+```
+Email:    demo@cloned.app
+Password: password123
 ```
 
-Deberías ver: `deadbot-postgres` (pgvector/pgvector:pg16), `deadbot-redis`, `deadbot-minio`
+## LLM Provider
 
----
+El proyecto usa **Groq** por defecto (gratis, rápido).
 
-### Paso 4: Configurar Base de Datos (1 minuto)
+Para cambiar de provider, edita `services/api/.env`:
 
-```powershell
-cd services\api
-# Copiar .env.example si no existe .env
-# (ya debería existir)
-npx prisma migrate dev
-npx prisma db seed
-cd ..\..
+```env
+# Groq (recomendado)
+LLM_BASE_URL="https://api.groq.com/openai/v1"
+LLM_API_KEY="gsk_..."
+LLM_MODEL="llama-3.3-70b-versatile"
+
+# OpenAI
+# LLM_BASE_URL="https://api.openai.com/v1"
+# LLM_API_KEY="sk-..."
+# LLM_MODEL="gpt-4o-mini"
+
+# Ollama (local, sin internet)
+# LLM_BASE_URL="http://localhost:11434/v1"
+# LLM_API_KEY="ollama"
+# LLM_MODEL="llama3"
 ```
 
-Esto crea:
-- Extensión pgvector habilitada
-- Usuario demo: `demo@deadbot.app` / `password123`
-- Perfil "Jorge" en estado ENROLLING
+## Arquitectura del "cerebro"
 
----
+Cada persona digital tiene 4 capas:
 
-### Paso 5: Build + Iniciar Backend (30 segundos)
+1. **Perfil base** — identidad, nombre, relación
+2. **Memorias cognitivas** — respuestas del enrollment vectorizadas por categoría:
+   - LINGUISTIC, LOGICAL, MORAL, VALUES, ASPIRATIONS, PREFERENCES, AUTOBIOGRAPHICAL, EMOTIONAL
+3. **Historial de chat** — conversaciones que también se convierten en memorias
+4. **Documentos** — PDFs/textos que el clon puede referenciar (RAG)
 
-**Terminal 1:**
-```powershell
-# Desde la raíz del proyecto:
-pnpm build:api
-pnpm start:api
-# O en modo watch:
-pnpm dev:api
-```
-
-Espera a ver: `Deadbot API running on http://localhost:3001`
-
-Verifica: http://localhost:3001/health → `{"status":"ok"}`
-Swagger: http://localhost:3001/api/docs
-
----
-
-### Paso 6: Iniciar Frontend (30 segundos)
-
-**Terminal 2 (nueva):**
-```powershell
-pnpm dev:web
-```
-
-Espera a ver: `Ready on http://localhost:3000`
-
----
-
-## ✅ ¡Listo!
-
-Abre tu navegador en: **http://localhost:3000**
-
-**Login:**
-- Email: `demo@deadbot.app`
-- Password: `password123`
-
----
-
-## 🎯 Primeros Pasos en la App
-
-### 1. Crear un Perfil
-- Click en "Create Profile"
-- Nombra el perfil (ej: "Jorge", "Mamá", etc.)
-
-### 2. Empezar Enrollment
-- Click en el perfil creado
-- Click en "Start Enrollment"
-- **Responde al menos 50 preguntas** para activar el perfil
-
-### 3. Chatear
-- Una vez activado el perfil (50+ interacciones)
-- Click en "Chat"
-- ¡Empieza a conversar con el perfil cognitivo!
-
----
-
-## 🔧 (Opcional) Agregar LLM Local
-
-Para que las preguntas sean más inteligentes:
-
-```powershell
-# Instalar Ollama
-# Descargar de: https://ollama.com
-
-# Descargar modelo
-ollama pull llama3
-
-# Iniciar servidor
-ollama serve
-```
-
-El backend detectará automáticamente Ollama en `http://localhost:11434`
-
----
-
-## 📱 Android (Opcional)
-
-1. Abrir Android Studio
-2. File → Open → Seleccionar `c:\Users\coook\Desktop\deadbot\apps\android`
-3. Esperar sync de Gradle
-4. Run
-
-**Nota:** En el emulador, el backend está en `http://10.0.2.2:3001`
-
----
-
-## ❌ Problemas Comunes
-
-### "Docker no está corriendo"
-```powershell
-# Inicia Docker Desktop manualmente
-# Luego:
-docker-compose -f infra\docker-compose.yml up -d
-```
-
-### "Puerto 3000/3001 ya está en uso"
-```powershell
-# Mata el proceso:
-netstat -ano | findstr :3000
-taskkill /PID <numero> /F
-```
-
-### "Prisma no encuentra la base de datos"
-```powershell
-# Verifica que Docker esté corriendo
-docker ps | findstr postgres
-
-# Reset completo (borra datos):
-pnpm db:reset
-pnpm db:seed
-```
-
-### "pnpm install falla"
-```powershell
-# Limpia y reinstala:
-rm -rf node_modules
-rm pnpm-lock.yaml
-pnpm install
-```
-
----
-
-## 📚 Más Info
-
-- **Documentación completa**: Ver `INSTALL.md`
-- **Reporte del proyecto**: Ver `COMPLETION_REPORT.md`
-- **README**: Ver `README.md`
-- **API Docs (Swagger)**: http://localhost:3001/api/docs
-
----
-
-## 🎉 ¡Disfruta de Deadbot!
-
-Tienes un sistema completo de **simulación cognitiva** listo para usar.
-
-**Siguientes pasos sugeridos:**
-1. Explorar todas las pantallas
-2. Crear múltiples perfiles
-3. Probar voice recording
-4. Configurar avatares
-5. Subir documentos para RAG
-6. Instalar Ollama para LLM local + embeddings
-7. Leer `INSTALL.md` para features avanzadas
-
-**Scripts útiles:**
-```powershell
-pnpm dev:all        # API + Web en paralelo
-pnpm test           # Correr tests
-pnpm typecheck      # Verificar tipos
-pnpm db:studio      # Abrir Prisma Studio
-pnpm docker:reset   # Reset Docker (borra datos)
-```
-
----
-
-*¿Dudas? Revisa `INSTALL.md`, `BUGFIX_REPORT.md` o `COMPLETION_REPORT.md`*
+El sistema recupera las memorias más relevantes al mensaje del usuario y las inyecta en el system prompt del LLM.
