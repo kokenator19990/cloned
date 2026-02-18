@@ -12,7 +12,7 @@ import { VoiceService } from './voice.service';
 @UseGuards(JwtAuthGuard)
 @Controller('voice')
 export class VoiceController {
-  constructor(private voiceService: VoiceService) {}
+  constructor(private voiceService: VoiceService) { }
 
   @Post(':profileId/upload')
   @ApiConsumes('multipart/form-data')
@@ -56,6 +56,7 @@ export class VoiceController {
   @Get('config')
   async getConfig() {
     return {
+      provider: 'browser',          // Use Web Speech API on the client
       voiceCloningEnabled: this.voiceService.isVoiceCloningEnabled(),
       sttAvailable: true,
       ttsAvailable: true,

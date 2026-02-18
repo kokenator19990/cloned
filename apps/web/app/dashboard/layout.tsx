@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/lib/store';
-import { LogOut, User, Trash2 } from 'lucide-react';
+import { LogOut, User, Trash2, Compass } from 'lucide-react';
 import { ClonedLogo } from '@/components/ui/ClonedLogo';
 import api from '@/lib/api';
 
@@ -60,6 +60,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <User className="w-4 h-4" />
               {user.displayName}
             </div>
+            <button
+              onClick={() => router.push('/clones/explore')}
+              className="text-cloned-muted hover:text-cloned-accent transition-colors"
+              title="Explorar perfiles públicos"
+            >
+              <Compass className="w-4 h-4" />
+            </button>
             <button
               onClick={handleDeleteAccount}
               disabled={deleting}
