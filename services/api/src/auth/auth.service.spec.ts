@@ -123,4 +123,55 @@ describe('AuthService', () => {
       await expect(service.getUser('bad-id')).rejects.toThrow(UnauthorizedException);
     });
   });
+
+  describe('createGuest', () => {
+    it('should create a guest user and return a token', async () => {
+      const guestUser = {
+        id: 'guest-uuid',
+        email: 'guest-xxx@guest.local',
+        passwordHash: '$2b$04$hash',
+        displayName: 'Invitado',
+        isGuest: true,
+        guestExpiresAt: new Date(Date.now() + 30 * 60 * 1000),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+      (prisma.user.create as jest.Mock).mockResolvedValue(guestUser);
+      (bcrypt.hash as jest.Mock).mockResolvedValue('$2b$04$hash');
+
+      const result = await service.createGuest();
+
+      expect(result.accessToken).toBe('mock-jwt-token');
+      expect(result.user.isGuest).toBe(true);
+      expect(result.user.displayName).toBe('Invitado');
+      expect(result.guestExpiresAt).toBeDefined();
+      expect(prisma.user.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({ isGuest: true }),
+        }),
+      );
+    });
+  });
+
+  describe('cleanupExpiredGuests', () => {
+    it('should delete expired guest users', async () => {
+      const expiredGuests = [{ id: 'guest-1' }, { id: 'guest-2' }];
+      (prisma.user.findMany as jest.Mock) = jest.fn().mockResolvedValue(expiredGuests);
+      (prisma as any).personaProfile = { deleteMany: jest.fn().mockResolvedValue({ count: 0 }) };
+      (prisma as any).chatSession = { deleteMany: jest.fn().mockResolvedValue({ count: 0 }) };
+      (prisma.user as any).deleteMany = jest.fn().mockResolvedValue({ count: 2 });
+
+      const result = await service.cleanupExpiredGuests();
+
+      expect(result.deleted).toBe(2);
+    });
+
+    it('should return deleted:0 when no expired guests', async () => {
+      (prisma.user.findMany as jest.Mock) = jest.fn().mockResolvedValue([]);
+
+      const result = await service.cleanupExpiredGuests();
+
+      expect(result.deleted).toBe(0);
+    });
+  });
 });

@@ -14,7 +14,7 @@ const DEFAULT_COVERAGE_MAP = {
 
 @Injectable()
 export class ProfileService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async listProfiles(userId: string) {
     return this.prisma.personaProfile.findMany({
@@ -35,13 +35,25 @@ export class ProfileService {
   }
 
   async createProfile(userId: string, name: string, relationship?: string, description?: string) {
+    // Check if user is guest → reduced requirements
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    const isGuest = user?.isGuest ?? false;
+    const minInteractions = isGuest ? 20 : 50;
+    const minPerCategory = isGuest ? 2 : 5;
+
+    const coverageMap: Record<string, { count: number; minRequired: number; covered: boolean }> = {};
+    for (const cat of Object.keys(DEFAULT_COVERAGE_MAP)) {
+      coverageMap[cat] = { count: 0, minRequired: minPerCategory, covered: false };
+    }
+
     return this.prisma.personaProfile.create({
       data: {
         userId,
         name,
         relationship: relationship || null,
         description: description || null,
-        coverageMap: DEFAULT_COVERAGE_MAP,
+        minInteractions,
+        coverageMap,
       },
       include: { avatarConfig: true },
     });

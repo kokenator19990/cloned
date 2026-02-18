@@ -120,4 +120,64 @@ describe('API Integration Tests (e2e)', () => {
         });
     });
   });
+
+  describe('POST /auth/guest (Guest Trial)', () => {
+    let guestToken: string;
+
+    it('should create a guest session with 30m token', () => {
+      return request(app.getHttpServer())
+        .post('/auth/guest')
+        .expect(201)
+        .expect((res) => {
+          expect(res.body.accessToken).toBeDefined();
+          expect(res.body.user.isGuest).toBe(true);
+          expect(res.body.user.displayName).toBe('Invitado');
+          expect(res.body.guestExpiresAt).toBeDefined();
+          guestToken = res.body.accessToken;
+        });
+    });
+
+    it('guest should be able to create a profile', async () => {
+      const guestRes = await request(app.getHttpServer())
+        .post('/auth/guest')
+        .expect(201);
+      guestToken = guestRes.body.accessToken;
+
+      return request(app.getHttpServer())
+        .post('/profiles')
+        .set('Authorization', `Bearer ${guestToken}`)
+        .send({ name: 'Mi Clon Invitado' })
+        .expect(201)
+        .expect((res) => {
+          expect(res.body.name).toBe('Mi Clon Invitado');
+          expect(res.body.minInteractions).toBe(20);
+        });
+    });
+
+    it('guest should be able to access /auth/me', async () => {
+      const guestRes = await request(app.getHttpServer())
+        .post('/auth/guest')
+        .expect(201);
+
+      return request(app.getHttpServer())
+        .get('/auth/me')
+        .set('Authorization', `Bearer ${guestRes.body.accessToken}`)
+        .expect(200)
+        .expect((res) => {
+          expect(res.body.displayName).toBe('Invitado');
+        });
+    });
+  });
+
+  describe('POST /auth/cleanup-guests', () => {
+    it('should run cleanup without errors', () => {
+      return request(app.getHttpServer())
+        .post('/auth/cleanup-guests')
+        .expect(201)
+        .expect((res) => {
+          expect(res.body.deleted).toBeDefined();
+          expect(typeof res.body.deleted).toBe('number');
+        });
+    });
+  });
 });

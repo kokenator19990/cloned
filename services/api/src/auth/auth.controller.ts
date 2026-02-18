@@ -40,6 +40,11 @@ export class AuthController {
     return this.authService.login(dto.email, dto.password);
   }
 
+  @Post('guest')
+  async guest() {
+    return this.authService.createGuest();
+  }
+
   @Get('me')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
@@ -52,5 +57,10 @@ export class AuthController {
   @ApiBearerAuth()
   async deleteAccount(@Request() req: any) {
     return this.authService.deleteAccount(req.user.userId);
+  }
+
+  @Post('cleanup-guests')
+  async cleanupGuests() {
+    return this.authService.cleanupExpiredGuests();
   }
 }

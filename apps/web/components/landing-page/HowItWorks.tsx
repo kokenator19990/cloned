@@ -1,46 +1,67 @@
-import { UserPlus, MessageSquare, BrainCircuit, Activity } from 'lucide-react';
+'use client';
+import { motion } from 'framer-motion';
+import { UserPlus, MessageSquareText, Sparkles, LockKeyhole } from 'lucide-react';
 
 const steps = [
     {
-        icon: <UserPlus size={32} />,
+        icon: <UserPlus className="w-6 h-6" />,
         title: "1. Crea tu perfil",
-        desc: "Define el rol base (profesional, personal, creativo) y configura los aspectos básicos de tu clon."
+        description: "Define el rol base (profesional, personal, creativo) y configura los aspectos básicos de tu clon."
     },
     {
-        icon: <MessageSquare size={32} />,
+        icon: <MessageSquareText className="w-6 h-6" />,
         title: "2. Onboarding conversacional",
-        desc: "Responde preguntas profundas diseñadas para capturar tu historia, valores y forma de expresarte."
+        description: "Responde preguntas profundas diseñadas para capturar tu historia, valores y forma de expresarte."
     },
     {
-        icon: <BrainCircuit size={32} />,
+        icon: <Sparkles className="w-6 h-6" />,
         title: "3. Entrenamiento activo",
-        desc: "Interactúa con tu persona. Usa 👍/👎 y correcciones para refinar su tono y precisión."
+        description: "Interactúa con tu persona. Usa 👍 / 👎 y correcciones para refinar su tono y precisión."
     },
     {
-        icon: <Activity size={32} />,
-        title: "4. Evolución continua",
-        desc: "Tu persona digital aprende de cada interacción, volviéndose más auténtica con el tiempo."
-    }
+        icon: <LockKeyhole className="w-6 h-6" />,
+        title: "4. Preservación Segura",
+        description: "Tu modelo se congela y encripta. Solo tú (o quienes autorices) pueden activarlo."
+    },
 ];
 
-export function HowItWorks() {
+export default function HowItWorks() {
     return (
-        <section id="how-it-works" className="py-24 px-6 bg-gray-50 border-t border-gray-100">
-            <div className="max-w-6xl mx-auto">
-                <h2 className="text-3xl md:text-4xl font-bold text-center mb-16 text-gray-900">
-                    Cómo funciona
-                </h2>
+        <section id="how-it-works" className="py-24 bg-cloned-bg border-y border-cloned-border/40">
+            <div className="container mx-auto px-6 max-w-6xl">
+                <div className="mb-20 text-center">
+                    <span className="text-cloned-accent font-medium tracking-wider text-sm uppercase mb-3 block">Proceso</span>
+                    <h2 className="text-4xl md:text-5xl font-display font-medium text-cloned-text mb-6">
+                        Cómo funciona
+                    </h2>
+                </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
-                    {steps.map((step, idx) => (
-                        <div key={idx} className="flex flex-col items-center text-center group">
-                            <div className="w-16 h-16 rounded-2xl bg-white border border-gray-200 flex items-center justify-center text-gray-700 shadow-sm mb-6 group-hover:scale-110 transition-transform duration-300">
-                                {step.icon}
-                            </div>
-                            <h3 className="text-lg font-semibold mb-3 text-gray-900">{step.title}</h3>
-                            <p className="text-sm text-gray-600 leading-relaxed">{step.desc}</p>
-                        </div>
-                    ))}
+                <div className="relative">
+                    {/* Connecting Line (Desktop) */}
+                    <div className="hidden md:block absolute top-[2.25rem] left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-cloned-border to-transparent" />
+
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-12 relative z-10">
+                        {steps.map((step, i) => (
+                            <motion.div
+                                key={i}
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ delay: i * 0.2 }}
+                                className="flex flex-col items-center text-center group"
+                            >
+                                <div className="w-16 h-16 rounded-2xl bg-white border-2 border-cloned-border flex items-center justify-center text-cloned-muted mb-8 relative z-10 group-hover:border-cloned-accent group-hover:text-cloned-accent transition-colors shadow-sm">
+                                    {step.icon}
+                                </div>
+                                <h3 className="text-xl font-display font-medium text-cloned-text mb-4">
+                                    {step.title}
+                                </h3>
+                                <p className="text-cloned-muted leading-relaxed text-sm">
+                                    {step.description}
+                                </p>
+                            </motion.div>
+                        ))}
+                    </div>
                 </div>
             </div>
         </section>

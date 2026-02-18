@@ -1,30 +1,53 @@
-export function UseCases() {
-    return (
-        <section id="use-cases" className="py-20 px-6 bg-gray-900 text-white">
-            <div className="max-w-6xl mx-auto">
-                <div className="text-center mb-16">
-                    <h2 className="text-3xl md:text-4xl font-bold mb-4">Casos de Uso</h2>
-                    <p className="text-gray-400 text-lg">Múltiples facetas, un solo motor</p>
-                </div>
+'use client';
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-                    <div className="p-8 rounded-2xl bg-gray-800 border border-gray-700">
-                        <h3 className="text-2xl font-bold mb-4 text-white">Tu Yo Profesional</h3>
-                        <p className="text-gray-400">
-                            Entrena una versión que responda FAQs, explique tu metodología de trabajo o actúe como tu biografía interactiva.
+const useCases = [
+    {
+        title: "Legado Profesional",
+        desc: "Entrena un clon con tus papers, correos y decisiones. Permite que tus mentorados te consulten incluso cuando no estás.",
+        color: "bg-blue-50 border-blue-100 text-blue-900"
+    },
+    {
+        title: "Memoria Familiar",
+        desc: "Preserva las historias del abuelo, sus chistes y su voz. Un tesoro interactivo para las futuras generaciones.",
+        color: "bg-amber-50 border-amber-100 text-amber-900"
+    },
+    {
+        title: "Gemelo Creativo",
+        desc: "Un 'sparring' intelectual que piensa como tú pero no se cansa. Úsalo para brainstormings o para superar bloqueos.",
+        color: "bg-purple-50 border-purple-100 text-purple-900"
+    }
+];
+
+export default function UseCases() {
+    return (
+        <section id="use-cases" className="py-24 bg-cloned-bg relative">
+            <div className="container mx-auto px-6 max-w-6xl">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                    <div>
+                        <span className="text-cloned-accent font-medium tracking-wider text-sm uppercase mb-3 block">Aplicaciones</span>
+                        <h2 className="text-4xl font-display font-medium text-cloned-text mb-6">
+                            Para qué sirve un clon digital
+                        </h2>
+                        <p className="text-lg text-cloned-muted mb-8 leading-relaxed">
+                            Desde preservar la historia familiar hasta escalar tu mentoría profesional.
+                            Persona Engine adapta la fidelidad y la base de conocimiento según el objetivo.
                         </p>
+                        <button className="text-cloned-accent font-medium hover:text-cloned-text transition-colors flex items-center gap-2 group">
+                            Explorar todos los casos
+                            <span className="group-hover:translate-x-1 transition-transform">→</span>
+                        </button>
                     </div>
-                    <div className="p-8 rounded-2xl bg-gray-800 border border-gray-700">
-                        <h3 className="text-2xl font-bold mb-4 text-white">Tu Yo Creativo</h3>
-                        <p className="text-gray-400">
-                            Brainstorming contigo mismo. Una versión desinhibida para explorar ideas sin miedo al juicio.
-                        </p>
-                    </div>
-                    <div className="p-8 rounded-2xl bg-gray-800 border border-gray-700">
-                        <h3 className="text-2xl font-bold mb-4 text-white">Legado Digital</h3>
-                        <p className="text-gray-400">
-                            Preserva tus historias, anécdotas y valores familiares para las futuras generaciones.
-                        </p>
+
+                    <div className="grid gap-6">
+                        {useCases.map((uc, i) => (
+                            <div
+                                key={i}
+                                className="p-8 rounded-2xl bg-white border border-cloned-border hover:border-cloned-accent/30 shadow-sm hover:shadow-md transition-all"
+                            >
+                                <h3 className="text-xl font-bold text-cloned-text mb-2">{uc.title}</h3>
+                                <p className="text-cloned-muted">{uc.desc}</p>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </div>
