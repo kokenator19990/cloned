@@ -19,20 +19,27 @@ export class LlmService {
     });
     this.model = process.env.LLM_MODEL || 'gpt-4o-mini';
   }
+  static readonly LLM_FALLBACK_MSG =
+    '[El servicio de IA no está disponible en este momento. Tu mensaje fue guardado y se procesará cuando el servicio esté activo.]';
 
   async generateResponse(
     systemPrompt: string,
     messages: Array<{ role: 'user' | 'assistant' | 'system'; content: string }>,
     options?: { stream?: boolean; maxTokens?: number },
   ): Promise<string> {
-    const completion = await this.client.chat.completions.create({
-      model: this.model,
-      messages: [{ role: 'system', content: systemPrompt }, ...messages],
-      max_tokens: options?.maxTokens ?? 1024,
-      stream: false,
-    });
+    try {
+      const completion = await this.client.chat.completions.create({
+        model: this.model,
+        messages: [{ role: 'system', content: systemPrompt }, ...messages],
+        max_tokens: options?.maxTokens ?? 1024,
+        stream: false,
+      });
 
-    return completion.choices[0]?.message?.content ?? '';
+      return completion.choices[0]?.message?.content ?? '';
+    } catch (error) {
+      console.error('[LlmService] LLM unreachable, returning fallback:', (error as Error).message);
+      return LlmService.LLM_FALLBACK_MSG;
+    }
   }
 
   async *generateResponseStream(
@@ -77,7 +84,10 @@ Do NOT repeat any previous question. Be creative and specific.
 Return ONLY the question, nothing else.`;
 
       const result = await this.generateResponse(prompt, [], { maxTokens: 200 });
-      return result.trim() || null;
+      const trimmed = result.trim();
+      // If LLM returned fallback message, fall through to question bank
+      if (!trimmed || trimmed === LlmService.LLM_FALLBACK_MSG) return null;
+      return trimmed;
     } catch {
       return null;
     }

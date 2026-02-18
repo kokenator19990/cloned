@@ -39,9 +39,11 @@
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
+    "pdf-parse": "^2.4.5",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "socket.io": "^4.7.4",
+    "tiktoken": "^1.0.22",
     "uuid": "^9.0.1"
   },
   "devDependencies": {

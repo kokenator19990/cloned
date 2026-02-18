@@ -11,14 +11,19 @@ export class ChatService {
     private memoryService: MemoryService,
     private llmService: LlmService,
     private documentService: DocumentService,
-  ) {}
+  ) { }
 
   async createSession(profileId: string, userId: string) {
     const profile = await this.prisma.personaProfile.findUnique({ where: { id: profileId } });
     if (!profile) throw new NotFoundException('Profile not found');
     if (profile.userId !== userId) throw new ForbiddenException();
+
+    // Allow guests to chat even during enrollment
     if (profile.status !== 'ACTIVE') {
-      throw new ForbiddenException('Profile must be ACTIVE to chat. Complete enrollment first.');
+      const user = await this.prisma.user.findUnique({ where: { id: userId } });
+      if (!user?.isGuest) {
+        throw new ForbiddenException('Profile must be ACTIVE to chat. Complete enrollment first.');
+      }
     }
 
     return this.prisma.chatSession.create({
