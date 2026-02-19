@@ -259,8 +259,17 @@ export const useChatStore = create<ChatState>((set, get) => ({
           socket.on('chat:end', onEnd);
           socket.on('chat:error', onError);
 
-          const token = localStorage.getItem('cloned_token');
-          const userId = token ? JSON.parse(atob(token.split('.')[1])).sub : '';
+          // Extract userId from token safely
+          let userId = '';
+          try {
+            const token = localStorage.getItem('cloned_token');
+            if (token) {
+              const payload = JSON.parse(atob(token.split('.')[1]));
+              userId = payload.sub || '';
+            }
+          } catch {
+            // Token parsing failed, userId remains empty
+          }
           socket.emit('chat:send', { sessionId, content, userId });
         });
       }

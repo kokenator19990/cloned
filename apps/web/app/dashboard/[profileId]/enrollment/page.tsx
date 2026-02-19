@@ -42,6 +42,7 @@ export default function EnrollmentPage() {
   const [answer, setAnswer] = useState('');
   const [conversation, setConversation] = useState<ConversationItem[]>([]);
   const [started, setStarted] = useState(false);
+  const [error, setError] = useState('');
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -80,19 +81,30 @@ export default function EnrollmentPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!answer.trim() || !currentQuestion) return;
+    if (!answer.trim() || !currentQuestion || loading) return;
 
+    setError('');
     setConversation((prev) => [...prev, { role: 'USER', content: answer }]);
     const currentAnswer = answer;
     setAnswer('');
 
-    await submitAnswer(profileId, currentQuestion.id, currentAnswer);
-    await fetchNextQuestion(profileId);
+    try {
+      await submitAnswer(profileId, currentQuestion.id, currentAnswer);
+      await fetchNextQuestion(profileId);
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Error al enviar respuesta. Intenta de nuevo.');
+      // Remove the optimistic user message on error
+      setConversation((prev) => prev.slice(0, -1));
+    }
   };
 
   const handleActivate = async () => {
-    await activateProfile(profileId);
-    router.push(`/dashboard/${profileId}/chat`);
+    try {
+      await activateProfile(profileId);
+      router.push(`/dashboard/${profileId}/chat`);
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Error al activar el perfil. Verifica que hayas completado el enrollment.');
+    }
   };
 
   return (
@@ -188,6 +200,13 @@ export default function EnrollmentPage() {
               Seguir Respondiendo
             </Button>
           </div>
+        </div>
+      )}
+
+      {/* Error message */}
+      {error && (
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-2 rounded-xl text-sm mb-4">
+          {error}
         </div>
       )}
 

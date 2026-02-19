@@ -109,9 +109,13 @@ export class EnrollmentService {
     const allCovered = Object.values(coverageMap).every((c) => c.covered);
     if (updatedProfile.currentInteractions >= updatedProfile.minInteractions && allCovered) {
       const memories = await this.memoryService.getAllMemories(profileId);
-      const consistencyScore = await this.llmService.evaluateConsistency(
-        memories.map((m) => ({ content: m.content, category: m.category })),
-      );
+      // Only calculate consistency if we have enough memories
+      let consistencyScore = 0.5; // default
+      if (memories.length >= 5) {
+        consistencyScore = await this.llmService.evaluateConsistency(
+          memories.map((m) => ({ content: m.content, category: m.category })),
+        );
+      }
       await this.prisma.personaProfile.update({
         where: { id: profileId },
         data: {

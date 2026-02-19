@@ -35,6 +35,11 @@ export class ChatService {
   async createPublicSession(shareCode: string, userId: string) {
     const profile = await this.prisma.personaProfile.findUnique({ where: { shareCode } });
     if (!profile || !profile.isPublic) throw new NotFoundException('Public profile not found');
+    
+    // Only allow chat with ACTIVE public profiles
+    if (profile.status !== 'ACTIVE') {
+      throw new ForbiddenException('This profile is not ready for chat yet. It needs to complete enrollment first.');
+    }
 
     return this.prisma.chatSession.create({
       data: { profileId: profile.id, userId },

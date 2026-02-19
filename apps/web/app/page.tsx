@@ -34,13 +34,25 @@ export default function Home() {
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 animate-slide-up-delay-3">
-              <Link href="/auth/register" className="w-full sm:w-auto px-8 py-4 bg-[#2D2A26] text-white rounded-full font-semibold hover:bg-[#C08552] transition-all duration-300 shadow-xl hover:shadow-2xl hover:-translate-y-1 flex items-center justify-center gap-2 group">
+              <Link
+                href="/auth/register"
+                className="w-full sm:w-auto px-8 py-4 bg-[#2D2A26] text-white rounded-full font-semibold hover:bg-[#C08552] transition-all duration-300 shadow-xl hover:shadow-2xl hover:-translate-y-1 flex items-center justify-center gap-2 group"
+              >
                 Comenzar Ahora
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
-              <Link href="/clones/explore" className="w-full sm:w-auto px-8 py-4 bg-white border border-[#E8DFD3] text-[#2D2A26] rounded-full font-semibold hover:border-[#C08552] hover:text-[#C08552] transition-colors flex items-center justify-center gap-2">
+              <Link
+                href="/clones/explore"
+                className="w-full sm:w-auto px-8 py-4 bg-white border border-[#E8DFD3] text-[#2D2A26] rounded-full font-semibold hover:border-[#C08552] hover:text-[#C08552] transition-colors flex items-center justify-center gap-2"
+              >
                 <Compass className="w-4 h-4" />
-                Explorar Clones
+                Explorar Clones Públicos
+              </Link>
+              <Link
+                href="/clones"
+                className="w-full sm:w-auto px-8 py-4 bg-white/80 border border-dashed border-[#E8DFD3] text-[#2D2A26] rounded-full font-semibold hover:border-[#C08552] hover:text-[#C08552] transition-colors flex items-center justify-center gap-2"
+              >
+                Probar sin cuenta
               </Link>
             </div>
 

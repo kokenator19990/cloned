@@ -1,11 +1,12 @@
 'use client';
-import { useEffect, useState, useMemo, useCallback, useRef } from 'react';
+import { useEffect, useState, useMemo, useCallback, useRef, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useLocalStore, depthLabel, depthColor } from '@/lib/localStore';
 import { QUESTIONS, MIN_QUESTIONS } from '@/lib/questions';
 import { CheckCircle2, Sparkles, ChevronRight, Mic, Square, Keyboard, Volume2, RotateCcw } from 'lucide-react';
 
-export default function QuestionsPage() {
+
+function QuestionsContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const cloneId = searchParams.get('id');
@@ -277,8 +278,8 @@ export default function QuestionsPage() {
                             setInputMode(inputMode === 'voice' ? 'text' : 'voice');
                         }}
                         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all ${inputMode === 'voice'
-                                ? 'bg-red-500/10 text-red-600'
-                                : 'bg-charcoal/5 text-charcoal/50'
+                            ? 'bg-red-500/10 text-red-600'
+                            : 'bg-charcoal/5 text-charcoal/50'
                             }`}
                     >
                         {inputMode === 'voice' ? (
@@ -484,3 +485,12 @@ export default function QuestionsPage() {
         </div>
     );
 }
+
+export default function QuestionsPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen bg-background-light flex items-center justify-center"><p className="text-charcoal/50">Cargando...</p></div>}>
+            <QuestionsContent />
+        </Suspense>
+    );
+}
+

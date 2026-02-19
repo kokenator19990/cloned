@@ -1,6 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { PrismaService } from '../prisma/prisma.service';
+import Redis from 'ioredis';
 
 @ApiTags('health')
 @Controller('health')
@@ -30,9 +31,11 @@ export class HealthController {
     // Redis check
     try {
       const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379';
-      const response = await fetch(redisUrl.replace('redis://', 'http://'), { signal: AbortSignal.timeout(2000) }).catch(() => null);
-      // Redis doesn't speak HTTP, but a connection attempt tells us the port is open
-      checks.redis = 'ok'; // If we get here without timeout, port is reachable
+      const redis = new Redis(redisUrl, { maxRetriesPerRequest: 1, lazyConnect: true });
+      await redis.connect();
+      await redis.ping();
+      redis.disconnect();
+      checks.redis = 'ok';
     } catch {
       checks.redis = 'unreachable';
     }

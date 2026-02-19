@@ -92,7 +92,17 @@ export default function PublicProfilePage() {
                 headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
                 body: JSON.stringify({ content }),
             });
+            
+            if (!res.ok) {
+                const errorData = await res.json().catch(() => ({ message: 'Error desconocido' }));
+                throw new Error(errorData.message || `Error ${res.status}`);
+            }
+            
             const data = await res.json();
+            if (!data.userMessage || !data.personaMessage) {
+                throw new Error('Respuesta inválida del servidor');
+            }
+            
             setMessages(prev => [
                 ...prev.filter(m => m.id !== tempId),
                 data.userMessage,
@@ -105,9 +115,9 @@ export default function PublicProfilePage() {
                 utt.lang = 'es-ES';
                 window.speechSynthesis.speak(utt);
             }
-        } catch {
+        } catch (err: any) {
             setMessages(prev => prev.filter(m => m.id !== tempId));
-            setError('Error al enviar mensaje');
+            setError(err.message || 'Error al enviar mensaje');
         } finally {
             setSending(false);
         }
